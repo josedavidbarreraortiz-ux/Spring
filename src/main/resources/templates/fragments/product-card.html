@@ -1,0 +1,19 @@
+<!-- templates/fragments/product-card.html -->
+<div class="col-md-3 mb-4" xmlns:th="http://www.thymeleaf.org" th:fragment="card(producto)">
+    <div class="card shadow-sm h-100">
+
+        <img th:src="@{${producto.imagen}}" class="card-img-top" alt="">
+
+        <div class="card-body">
+            <h5 class="card-title" th:text="${producto.productoNombre}"></h5>
+            <p class="card-text fw-bold text-primary">
+                $<span th:text="${producto.productoPrecio}"></span>
+            </p>
+
+            <a th:href="@{'/tienda/product/' + ${producto.id}}" class="btn btn-outline-primary w-100">
+                Ver Detalle
+            </a>
+        </div>
+
+    </div>
+</div>

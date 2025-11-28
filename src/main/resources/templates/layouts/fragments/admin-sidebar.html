@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="adminSidebar">
+
+    <div class="sidebar">
+        <div class="sidebar-title">Menú Principal</div>
+
+        <a th:href="@{/admin}" class="" th:classappend="${active == 'dashboard'} ? 'active'">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+
+        <a th:href="@{/admin/productos}" th:classappend="${active == 'productos'} ? 'active'">
+            <i class="bi bi-box-seam"></i> Productos
+        </a>
+
+        <a th:href="@{/admin/categorias}" th:classappend="${active == 'categorias'} ? 'active'">
+            <i class="bi bi-tags"></i> Categorías
+        </a>
+
+        <a th:href="@{/admin/ventas}" th:classappend="${active == 'ventas'} ? 'active'">
+            <i class="bi bi-cart"></i> Ventas
+        </a>
+
+        <a th:href="@{/admin/clientes}" th:classappend="${active == 'clientes'} ? 'active'">
+            <i class="bi bi-people"></i> Clientes
+        </a>
+
+        <a th:href="@{/admin/usuarios}" th:classappend="${active == 'usuarios'} ? 'active'">
+            <i class="bi bi-person-badge"></i> Usuarios
+        </a>
+
+        <a th:href="@{/admin/inventario}" th:classappend="${active == 'inventario'} ? 'active'">
+            <i class="bi bi-clipboard-check"></i> Inventario
+        </a>
+
+        <a th:href="@{/admin/pqrs}" th:classappend="${active == 'pqrs'} ? 'active'">
+            <i class="bi bi-question-circle"></i> PQRS
+        </a>
+
+        <form th:action="@{/logout}" method="post" class="mt-3">
+            <button type="submit" class="btn btn-danger w-100">
+                <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+            </button>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

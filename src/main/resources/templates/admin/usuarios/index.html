@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Usuarios</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Usuarios</h2>
+
+            <a class="btn btn-primary" th:href="@{/admin/usuarios/crear}">
+                <i class="bi bi-person-plus"></i> Nuevo Usuario
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="u : ${usuarios}">
+                            <td th:text="${u.id}"></td>
+                            <td th:text="${u.name}"></td>
+                            <td th:text="${u.email}"></td>
+                            <td th:text="${u.role}"></td>
+
+                            <td class="text-end">
+
+                                <a th:href="@{'/admin/usuarios/' + ${u.id}}" class="btn btn-sm btn-secondary">Ver</a>
+
+                                <a th:href="@{'/admin/usuarios/editar/' + ${u.id}}"
+                                    class="btn btn-sm btn-warning">Editar</a>
+
+                                <form th:action="@{'/admin/usuarios/eliminar/' + ${u.id}}" method="post"
+                                    class="d-inline">
+                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                </form>
+
+                            </td>
+                        </tr>
+
+                        <tr th:if="${usuarios.size()} == 0">
+                            <td colspan="5" class="text-center">No hay usuarios registrados</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>

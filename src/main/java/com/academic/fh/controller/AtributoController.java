@@ -1,8 +1,7 @@
 package com.academic.fh.controller;
 
 import com.academic.fh.model.Atributo;
-import com.academic.fh.repository.AtributoRepository;
-
+import com.academic.fh.service.AtributoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,45 +10,40 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/atributos")
 public class AtributoController {
 
-    private final AtributoRepository atributoRepo;
+    private final AtributoService atributoService;
 
-    public AtributoController(AtributoRepository atributoRepo) {
-        this.atributoRepo = atributoRepo;
+    public AtributoController(AtributoService atributoService) {
+        this.atributoService = atributoService;
     }
 
-    // LISTAR
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("atributos", atributoRepo.findAll());
-        return "atributos/lista"; // templates/atributos/lista.html
+        model.addAttribute("atributos", atributoService.findAll());
+        return "atributos/lista";
     }
 
-    // CREAR
     @GetMapping("/crear")
     public String crearForm(Model model) {
         model.addAttribute("atributo", new Atributo());
-        return "atributos/form"; // templates/atributos/form.html
+        return "atributos/form";
     }
 
-    // GUARDAR
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute Atributo atributo) {
-        atributoRepo.save(atributo);
+        atributoService.save(atributo);
         return "redirect:/atributos";
     }
 
-    // EDITAR
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) {
-        Atributo atributo = atributoRepo.findById(id).orElse(null);
+        Atributo atributo = atributoService.findById(id).orElse(null);
         model.addAttribute("atributo", atributo);
         return "atributos/form";
     }
 
-    // ELIMINAR
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
-        atributoRepo.deleteById(id);
+        atributoService.delete(id);
         return "redirect:/atributos";
     }
 }

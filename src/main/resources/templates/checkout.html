@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/public-layout :: layout(~{::title}, ~{::content})">
+
+<head>
+    <title>Finalizar Compra - Tienda Premium</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .checkout-section {
+            padding: 40px 0 80px;
+            background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
+            min-height: 70vh;
+        }
+
+        .page-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 1.05rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 3rem;
+            gap: 20px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .step.completed .step-circle {
+            background: #22c55e;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .step.active .step-label {
+            color: #667eea;
+        }
+
+        .step-line {
+            width: 80px;
+            height: 3px;
+            background: #e2e8f0;
+            margin-bottom: 30px;
+        }
+
+        .step.completed+.step-line {
+            background: #22c55e;
+        }
+
+        /* Empty State */
+        .empty-checkout {
+            background: white;
+            border-radius: 24px;
+            padding: 80px 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-checkout-icon {
+            font-size: 6rem;
+            color: #cbd5e0;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-checkout h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        /* Payment Section */
+        .payment-section {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .payment-methods {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .payment-method {
+            position: relative;
+        }
+
+        .payment-method input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .payment-method-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .payment-method input[type="radio"]:checked+.payment-method-card {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .payment-method-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .payment-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .payment-info {
+            flex: 1;
+        }
+
+        .payment-name {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .payment-description {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .payment-check {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method input[type="radio"]:checked+.payment-method-card .payment-check {
+            border-color: #667eea;
+            background: #667eea;
+        }
+
+        .payment-check i {
+            color: white;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .payment-method input[type="radio"]:checked+.payment-method-card .payment-check i {
+            opacity: 1;
+        }
+
+        /* Security Badge */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .security-badge i {
+            font-size: 1.5rem;
+            color: #22c55e;
+        }
+
+        .security-badge-text {
+            flex: 1;
+        }
+
+        .security-badge-text strong {
+            display: block;
+            color: #2d3748;
+            font-size: 0.95rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .security-badge-text span {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 110px;
+        }
+
+        .summary-item {
+            display: flex;
+            gap: 15px;
+            padding: 20px 0;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            flex-shrink: 0;
+        }
+
+        .summary-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .summary-item-details {
+            flex: 1;
+        }
+
+        .summary-item-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .summary-item-quantity {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-item-price {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .summary-totals {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        .summary-row.total {
+            margin-top: 1rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f1f5f9;
+            font-size: 1.2rem;
+        }
+
+        .summary-row.total .label {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .summary-row.total .value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Complete Purchase Button */
+        .btn-complete-purchase {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 14px;
+            padding: 18px 40px;
+            font-weight: 700;
+            color: white;
+            font-size: 1.15rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            width: 100%;
+            margin-top: 2rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-complete-purchase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-complete-purchase:hover::before {
+            left: 100%;
+        }
+
+        .btn-complete-purchase:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-complete-purchase:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .payment-section,
+        .order-summary {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .order-summary {
+            animation-delay: 0.2s;
+            animation-fill-mode: both;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .progress-steps {
+                gap: 10px;
+            }
+
+            .step-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .step-line {
+                width: 40px;
+            }
+
+            .step-label {
+                font-size: 0.75rem;
+            }
+
+            .order-summary {
+                position: static;
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <div class="checkout-section">
+            <div class="container">
+
+                <h1 class="page-title">Finalizar Compra</h1>
+                <p class="page-subtitle">Estás a un paso de completar tu pedido</p>
+
+                <!-- Progress Steps -->
+                <div class="progress-steps">
+                    <div class="step completed">
+                        <div class="step-circle">
+                            <i class="bi bi-check"></i>
+                        </div>
+                        <div class="step-label">Carrito</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step active">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Pago</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Confirmación</div>
+                    </div>
+                </div>
+
+                <!-- Empty Cart State -->
+                <div th:if="${carrito == null or carrito.size() == 0}" class="empty-checkout">
+                    <div class="empty-checkout-icon">
+                        <i class="bi bi-cart-x"></i>
+                    </div>
+                    <h3>No hay productos para procesar</h3>
+                    <p>Agrega productos a tu carrito antes de continuar con el checkout</p>
+                    <a th:href="@{/productos}" class="btn-shop-now"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 14px; padding: 14px 40px; font-weight: 600; color: white; font-size: 1.05rem; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3); text-decoration: none; display: inline-block;">
+                        <i class="bi bi-bag-check me-2"></i>Explorar Productos
+                    </a>
+                </div>
+
+                <!-- Checkout Content -->
+                <div th:if="${carrito != null and carrito.size() > 0}">
+                    <form method="post" th:action="@{/checkout}" id="checkoutForm">
+                        <div class="row g-4">
+
+                            <!-- Payment Section -->
+                            <div class="col-lg-7">
+                                <div class="payment-section">
+                                    <h2 class="section-title">
+                                        <i class="bi bi-credit-card me-2"></i>Método de Pago
+                                    </h2>
+
+                                    <!-- Security Badge -->
+                                    <div class="security-badge">
+                                        <i class="bi bi-shield-check"></i>
+                                        <div class="security-badge-text">
+                                            <strong>Pago 100% Seguro</strong>
+                                            <span>Tus datos están protegidos con encriptación SSL</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Payment Methods -->
+                                    <div class="payment-methods">
+                                        <label class="payment-method" th:each="m, iter : ${metodosPago}">
+                                            <input type="radio" name="metodoPagoId" th:value="${m.metodoPagoId}"
+                                                th:checked="${iter.index == 0}" required>
+                                            <div class="payment-method-card">
+                                                <div class="payment-icon">
+                                                    <i class="bi" th:classappend="${m.metodoPagoNombre.toLowerCase().contains('tarjeta') ? 'bi-credit-card-fill' : 
+                                                                     m.metodoPagoNombre.toLowerCase().contains('efectivo') ? 'bi-cash-coin' : 
+                                                                     m.metodoPagoNombre.toLowerCase().contains('transferencia') ? 'bi-bank' : 
+                                                                     'bi-wallet2'}"></i>
+                                                </div>
+                                                <div class="payment-info">
+                                                    <div class="payment-name" th:text="${m.metodoPagoNombre}">Tarjeta de
+                                                        Crédito</div>
+                                                    <div class="payment-description">Pago seguro y rápido</div>
+                                                </div>
+                                                <div class="payment-check">
+                                                    <i class="bi bi-check"></i>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Complete Purchase Button -->
+                                    <button type="submit" class="btn-complete-purchase">
+                                        <i class="bi bi-lock-fill me-2"></i>Completar Compra
+                                    </button>
+
+                                    <div class="text-center mt-3">
+                                        <a th:href="@{/carrito}"
+                                            style="color: #667eea; text-decoration: none; font-weight: 600;">
+                                            <i class="bi bi-arrow-left me-2"></i>Volver al Carrito
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Order Summary -->
+                            <div class="col-lg-5">
+                                <div class="order-summary">
+                                    <h2 class="section-title">
+                                        <i class="bi bi-receipt me-2"></i>Resumen del Pedido
+                                    </h2>
+
+                                    <!-- Products -->
+                                    <div th:each="item : ${carrito}" class="summary-item">
+                                        <div class="summary-item-image">
+                                            <img th:src="@{/img/default.png}" alt="Producto">
+                                        </div>
+                                        <div class="summary-item-details">
+                                            <div class="summary-item-name" th:text="${item.nombre}">Producto</div>
+                                            <div class="summary-item-quantity">
+                                                Cantidad: <span th:text="${item.cantidad}">1</span>
+                                            </div>
+                                            <div class="summary-item-price"
+                                                th:text="'$' + ${#numbers.formatDecimal(item.precio * item.cantidad, 1, 2)}">
+                                                $0.00</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Totals -->
+                                    <div class="summary-totals">
+                                        <div class="summary-row">
+                                            <span class="label">Subtotal</span>
+                                            <span class="value"
+                                                th:text="'$' + ${#numbers.formatDecimal(#aggregates.sum(carrito.![precio * cantidad]), 1, 2)}">$0.00</span>
+                                        </div>
+                                        <div class="summary-row">
+                                            <span class="label">Envío</span>
+                                            <span class="value" style="color: #22c55e; font-weight: 600;">Gratis</span>
+                                        </div>
+                                        <div class="summary-row">
+                                            <span class="label">Impuestos</span>
+                                            <span class="value">$0.00</span>
+                                        </div>
+                                        <div class="summary-row total">
+                                            <span class="label">Total</span>
+                                            <span class="value"
+                                                th:text="'$' + ${#numbers.formatDecimal(#aggregates.sum(carrito.![precio * cantidad]), 1, 2)}">$0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>

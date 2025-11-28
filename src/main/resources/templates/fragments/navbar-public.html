@@ -1,0 +1,34 @@
+<!-- templates/fragments/navbar-public.html -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" xmlns:th="http://www.thymeleaf.org" th:fragment="navbar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">FH Store</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navPublic">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navPublic">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/tienda/products}">Productos</a>
+                </li>
+
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/carrito}">
+                        <i class="bi bi-cart"></i> Carrito
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cliente/dashboard}">
+                        <i class="bi bi-person-circle"></i> Mi Cuenta
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

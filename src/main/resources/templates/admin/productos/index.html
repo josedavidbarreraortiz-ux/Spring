@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Productos</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Productos</h2>
+            <a class="btn btn-primary" th:href="@{/admin/productos/crear}">
+                Nuevo Producto
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="p : ${productos}">
+                            <td th:text="${p.productoId}"></td>
+                            <td th:text="${p.productoNombre}"></td>
+                            <td
+                                th:text="${p.categoriaPrincipal != null ? p.categoriaPrincipal.categoriaNombre : 'N/A'}">
+                            </td>
+                            <td th:text="'$' + ${p.productoPrecioVenta}"></td>
+
+                            <td class="text-end">
+                                <a th:href="@{'/admin/productos/' + ${p.productoId}}"
+                                    class="btn btn-sm btn-secondary">Ver</a>
+                                <a th:href="@{'/admin/productos/editar/' + ${p.productoId}}"
+                                    class="btn btn-sm btn-warning">Editar</a>
+
+                                <form th:action="@{'/admin/productos/eliminar/' + ${p.productoId}}" method="post"
+                                    class="d-inline">
+                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${productos.size()} == 0">
+                            <td colspan="5" class="text-center">No hay productos registrados</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>

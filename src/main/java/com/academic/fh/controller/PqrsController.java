@@ -1,10 +1,9 @@
 package com.academic.fh.controller;
 
 import com.academic.fh.model.PQRS;
-import com.academic.fh.repository.PqrsRepository;
-import com.academic.fh.repository.ClienteRepository;
-import com.academic.fh.repository.UserRepository;
-
+import com.academic.fh.service.PqrsService;
+import com.academic.fh.service.ClienteService;
+import com.academic.fh.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,55 +12,50 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/pqrs")
 public class PqrsController {
 
-    private final PqrsRepository pqrsRepo;
-    private final ClienteRepository clienteRepo;
-    private final UserRepository userRepo;
+    private final PqrsService pqrsService;
+    private final ClienteService clienteService;
+    private final UserService userService;
 
-    public PqrsController(PqrsRepository pqrsRepo,
-                          ClienteRepository clienteRepo,
-                          UserRepository userRepo) {
-        this.pqrsRepo = pqrsRepo;
-        this.clienteRepo = clienteRepo;
-        this.userRepo = userRepo;
+    public PqrsController(PqrsService pqrsService,
+            ClienteService clienteService,
+            UserService userService) {
+        this.pqrsService = pqrsService;
+        this.clienteService = clienteService;
+        this.userService = userService;
     }
 
-    // LISTAR
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("pqrsList", pqrsRepo.findAll());
-        return "pqrs/lista"; // templates/pqrs/lista.html
+        model.addAttribute("pqrsList", pqrsService.findAll());
+        return "pqrs/lista";
     }
 
-    // CREAR
     @GetMapping("/crear")
     public String crearForm(Model model) {
         model.addAttribute("pqrs", new PQRS());
-        model.addAttribute("clientes", clienteRepo.findAll());
-        model.addAttribute("usuarios", userRepo.findAll());
-        return "pqrs/form"; // templates/pqrs/form.html
-    }
-
-    // GUARDAR
-    @PostMapping("/guardar")
-    public String guardar(@ModelAttribute PQRS pqrs) {
-        pqrsRepo.save(pqrs);
-        return "redirect:/pqrs";
-    }
-
-    // EDITAR
-    @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, Model model) {
-        PQRS pqrs = pqrsRepo.findById(id).orElse(null);
-        model.addAttribute("pqrs", pqrs);
-        model.addAttribute("clientes", clienteRepo.findAll());
-        model.addAttribute("usuarios", userRepo.findAll());
+        model.addAttribute("clientes", clienteService.findAll());
+        model.addAttribute("usuarios", userService.findAll());
         return "pqrs/form";
     }
 
-    // ELIMINAR
+    @PostMapping("/guardar")
+    public String guardar(@ModelAttribute PQRS pqrs) {
+        pqrsService.save(pqrs);
+        return "redirect:/pqrs";
+    }
+
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Long id, Model model) {
+        PQRS pqrs = pqrsService.findById(id).orElse(null);
+        model.addAttribute("pqrs", pqrs);
+        model.addAttribute("clientes", clienteService.findAll());
+        model.addAttribute("usuarios", userService.findAll());
+        return "pqrs/form";
+    }
+
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        pqrsRepo.deleteById(id);
+    public String eliminar(@PathVariable Long id) {
+        pqrsService.delete(id);
         return "redirect:/pqrs";
     }
 }

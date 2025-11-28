@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Editar Cliente</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <h2 class="mb-3">Editar Cliente</h2>
+
+        <form method="post" th:action="@{/admin/clientes/guardar}" th:object="${cliente}">
+
+            <input type="hidden" th:field="*{clienteId}">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Usuario</label>
+                        <select name="user.id" class="form-select" required>
+                            <option value="">Seleccione un usuario</option>
+                            <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.name}"
+                                th:selected="${cliente.user != null && cliente.user.id == u.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tipo Documento</label>
+                        <select th:field="*{clienteTipoDocumento}" class="form-select">
+                            <option value="">Seleccione</option>
+                            <option value="CC">Cédula de Ciudadanía</option>
+                            <option value="CE">Cédula de Extranjería</option>
+                            <option value="NIT">NIT</option>
+                            <option value="PASAPORTE">Pasaporte</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Número Documento</label>
+                        <input type="text" th:field="*{clienteNumeroDocumento}" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" th:field="*{clienteEmail}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" th:field="*{clienteTelefono}" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Dirección</label>
+                        <textarea th:field="*{clienteDireccion}" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning">Actualizar</button>
+                    <a th:href="@{/admin/clientes}" class="btn btn-secondary">Cancelar</a>
+
+                </div>
+            </div>
+
+        </form>
+
+    </section>
+
+</body>
+
+</html>

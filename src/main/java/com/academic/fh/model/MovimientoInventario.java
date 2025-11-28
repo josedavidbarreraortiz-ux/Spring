@@ -1,6 +1,7 @@
 package com.academic.fh.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "movimientos_inventario")
@@ -8,19 +9,26 @@ public class MovimientoInventario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "movimiento_id")
     private Integer movimientoId;
 
-    private String tipoMovimiento;
+    @Column(name = "movimiento_tipo")
+    private String movimientoTipo;
 
-    private Integer cantidad;
+    @Column(name = "movimiento_cantidad")
+    private Integer movimientoCantidad;
 
+    @Column(name = "movimiento_fecha")
+    private LocalDate movimientoFecha;
+
+    @Column(name = "movimiento_motivo")
+    private String movimientoMotivo;
+
+    @Column(name = "movimiento_stock_anterior")
     private Integer movimientoStockAnterior;
 
+    @Column(name = "movimiento_stock_nuevo")
     private Integer movimientoStockNuevo;
-
-    @ManyToOne
-    @JoinColumn(name = "inventario_id")
-    private Inventario inventario;
 
     @ManyToOne
     @JoinColumn(name = "producto_id")
@@ -30,29 +38,89 @@ public class MovimientoInventario {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "venta_id")
+    private Venta venta;
+
     // Getters & Setters
 
-    public Integer getMovimientoId() { return movimientoId; }
-    public void setMovimientoId(Integer movimientoId) { this.movimientoId = movimientoId; }
+    public Integer getMovimientoId() {
+        return movimientoId;
+    }
 
-    public String getTipoMovimiento() { return tipoMovimiento; }
-    public void setTipoMovimiento(String tipoMovimiento) { this.tipoMovimiento = tipoMovimiento; }
+    public void setMovimientoId(Integer movimientoId) {
+        this.movimientoId = movimientoId;
+    }
 
-    public Integer getCantidad() { return cantidad; }
-    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
+    public String getMovimientoTipo() {
+        return movimientoTipo;
+    }
 
-    public Integer getMovimientoStockAnterior() { return movimientoStockAnterior; }
-    public void setMovimientoStockAnterior(Integer movimientoStockAnterior) { this.movimientoStockAnterior = movimientoStockAnterior; }
+    public void setMovimientoTipo(String movimientoTipo) {
+        this.movimientoTipo = movimientoTipo;
+    }
 
-    public Integer getMovimientoStockNuevo() { return movimientoStockNuevo; }
-    public void setMovimientoStockNuevo(Integer movimientoStockNuevo) { this.movimientoStockNuevo = movimientoStockNuevo; }
+    public Integer getMovimientoCantidad() {
+        return movimientoCantidad;
+    }
 
-    public Inventario getInventario() { return inventario; }
-    public void setInventario(Inventario inventario) { this.inventario = inventario; }
+    public void setMovimientoCantidad(Integer movimientoCantidad) {
+        this.movimientoCantidad = movimientoCantidad;
+    }
 
-    public Producto getProducto() { return producto; }
-    public void setProducto(Producto producto) { this.producto = producto; }
+    public LocalDate getMovimientoFecha() {
+        return movimientoFecha;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public void setMovimientoFecha(LocalDate movimientoFecha) {
+        this.movimientoFecha = movimientoFecha;
+    }
+
+    public String getMovimientoMotivo() {
+        return movimientoMotivo;
+    }
+
+    public void setMovimientoMotivo(String movimientoMotivo) {
+        this.movimientoMotivo = movimientoMotivo;
+    }
+
+    public Integer getMovimientoStockAnterior() {
+        return movimientoStockAnterior;
+    }
+
+    public void setMovimientoStockAnterior(Integer movimientoStockAnterior) {
+        this.movimientoStockAnterior = movimientoStockAnterior;
+    }
+
+    public Integer getMovimientoStockNuevo() {
+        return movimientoStockNuevo;
+    }
+
+    public void setMovimientoStockNuevo(Integer movimientoStockNuevo) {
+        this.movimientoStockNuevo = movimientoStockNuevo;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Venta getVenta() {
+        return venta;
+    }
+
+    public void setVenta(Venta venta) {
+        this.venta = venta;
+    }
 }

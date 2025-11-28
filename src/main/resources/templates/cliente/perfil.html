@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layouts/cliente-layout :: layout (~{::body}, ~{::title})">
+
+<head>
+    <title>Mi Perfil</title>
+</head>
+
+<body>
+
+<h2 class="mb-4">Mi Perfil</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <p><strong>Nombre:</strong> <span th:text="${cliente.nombre}"></span></p>
+        <p><strong>Correo:</strong> <span th:text="${cliente.email}"></span></p>
+        <p><strong>Teléfono:</strong> <span th:text="${cliente.telefono}"></span></p>
+        <p><strong>Dirección:</strong> <span th:text="${cliente.direccion}"></span></p>
+
+        <div class="mt-4">
+            <a class="btn btn-primary" th:href="@{/cliente/perfil/editar}">Editar Perfil</a>
+            <a class="btn btn-warning" th:href="@{/cliente/perfil/password}">Cambiar Contraseña</a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

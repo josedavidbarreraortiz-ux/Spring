@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/cliente-layout :: layout (~{::body}, ~{::title})">
+
+<head>
+    <title>Detalle de Compra</title>
+</head>
+
+<body>
+
+    <h2 class="mb-4">Detalle de Compra</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>ID Venta:</strong> <span th:text="${venta.ventaCodigo}"></span></p>
+            <p><strong>Fecha:</strong> <span th:text="${venta.ventaFecha} + ' ' + ${venta.ventaHora}"></span></p>
+            <p><strong>Total:</strong> $<span th:text="${venta.ventaTotal}"></span></p>
+        </div>
+    </div>
+
+    <h4>Productos</h4>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="item : ${venta.detalles}">
+                <td th:text="${item.producto != null ? item.producto.productoNombre : 'N/A'}"></td>
+                <td th:text="${item.ventaDetalleCantidad}"></td>
+                <td th:text="'$' + ${item.ventaDetallePrecioVenta}"></td>
+                <td th:text="'$' + ${item.subtotal}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/cliente/compras}" class="btn btn-secondary">Volver</a>
+
+</body>
+
+</html>

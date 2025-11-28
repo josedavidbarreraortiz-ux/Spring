@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Dashboard Administrador</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <h1 class="mb-2">Dashboard Administrador</h1>
+        <p class="text-muted">Resumen general del sistema</p>
+
+        <!-- Tarjetas de estadísticas -->
+        <div class="row">
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h6 class="text-primary">Total Ventas</h6>
+                        <h3 th:text="${stats.totalVentas}">0</h3>
+                        <span class="text-success small">
+                            <i class="bi bi-arrow-up"></i>
+                            <span th:text="${stats.ventasMes}"></span> ventas este mes
+                        </span>
+                        <a href="/admin/ventas" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h6 class="text-primary">Productos</h6>
+                        <h3 th:text="${stats.totalProductos}">0</h3>
+                        <span class="text-muted small" th:text="${stats.categorias} + ' categorías'"></span>
+                        <a href="/admin/productos" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h6 class="text-primary">Clientes</h6>
+                        <h3 th:text="${stats.totalClientes}">0</h3>
+                        <span class="text-muted small">Registrados</span>
+                        <a href="/admin/clientes" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h6 class="text-primary">Stock Crítico</h6>
+                        <h3 th:text="${stats.stockCritico}">0</h3>
+                        <span class="text-danger small">Productos bajos</span>
+                        <a href="/admin/inventario" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accesos Directos Adicionales -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <a href="/admin/usuarios" class="text-decoration-none">
+                    <div class="card shadow-sm border-0 h-100 text-center py-3 hover-card">
+                        <div class="card-body">
+                            <i class="bi bi-person-badge fs-2 text-info"></i>
+                            <h6 class="mt-2 text-dark">Usuarios</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="/admin/categorias" class="text-decoration-none">
+                    <div class="card shadow-sm border-0 h-100 text-center py-3 hover-card">
+                        <div class="card-body">
+                            <i class="bi bi-tags fs-2 text-warning"></i>
+                            <h6 class="mt-2 text-dark">Categorías</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="/admin/pqrs" class="text-decoration-none">
+                    <div class="card shadow-sm border-0 h-100 text-center py-3 hover-card">
+                        <div class="card-body">
+                            <i class="bi bi-question-circle fs-2 text-danger"></i>
+                            <h6 class="mt-2 text-dark">PQRS</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="/admin/movimientos" class="text-decoration-none">
+                    <div class="card shadow-sm border-0 h-100 text-center py-3 hover-card">
+                        <div class="card-body">
+                            <i class="bi bi-arrow-left-right fs-2 text-success"></i>
+                            <h6 class="mt-2 text-dark">Movimientos</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Gráfica de ventas y movimientos -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5>Estadísticas mensuales</h5>
+                    <canvas id="chartVentasMovimientos" height="110"></canvas>
+                </div>
+            </div>
+
+            <!-- Últimas ventas -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="mb-3">Últimas Ventas</h5>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Cliente</th>
+                                    <th>Total</th>
+                                    <th>Fecha</th>
+                                    <th>Método</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="venta : ${ultimasVentas}">
+                                    <td th:text="'V-' + ${venta.codigo}"></td>
+                                    <td th:text="${venta.clienteNombre}"></td>
+                                    <td th:text="${venta.total}"></td>
+                                    <td th:text="${venta.fecha}"></td>
+                                    <td th:text="${venta.metodo}"></td>
+                                </tr>
+
+                                <tr th:if="${ultimasVentas.size()} == 0">
+                                    <td colspan="5" class="text-center">No hay ventas recientes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script th:inline="javascript">
+        const meses = /*[[${chart.meses}]]*/[];
+        const ventas = /*[[${chart.ventas}]]*/[];
+        const movimientos = /*[[${chart.movimientos}]]*/[];
+
+        const ctx = document.getElementById('chartVentasMovimientos');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: meses,
+                datasets: [
+                    {
+                        label: 'Ventas',
+                        data: ventas,
+                        borderColor: '#4e73df',
+                        backgroundColor: 'rgba(78,115,223,.1)',
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Movimientos',
+                        data: movimientos,
+                        borderColor: '#1cc88a',
+                        backgroundColor: 'rgba(28,200,138,.1)',
+                        tension: 0.3
+                    }
+                ]
+            }
+        });
+    </script>
+
+</body>
+
+</html>

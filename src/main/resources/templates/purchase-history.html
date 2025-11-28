@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layouts/public-layout :: layout (~{::body}, ~{::title})">
+
+<head>
+    <title>Mis Compras - FH Store</title>
+</head>
+
+<body>
+
+<h2 class="mb-4">Historial de Compras</h2>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>ID Venta</th>
+        <th>Fecha</th>
+        <th>Total</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="compra : ${compras}">
+        <td th:text="${compra.ventaId}"></td>
+        <td th:text="${#temporals.format(compra.ventaFecha, 'dd/MM/yyyy')}"></td>
+        <td>$<span th:text="${compra.ventaTotal}"></span></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

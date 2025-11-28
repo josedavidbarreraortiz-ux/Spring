@@ -1,61 +1,68 @@
 package com.academic.fh.controller;
 
 import com.academic.fh.model.Producto;
-import com.academic.fh.model.Categoria;
-import com.academic.fh.repository.ProductoRepository;
-import com.academic.fh.repository.CategoriaRepository;
+import com.academic.fh.service.ProductoService;
+import com.academic.fh.service.CategoriaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/productos")
+@RequestMapping("/admin/productos")
 public class ProductoController {
 
-    private final ProductoRepository productoRepository;
-    private final CategoriaRepository categoriaRepository;
+    private final ProductoService productoService;
+    private final CategoriaService categoriaService;
 
-    public ProductoController(ProductoRepository productoRepository,
-                              CategoriaRepository categoriaRepository) {
-        this.productoRepository = productoRepository;
-        this.categoriaRepository = categoriaRepository;
+    public ProductoController(ProductoService productoService,
+            CategoriaService categoriaService) {
+        this.productoService = productoService;
+        this.categoriaService = categoriaService;
     }
 
     // LISTAR
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("productos", productoRepository.findAll());
-        return "productos/lista"; // templates/productos/lista.html
+        model.addAttribute("productos", productoService.findAll());
+        return "admin/productos/index";
     }
 
     // FORMULARIO CREAR
     @GetMapping("/crear")
     public String crearForm(Model model) {
         model.addAttribute("producto", new Producto());
-        model.addAttribute("categorias", categoriaRepository.findAll());
-        return "productos/form";  // templates/productos/form.html
+        model.addAttribute("categorias", categoriaService.findAll());
+        return "admin/productos/create";
     }
 
     // GUARDAR
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute Producto producto) {
-        productoRepository.save(producto);
-        return "redirect:/productos";
+        productoService.save(producto);
+        return "redirect:/admin/productos";
     }
 
     // FORMULARIO EDITAR
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, Model model) {
-        Producto producto = productoRepository.findById(id).orElse(null);
+    public String editar(@PathVariable Long id, Model model) {
+        Producto producto = productoService.findById(id).orElse(null);
         model.addAttribute("producto", producto);
-        model.addAttribute("categorias", categoriaRepository.findAll());
-        return "productos/form";
+        model.addAttribute("categorias", categoriaService.findAll());
+        return "admin/productos/edit";
+    }
+
+    // VER DETALLE
+    @GetMapping("/{id}")
+    public String verDetalle(@PathVariable Long id, Model model) {
+        Producto producto = productoService.findById(id).orElse(null);
+        model.addAttribute("producto", producto);
+        return "admin/productos/show";
     }
 
     // ELIMINAR
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        productoRepository.deleteById(id);
-        return "redirect:/productos";
+    @PostMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id) {
+        productoService.delete(id);
+        return "redirect:/admin/productos";
     }
 }

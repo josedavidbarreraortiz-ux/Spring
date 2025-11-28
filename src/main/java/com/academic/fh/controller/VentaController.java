@@ -1,66 +1,74 @@
 package com.academic.fh.controller;
 
 import com.academic.fh.model.Venta;
-import com.academic.fh.repository.VentaRepository;
-import com.academic.fh.repository.ClienteRepository;
-import com.academic.fh.repository.UserRepository;
+import com.academic.fh.service.VentaService;
+import com.academic.fh.service.ClienteService;
+import com.academic.fh.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/ventas")
+@RequestMapping("/admin/ventas")
 public class VentaController {
 
-    private final VentaRepository ventaRepo;
-    private final ClienteRepository clienteRepo;
-    private final UserRepository userRepo;
+    private final VentaService ventaService;
+    private final ClienteService clienteService;
+    private final UserService userService;
 
-    public VentaController(VentaRepository ventaRepo,
-                           ClienteRepository clienteRepo,
-                           UserRepository userRepo) {
-        this.ventaRepo = ventaRepo;
-        this.clienteRepo = clienteRepo;
-        this.userRepo = userRepo;
+    public VentaController(VentaService ventaService,
+            ClienteService clienteService,
+            UserService userService) {
+        this.ventaService = ventaService;
+        this.clienteService = clienteService;
+        this.userService = userService;
     }
 
     // LISTAR
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("ventas", ventaRepo.findAll());
-        return "ventas/lista"; // templates/ventas/lista.html
+        model.addAttribute("ventas", ventaService.findAll());
+        return "admin/ventas/index";
     }
 
     // CREAR
     @GetMapping("/crear")
     public String crearForm(Model model) {
         model.addAttribute("venta", new Venta());
-        model.addAttribute("clientes", clienteRepo.findAll());
-        model.addAttribute("usuarios", userRepo.findAll());
-        return "ventas/form"; // templates/ventas/form.html
+        model.addAttribute("clientes", clienteService.findAll());
+        model.addAttribute("usuarios", userService.findAll());
+        return "admin/ventas/create";
     }
 
     // GUARDAR
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute Venta venta) {
-        ventaRepo.save(venta);
-        return "redirect:/ventas";
+        ventaService.save(venta);
+        return "redirect:/admin/ventas";
     }
 
-    // EDITAR
+    // FORMULARIO EDITAR
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, Model model) {
-        Venta venta = ventaRepo.findById(id).orElse(null);
+    public String editar(@PathVariable Long id, Model model) {
+        Venta venta = ventaService.findById(id).orElse(null);
         model.addAttribute("venta", venta);
-        model.addAttribute("clientes", clienteRepo.findAll());
-        model.addAttribute("usuarios", userRepo.findAll());
-        return "ventas/form";
+        model.addAttribute("clientes", clienteService.findAll());
+        model.addAttribute("usuarios", userService.findAll());
+        return "admin/ventas/edit";
+    }
+
+    // VER DETALLE
+    @GetMapping("/{id}")
+    public String verDetalle(@PathVariable Long id, Model model) {
+        Venta venta = ventaService.findById(id).orElse(null);
+        model.addAttribute("venta", venta);
+        return "admin/ventas/show";
     }
 
     // ELIMINAR
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        ventaRepo.deleteById(id);
-        return "redirect:/ventas";
+    public String eliminar(@PathVariable Long id) {
+        ventaService.delete(id);
+        return "redirect:/admin/ventas";
     }
 }

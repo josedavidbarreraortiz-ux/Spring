@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Nuevo Usuario</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <h2 class="mb-3">Nuevo Usuario</h2>
+
+        <form method="post" th:action="@{/admin/usuarios/guardar}" th:object="${usuario}">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" th:field="*{name}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" th:field="*{email}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" th:field="*{password}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Rol</label>
+                        <select th:field="*{role}" class="form-select" required>
+                            <option value="">Seleccione un rol</option>
+                            <option value="ADMIN">Administrador</option>
+                            <option value="CLIENTE">Cliente</option>
+                            <option value="EMPLEADO">Empleado</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <a th:href="@{/admin/usuarios}" class="btn btn-secondary">Cancelar</a>
+
+                </div>
+            </div>
+
+        </form>
+
+    </section>
+
+</body>
+
+</html>

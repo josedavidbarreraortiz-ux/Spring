@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Movimientos de Inventario</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Movimientos de Inventario</h2>
+            <a class="btn btn-primary" th:href="@{/admin/movimientos/crear}">
+                <i class="bi bi-arrow-left-right"></i> Nuevo Movimiento
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Producto</th>
+                            <th>Tipo</th>
+                            <th>Cantidad</th>
+                            <th>Fecha</th>
+                            <th>Usuario</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="m : ${movimientos}">
+                            <td th:text="${m.movimientoId}"></td>
+                            <td th:text="${m.producto != null ? m.producto.productoNombre : 'N/A'}"></td>
+                            <td>
+                                <span class="badge bg-success" th:if="${m.tipoMovimiento == 'Entrada'}">Entrada</span>
+                                <span class="badge bg-warning" th:if="${m.tipoMovimiento == 'Salida'}">Salida</span>
+                                <span class="badge bg-info" th:if="${m.tipoMovimiento == 'Ajuste'}">Ajuste</span>
+                            </td>
+                            <td th:text="${m.cantidad}"></td>
+                            <td th:text="${m.fechaMovimiento}"></td>
+                            <td th:text="${m.usuario != null ? m.usuario.name : 'N/A'}"></td>
+
+                            <td class="text-end">
+
+                                <a th:href="@{'/admin/movimientos/' + ${m.movimientoId}}"
+                                    class="btn btn-sm btn-secondary">
+                                    Ver
+                                </a>
+
+                                <a th:href="@{'/admin/movimientos/editar/' + ${m.movimientoId}}"
+                                    class="btn btn-sm btn-warning">
+                                    Editar
+                                </a>
+
+                                <form th:action="@{'/admin/movimientos/eliminar/' + ${m.movimientoId}}" method="post"
+                                    class="d-inline">
+                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                </form>
+
+                            </td>
+                        </tr>
+
+                        <tr th:if="${movimientos.size()} == 0">
+                            <td colspan="7" class="text-center">No hay movimientos registrados</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>

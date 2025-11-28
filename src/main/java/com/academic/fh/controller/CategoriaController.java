@@ -1,54 +1,56 @@
 package com.academic.fh.controller;
 
 import com.academic.fh.model.Categoria;
-import com.academic.fh.repository.CategoriaRepository;
+import com.academic.fh.service.CategoriaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/categorias")
+@RequestMapping("/admin/categorias")
 public class CategoriaController {
 
-    private final CategoriaRepository categoriaRepository;
+    private final CategoriaService categoriaService;
 
-    public CategoriaController(CategoriaRepository categoriaRepository) {
-        this.categoriaRepository = categoriaRepository;
+    public CategoriaController(CategoriaService categoriaService) {
+        this.categoriaService = categoriaService;
     }
 
-    // LISTAR
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("categorias", categoriaRepository.findAll());
-        return "categorias/lista";  // templates/categorias/lista.html
+        model.addAttribute("categorias", categoriaService.findAll());
+        return "admin/categorias/index";
     }
 
-    // FORMULARIO CREAR
     @GetMapping("/crear")
     public String crearForm(Model model) {
         model.addAttribute("categoria", new Categoria());
-        return "categorias/form";  // templates/categorias/form.html
+        return "admin/categorias/create";
     }
 
-    // GUARDAR (CREAR o EDITAR)
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute Categoria categoria) {
-        categoriaRepository.save(categoria);
-        return "redirect:/categorias";
+        categoriaService.save(categoria);
+        return "redirect:/admin/categorias";
     }
 
-    // FORMULARIO EDITAR
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, Model model) {
-        Categoria categoria = categoriaRepository.findById(id).orElse(null);
+    public String editar(@PathVariable Long id, Model model) {
+        Categoria categoria = categoriaService.findById(id).orElse(null);
         model.addAttribute("categoria", categoria);
-        return "categorias/form";
+        return "admin/categorias/edit";
     }
 
-    // ELIMINAR
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        categoriaRepository.deleteById(id);
-        return "redirect:/categorias";
+    @GetMapping("/{id}")
+    public String verDetalle(@PathVariable Long id, Model model) {
+        Categoria categoria = categoriaService.findById(id).orElse(null);
+        model.addAttribute("categoria", categoria);
+        return "admin/categorias/show";
+    }
+
+    @PostMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id) {
+        categoriaService.delete(id);
+        return "redirect:/admin/categorias";
     }
 }

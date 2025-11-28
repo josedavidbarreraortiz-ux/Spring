@@ -1,73 +1,74 @@
 package com.academic.fh.controller;
 
 import com.academic.fh.model.MovimientoInventario;
-import com.academic.fh.repository.MovimientoInventarioRepository;
-import com.academic.fh.repository.InventarioRepository;
-import com.academic.fh.repository.ProductoRepository;
-import com.academic.fh.repository.UserRepository;
-
+import com.academic.fh.service.MovimientoInventarioService;
+import com.academic.fh.service.InventarioService;
+import com.academic.fh.service.ProductoService;
+import com.academic.fh.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/movimientos")
+@RequestMapping("/admin/movimientos")
 public class MovimientoInventarioController {
 
-    private final MovimientoInventarioRepository movimientoRepo;
-    private final InventarioRepository inventarioRepo;
-    private final ProductoRepository productoRepo;
-    private final UserRepository userRepo;
+    private final MovimientoInventarioService movimientoInventarioService;
+    private final InventarioService inventarioService;
+    private final ProductoService productoService;
+    private final UserService userService;
 
-    public MovimientoInventarioController(MovimientoInventarioRepository movimientoRepo,
-                                          InventarioRepository inventarioRepo,
-                                          ProductoRepository productoRepo,
-                                          UserRepository userRepo) {
-        this.movimientoRepo = movimientoRepo;
-        this.inventarioRepo = inventarioRepo;
-        this.productoRepo = productoRepo;
-        this.userRepo = userRepo;
+    public MovimientoInventarioController(MovimientoInventarioService movimientoInventarioService,
+            InventarioService inventarioService,
+            ProductoService productoService,
+            UserService userService) {
+        this.movimientoInventarioService = movimientoInventarioService;
+        this.inventarioService = inventarioService;
+        this.productoService = productoService;
+        this.userService = userService;
     }
 
-    // LISTAR
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("movimientos", movimientoRepo.findAll());
-        return "movimientos/lista"; // templates/movimientos/lista.html
+        model.addAttribute("movimientos", movimientoInventarioService.findAll());
+        return "admin/movimientos/index";
     }
 
-    // FORMULARIO CREAR
     @GetMapping("/crear")
     public String crearForm(Model model) {
         model.addAttribute("movimiento", new MovimientoInventario());
-        model.addAttribute("inventarios", inventarioRepo.findAll());
-        model.addAttribute("productos", productoRepo.findAll());
-        model.addAttribute("usuarios", userRepo.findAll());
-        return "movimientos/form"; // templates/movimientos/form.html
+        model.addAttribute("inventarios", inventarioService.findAll());
+        model.addAttribute("productos", productoService.findAll());
+        model.addAttribute("usuarios", userService.findAll());
+        return "admin/movimientos/create";
     }
 
-    // GUARDAR
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute MovimientoInventario movimiento) {
-        movimientoRepo.save(movimiento);
-        return "redirect:/movimientos";
+        movimientoInventarioService.save(movimiento);
+        return "redirect:/admin/movimientos";
     }
 
-    // EDITAR
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, Model model) {
-        MovimientoInventario movimiento = movimientoRepo.findById(id).orElse(null);
+    public String editar(@PathVariable Long id, Model model) {
+        MovimientoInventario movimiento = movimientoInventarioService.findById(id).orElse(null);
         model.addAttribute("movimiento", movimiento);
-        model.addAttribute("inventarios", inventarioRepo.findAll());
-        model.addAttribute("productos", productoRepo.findAll());
-        model.addAttribute("usuarios", userRepo.findAll());
-        return "movimientos/form";
+        model.addAttribute("inventarios", inventarioService.findAll());
+        model.addAttribute("productos", productoService.findAll());
+        model.addAttribute("usuarios", userService.findAll());
+        return "admin/movimientos/create"; // Reusing create for now if it supports it, or need edit.html
     }
 
-    // ELIMINAR
+    @GetMapping("/{id}")
+    public String verDetalle(@PathVariable Long id, Model model) {
+        MovimientoInventario movimiento = movimientoInventarioService.findById(id).orElse(null);
+        model.addAttribute("movimiento", movimiento);
+        return "admin/movimientos/show";
+    }
+
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        movimientoRepo.deleteById(id);
-        return "redirect:/movimientos";
+    public String eliminar(@PathVariable Long id) {
+        movimientoInventarioService.delete(id);
+        return "redirect:/admin/movimientos";
     }
 }

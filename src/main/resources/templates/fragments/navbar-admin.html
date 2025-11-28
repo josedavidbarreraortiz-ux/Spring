@@ -1,0 +1,49 @@
+<!-- templates/fragments/navbar-admin.html -->
+<div class="sidebar" xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar">
+
+    <div class="sidebar-title text-center mb-4 fw-bold">
+        Administrador FH
+    </div>
+
+    <a th:href="@{/admin/dashboard}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+
+    <a th:href="@{/admin/productos}">
+        <i class="bi bi-box-seam"></i> Productos
+    </a>
+
+    <a th:href="@{/admin/categorias}">
+        <i class="bi bi-tags"></i> Categorías
+    </a>
+
+    <a th:href="@{/admin/ventas}">
+        <i class="bi bi-cart-check"></i> Ventas
+    </a>
+
+    <a th:href="@{/admin/clientes}">
+        <i class="bi bi-people"></i> Clientes
+    </a>
+
+    <a th:href="@{/admin/usuarios}">
+        <i class="bi bi-person-badge"></i> Usuarios
+    </a>
+
+    <a th:href="@{/admin/inventario}">
+        <i class="bi bi-clipboard-check"></i> Inventario
+    </a>
+
+    <a th:href="@{/admin/movimientos}">
+        <i class="bi bi-arrow-left-right"></i> Movimientos
+    </a>
+
+    <a th:href="@{/admin/pqrs}">
+        <i class="bi bi-question-circle"></i> PQRS
+    </a>
+
+    <form th:action="@{/logout}" method="post" class="p-3">
+        <button class="btn btn-danger w-100" type="submit">
+            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+        </button>
+    </form>
+</div>

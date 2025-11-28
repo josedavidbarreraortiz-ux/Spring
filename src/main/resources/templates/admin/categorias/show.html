@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Detalle Categoría</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <h2 class="mb-3">Detalle de la Categoría</h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <p><strong>ID:</strong> <span th:text="${categoria.categoriaId}"></span></p>
+                <p><strong>Nombre:</strong> <span th:text="${categoria.categoriaNombre}"></span></p>
+                <p><strong>Descripción:</strong></p>
+                <p th:text="${categoria.descripcion}"></p>
+
+                <h5 class="mt-4">Productos que pertenecen a esta categoría</h5>
+                <ul th:if="${categoria.productosPrincipales != null && categoria.productosPrincipales.size() > 0}">
+                    <li th:each="p : ${categoria.productosPrincipales}" th:text="${p.productoNombre}"></li>
+                </ul>
+                <p th:if="${categoria.productosPrincipales == null || categoria.productosPrincipales.size() == 0}"
+                    class="text-muted">
+                    No hay productos en esta categoría
+                </p>
+
+                <a th:href="@{/admin/categorias}" class="btn btn-secondary mt-3">Volver</a>
+
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>

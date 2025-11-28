@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Editar Usuario</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <h2 class="mb-3">Editar Usuario</h2>
+
+        <form method="post" th:action="@{/admin/usuarios/guardar}" th:object="${user}">
+
+            <input type="hidden" th:field="*{id}">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" th:field="*{name}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" th:field="*{email}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Rol</label>
+                        <select th:field="*{role}" class="form-select" required>
+                            <option value="">Seleccione un rol</option>
+                            <option value="ADMIN">Administrador</option>
+                            <option value="CLIENTE">Cliente</option>
+                            <option value="EMPLEADO">Empleado</option>
+                        </select>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <small>Deja el campo de contraseña vacío si no deseas cambiarla</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nueva Contraseña (opcional)</label>
+                        <input type="password" name="newPassword" class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn btn-warning">Actualizar</button>
+                    <a th:href="@{/admin/usuarios}" class="btn btn-secondary">Cancelar</a>
+
+                </div>
+            </div>
+
+        </form>
+
+    </section>
+
+</body>
+
+</html>

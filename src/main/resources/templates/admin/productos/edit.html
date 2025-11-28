@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Editar Producto</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <h2 class="mb-3">Editar Producto</h2>
+
+        <form method="post" th:action="@{/admin/productos/guardar}" th:object="${producto}">
+
+            <input type="hidden" th:field="*{productoId}">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" th:field="*{productoNombre}" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Código de Barras</label>
+                            <input type="text" th:field="*{productoCodigoBar}" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Marca</label>
+                            <input type="text" th:field="*{productoMarca}" class="form-control">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Categoría</label>
+                            <select name="categoriaPrincipal.categoriaId" class="form-select" required>
+                                <option value="">Seleccione una categoría</option>
+                                <option th:each="c : ${categorias}" th:value="${c.categoriaId}"
+                                    th:text="${c.categoriaNombre}"
+                                    th:selected="${producto.categoriaPrincipal != null && producto.categoriaPrincipal.categoriaId == c.categoriaId}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Precio de Venta</label>
+                            <input type="number" step="0.01" th:field="*{productoPrecioVenta}" class="form-control"
+                                required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Tipo de Unidad</label>
+                            <select th:field="*{tipoUnidad}" class="form-select">
+                                <option value="">Seleccione</option>
+                                <option value="Unidad">Unidad</option>
+                                <option value="Kg">Kilogramo</option>
+                                <option value="Litro">Litro</option>
+                                <option value="Metro">Metro</option>
+                                <option value="Caja">Caja</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Estado</label>
+                            <select th:field="*{productoEstado}" class="form-select">
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Resumen</label>
+                        <textarea th:field="*{resumen}" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Especificaciones</label>
+                        <textarea th:field="*{especificacion}" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">URL de Foto</label>
+                        <input type="text" th:field="*{foto}" class="form-control" placeholder="https://...">
+                    </div>
+
+                    <button type="submit" class="btn btn-warning">Actualizar</button>
+                    <a th:href="@{/admin/productos}" class="btn btn-secondary">Cancelar</a>
+
+                </div>
+            </div>
+
+        </form>
+
+    </section>
+
+</body>
+
+</html>

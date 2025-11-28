@@ -1,6 +1,7 @@
 package com.academic.fh.model;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "venta_detalle")
@@ -8,16 +9,25 @@ public class VentaDetalle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer detalleId;
+    @Column(name = "venta_detalle_id")
+    private Integer ventaDetalleId;
 
-    private Integer cantidad;
+    @Column(name = "venta_detalle_cantidad")
+    private Integer ventaDetalleCantidad;
 
-    private Double precioUnitario;
+    @Column(name = "venta_detalle_precio_venta")
+    private BigDecimal ventaDetallePrecioVenta;
 
-    private Double subtotal;
+    @Column(name = "venta_detalle_iva")
+    private BigDecimal ventaDetalleIva;
+
+    @Column(name = "venta_detalle_descripcion")
+    private String ventaDetalleDescripcion;
+
+    private BigDecimal subtotal;
 
     @ManyToOne
-    @JoinColumn(name = "venta_id")
+    @JoinColumn(name = "venta_codigo")
     private Venta venta;
 
     @ManyToOne
@@ -25,21 +35,68 @@ public class VentaDetalle {
     private Producto producto;
 
     // Getters & Setters
-    public Integer getDetalleId() { return detalleId; }
-    public void setDetalleId(Integer detalleId) { this.detalleId = detalleId; }
 
-    public Integer getCantidad() { return cantidad; }
-    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
+    public Integer getVentaDetalleId() {
+        return ventaDetalleId;
+    }
 
-    public Double getPrecioUnitario() { return precioUnitario; }
-    public void setPrecioUnitario(Double precioUnitario) { this.precioUnitario = precioUnitario; }
+    public void setVentaDetalleId(Integer ventaDetalleId) {
+        this.ventaDetalleId = ventaDetalleId;
+    }
 
-    public Double getSubtotal() { return subtotal; }
-    public void setSubtotal(Double subtotal) { this.subtotal = subtotal; }
+    public Integer getVentaDetalleCantidad() {
+        return ventaDetalleCantidad;
+    }
 
-    public Venta getVenta() { return venta; }
-    public void setVenta(Venta venta) { this.venta = venta; }
+    public void setVentaDetalleCantidad(Integer ventaDetalleCantidad) {
+        this.ventaDetalleCantidad = ventaDetalleCantidad;
+    }
 
-    public Producto getProducto() { return producto; }
-    public void setProducto(Producto producto) { this.producto = producto; }
+    public BigDecimal getVentaDetallePrecioVenta() {
+        return ventaDetallePrecioVenta;
+    }
+
+    public void setVentaDetallePrecioVenta(BigDecimal ventaDetallePrecioVenta) {
+        this.ventaDetallePrecioVenta = ventaDetallePrecioVenta;
+    }
+
+    public BigDecimal getVentaDetalleIva() {
+        return ventaDetalleIva;
+    }
+
+    public void setVentaDetalleIva(BigDecimal ventaDetalleIva) {
+        this.ventaDetalleIva = ventaDetalleIva;
+    }
+
+    public String getVentaDetalleDescripcion() {
+        return ventaDetalleDescripcion;
+    }
+
+    public void setVentaDetalleDescripcion(String ventaDetalleDescripcion) {
+        this.ventaDetalleDescripcion = ventaDetalleDescripcion;
+    }
+
+    public BigDecimal getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(BigDecimal subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public Venta getVenta() {
+        return venta;
+    }
+
+    public void setVenta(Venta venta) {
+        this.venta = venta;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
 }

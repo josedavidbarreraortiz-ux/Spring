@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Detalle Inventario</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <h2 class="mb-3">Detalle del Inventario</h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <p><strong>ID:</strong> <span th:text="${inventario.inventarioId}"></span></p>
+                <p><strong>Producto:</strong> <span
+                        th:text="${inventario.producto != null ? inventario.producto.productoNombre : 'N/A'}"></span>
+                </p>
+
+                <p><strong>Stock Actual:</strong>
+                    <span th:text="${inventario.inventarioStockActual}"
+                        th:classappend="${inventario.inventarioStockActual <= inventario.inventarioStockMinimo} ? 'text-danger fw-bold'">
+                    </span>
+                </p>
+
+                <p><strong>Stock Mínimo:</strong> <span th:text="${inventario.inventarioStockMinimo}"></span></p>
+                <p><strong>Stock Máximo:</strong> <span th:text="${inventario.inventarioStockMaximo}"></span></p>
+
+                <h5 class="mt-4">Movimientos Registrados</h5>
+                <ul>
+                    <li th:each="m : ${inventario.movimientos}">
+                        <span th:text="${m.fecha} + ' - ' + ${m.tipo} + ' - ' + ${m.cantidad}"></span>
+                    </li>
+                </ul>
+
+                <a th:href="@{/admin/inventario}" class="btn btn-secondary mt-3">Volver</a>
+
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>

@@ -1,60 +1,55 @@
 package com.academic.fh.controller;
 
 import com.academic.fh.model.Cliente;
-import com.academic.fh.repository.ClienteRepository;
-import com.academic.fh.repository.UserRepository;
+import com.academic.fh.service.ClienteService;
+import com.academic.fh.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/clientes")
+@RequestMapping("/admin/clientes")
 public class ClienteController {
 
-    private final ClienteRepository clienteRepository;
-    private final UserRepository userRepository;
+    private final ClienteService clienteService;
+    private final UserService userService;
 
-    public ClienteController(ClienteRepository clienteRepository,
-                             UserRepository userRepository) {
-        this.clienteRepository = clienteRepository;
-        this.userRepository = userRepository;
+    public ClienteController(ClienteService clienteService,
+            UserService userService) {
+        this.clienteService = clienteService;
+        this.userService = userService;
     }
 
-    // LISTAR
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("clientes", clienteRepository.findAll());
-        return "clientes/lista"; // templates/clientes/lista.html
+        model.addAttribute("clientes", clienteService.findAll());
+        return "admin/clientes/index";
     }
 
-    // FORMULARIO CREAR
     @GetMapping("/crear")
     public String crearForm(Model model) {
         model.addAttribute("cliente", new Cliente());
-        model.addAttribute("usuarios", userRepository.findAll());
-        return "clientes/form"; // templates/clientes/form.html
+        model.addAttribute("usuarios", userService.findAll());
+        return "admin/clientes/create";
     }
 
-    // GUARDAR
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute Cliente cliente) {
-        clienteRepository.save(cliente);
-        return "redirect:/clientes";
+        clienteService.save(cliente);
+        return "redirect:/admin/clientes";
     }
 
-    // FORMULARIO EDITAR
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, Model model) {
-        Cliente cliente = clienteRepository.findById(id).orElse(null);
+    public String editar(@PathVariable Long id, Model model) {
+        Cliente cliente = clienteService.findById(id).orElse(null);
         model.addAttribute("cliente", cliente);
-        model.addAttribute("usuarios", userRepository.findAll());
-        return "clientes/form";
+        model.addAttribute("usuarios", userService.findAll());
+        return "admin/clientes/edit";
     }
 
-    // ELIMINAR
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        clienteRepository.deleteById(id);
-        return "redirect:/clientes";
+    public String eliminar(@PathVariable Long id) {
+        clienteService.delete(id);
+        return "redirect:/admin/clientes";
     }
 }

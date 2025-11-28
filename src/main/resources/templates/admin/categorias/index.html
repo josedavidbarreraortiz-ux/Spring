@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Categorías</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Categorías</h2>
+            <a class="btn btn-primary" th:href="@{/admin/categorias/crear}">
+                <i class="bi bi-plus-circle"></i> Nueva Categoría
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="c : ${categorias}">
+                            <td th:text="${c.categoriaId}"></td>
+                            <td th:text="${c.categoriaNombre}"></td>
+                            <td th:text="${c.descripcion}"></td>
+
+                            <td class="text-end">
+
+                                <a th:href="@{'/admin/categorias/' + ${c.categoriaId}}"
+                                    class="btn btn-sm btn-secondary">
+                                    Ver
+                                </a>
+
+                                <a th:href="@{'/admin/categorias/editar/' + ${c.categoriaId}}"
+                                    class="btn btn-sm btn-warning">
+                                    Editar
+                                </a>
+
+                                <form th:action="@{'/admin/categorias/eliminar/' + ${c.categoriaId}}" method="post"
+                                    class="d-inline">
+                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                </form>
+
+                            </td>
+                        </tr>
+
+                        <tr th:if="${categorias.size()} == 0">
+                            <td colspan="4" class="text-center">No hay categorías registradas</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>

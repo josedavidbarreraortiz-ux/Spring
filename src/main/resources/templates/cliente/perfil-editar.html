@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layouts/cliente-layout :: layout (~{::body}, ~{::title})">
+
+<head>
+    <title>Editar Perfil</title>
+</head>
+
+<body>
+
+<h2 class="mb-4">Editar Perfil</h2>
+
+<form th:action="@{/cliente/perfil/editar}" method="post">
+
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input type="text" class="form-control" name="nombre" th:value="${cliente.nombre}">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Correo</label>
+        <input type="email" class="form-control" name="email" th:value="${cliente.email}">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Teléfono</label>
+        <input type="text" class="form-control" name="telefono" th:value="${cliente.telefono}">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Dirección</label>
+        <input type="text" class="form-control" name="direccion" th:value="${cliente.direccion}">
+    </div>
+
+    <button class="btn btn-success" type="submit">Guardar Cambios</button>
+    <a class="btn btn-secondary" th:href="@{/cliente/perfil}">Cancelar</a>
+
+</form>
+
+</body>
+</html>

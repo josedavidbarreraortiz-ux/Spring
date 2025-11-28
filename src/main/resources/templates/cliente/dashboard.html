@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layouts/cliente-layout :: layout (~{::body}, ~{::title})">
+
+<head>
+    <title>Panel Cliente</title>
+</head>
+
+<body>
+
+<h2 class="mb-4">Bienvenido a tu Panel</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Total Compras</h5>
+                <p class="fs-3 fw-bold text-primary" th:text="${totalCompras}">0</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aquí puedes agregar más tarjetas si lo deseas -->
+</div>
+
+<h4 class="mt-5 mb-3">Tus compras recientes</h4>
+
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>ID Venta</th>
+        <th>Fecha</th>
+        <th>Total</th>
+        <th></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="venta : ${compras}">
+        <td th:text="${venta.ventaId}"></td>
+        <td th:text="${#temporals.format(venta.ventaFecha, 'dd/MM/yyyy HH:mm')}"></td>
+        <td>$<span th:text="${venta.ventaTotal}"></span></td>
+        <td>
+            <a class="btn btn-primary btn-sm"
+               th:href="@{'/cliente/compras/' + ${venta.ventaId}}">
+                Ver Detalle
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

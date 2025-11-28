@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout(~{::title}, ~{::content})">
+
+<head>
+    <title>Ventas</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Ventas</h2>
+
+            <a class="btn btn-primary" th:href="@{/admin/ventas/crear}">
+                <i class="bi bi-cart-plus"></i> Nueva Venta
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Total</th>
+                            <th>Método Pago</th>
+                            <th>Fecha</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="v : ${ventas}">
+                            <td th:text="${v.ventaId}"></td>
+                            <td th:text="${v.cliente != null ? v.cliente.user.name : 'N/A'}"></td>
+                            <td th:text="'$' + ${v.ventaTotal}"></td>
+                            <td th:text="${v.metodoPago != null ? v.metodoPago.metodoPagoNombre : 'N/A'}"></td>
+                            <td th:text="${v.ventaFecha} + ' ' + ${v.ventaHora}"></td>
+
+                            <td class="text-end">
+
+                                <a th:href="@{'/admin/ventas/' + ${v.ventaId}}" class="btn btn-sm btn-secondary">
+                                    Ver
+                                </a>
+
+                            </td>
+                        </tr>
+
+                        <tr th:if="${ventas.size()} == 0">
+                            <td colspan="6" class="text-center">No hay ventas registradas</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>

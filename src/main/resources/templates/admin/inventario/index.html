@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Inventario</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <h2 class="mb-3">Inventario</h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Producto</th>
+                            <th>Stock Actual</th>
+                            <th>Stock Mínimo</th>
+                            <th>Stock Máximo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="i : ${inventarios}">
+                            <td th:text="${i.inventarioId}"></td>
+                            <td th:text="${i.producto != null ? i.producto.productoNombre : 'N/A'}"></td>
+
+                            <td th:text="${i.inventarioStockActual}"
+                                th:classappend="${i.inventarioStockActual <= i.inventarioStockMinimo} ? 'text-danger fw-bold'">
+                            </td>
+
+                            <td th:text="${i.inventarioStockMinimo}"></td>
+                            <td th:text="${i.inventarioStockMaximo}"></td>
+
+                            <td class="text-end">
+
+                                <a th:href="@{'/admin/inventario/' + ${i.inventarioId}}"
+                                    class="btn btn-sm btn-secondary">
+                                    Ver
+                                </a>
+
+                                <a th:href="@{'/admin/inventario/editar/' + ${i.inventarioId}}"
+                                    class="btn btn-sm btn-warning">
+                                    Editar
+                                </a>
+
+                            </td>
+                        </tr>
+
+                        <tr th:if="${inventarios.size()} == 0">
+                            <td colspan="6" class="text-center">No hay registros de inventario</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>
