@@ -23,32 +23,38 @@ public class UserController {
         return "admin/usuarios/index";
     }
 
-    // FORMULARIO CREAR
-    @GetMapping("/crear")
-    public String crearForm(Model model) {
-        model.addAttribute("usuario", new User());
-        return "admin/usuarios/create";
-    }
-
-    // GUARDAR
-    @PostMapping("/guardar")
-    public String guardar(@ModelAttribute User usuario) {
-        userService.save(usuario);
-        return "redirect:/admin/usuarios";
-    }
-
-    // FORMULARIO EDITAR
-    @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model) {
+    // VER DETALLE - HABILITADO
+    @GetMapping("/{id}")
+    public String verDetalle(@PathVariable Long id, Model model) {
         User user = userService.findById(id).orElse(null);
         model.addAttribute("user", user);
-        return "admin/usuarios/edit";
+        return "admin/usuarios/show";
     }
 
-    // ELIMINAR
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
-        userService.delete(id);
-        return "redirect:/admin/usuarios";
-    }
+    // CREAR Y GUARDAR - DESHABILITADO
+    // @GetMapping("/crear")
+    // public String crearForm(Model model) {
+    // model.addAttribute("usuario", new User());
+    // return "admin/usuarios/create";
+    // }
+
+    // @PostMapping("/guardar")
+    // public String guardar(@ModelAttribute User usuario) {
+    // userService.save(usuario);
+    // return "redirect:/admin/usuarios";
+    // }
+
+    // EDITAR Y ELIMINAR - DESHABILITADO
+    // @GetMapping("/editar/{id}")
+    // public String editar(@PathVariable Long id, Model model) {
+    // User user = userService.findById(id).orElse(null);
+    // model.addAttribute("user", user);
+    // return "admin/usuarios/edit";
+    // }
+
+    // @GetMapping("/eliminar/{id}")
+    // public String eliminar(@PathVariable Long id) {
+    // userService.delete(id);
+    // return "redirect:/admin/usuarios";
+    // }
 }

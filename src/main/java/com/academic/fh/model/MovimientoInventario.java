@@ -8,7 +8,6 @@ import java.time.LocalDate;
 public class MovimientoInventario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "movimiento_id")
     private Integer movimientoId;
 

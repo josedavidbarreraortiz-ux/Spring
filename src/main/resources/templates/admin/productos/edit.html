@@ -86,6 +86,62 @@
                         <textarea th:field="*{especificacion}" class="form-control" rows="3"></textarea>
                     </div>
 
+                    <!-- COLOR DEL PRODUCTO -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">Color del Producto</h5>
+                        <div>
+                            <label for="colorSelect" class="form-label">Seleccione un color</label>
+                            <select id="colorSelect" name="atributoValor.id" class="form-select" required>
+                                <option value="">Seleccione...</option>
+                                <th:block th:each="v : ${valoresColor}">
+                                    <option th:value="${v.valorId}" th:text="${v.valor}"
+                                        th:selected="${colorActualId != null && colorActualId == v.valorId}">
+                                    </option>
+                                </th:block>
+                            </select>
+                            <small class="form-text text-muted">El color se guardará en los atributos del
+                                producto</small>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Atributos -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">Atributos del Producto</h5>
+                        <div id="atributos-container">
+                            <!-- Atributos existentes -->
+                            <div th:each="pa, iterStat : ${producto.atributos}" class="atributo-item card mb-2 p-3">
+                                <div class="row align-items-end">
+                                    <div class="col-md-5">
+                                        <label class="form-label">Atributo</label>
+                                        <select class="form-select"
+                                            th:name="'atributos[' + ${iterStat.index} + '][atributoId]'">
+                                            <option value="">Seleccione un atributo</option>
+                                            <option th:each="attr : ${atributos}" th:value="${attr.atributoId}"
+                                                th:text="${attr.atributoNombre}"
+                                                th:selected="${pa.atributo != null && pa.atributo.atributoId == attr.atributoId}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">Valor</label>
+                                        <input type="text" class="form-control"
+                                            th:name="'atributos[' + ${iterStat.index} + '][valorTexto]'"
+                                            th:value="${pa.valorTexto}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-danger btn-sm w-100"
+                                            onclick="eliminarAtributo(this)">
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="agregarAtributo()">
+                            + Agregar Atributo
+                        </button>
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label">URL de Foto</label>
                         <input type="text" th:field="*{foto}" class="form-control" placeholder="https://...">
@@ -98,6 +154,58 @@
             </div>
 
         </form>
+
+        <!-- Template para nuevos atributos -->
+        <template id="atributo-template">
+            <div class="atributo-item card mb-2 p-3">
+                <div class="row align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label">Atributo</label>
+                        <select class="form-select" name="atributos[][atributoId]">
+                            <option value="">Seleccione un atributo</option>
+                            <option th:each="attr : ${atributos}" th:value="${attr.atributoId}"
+                                th:text="${attr.atributoNombre}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Valor</label>
+                        <input type="text" class="form-control" name="atributos[][valorTexto]"
+                            placeholder="Ingrese el valor">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger btn-sm w-100" onclick="eliminarAtributo(this)">
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            let atributosData = /*[[${atributos}]]*/[];
+            let contadorAtributos = /*[[${producto.atributos != null ? producto.atributos.size() : 0}]]*/ 0;
+
+            function agregarAtributo() {
+                const template = document.getElementById('atributo-template');
+                const clone = template.content.cloneNode(true);
+
+                const inputs = clone.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    if (input.name) {
+                        input.name = input.name.replace('[]', `[${contadorAtributos}]`);
+                    }
+                });
+
+                document.getElementById('atributos-container').appendChild(clone);
+                contadorAtributos++;
+            }
+
+            function eliminarAtributo(btn) {
+                btn.closest('.atributo-item').remove();
+            }
+            /*]]>*/
+        </script>
 
     </section>
 

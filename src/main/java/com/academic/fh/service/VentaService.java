@@ -12,7 +12,9 @@ import com.academic.fh.repository.VentaDetalleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,36 +43,32 @@ public class VentaService {
         this.productoService = productoService;
     }
 
-    /**
-     * Crear una venta completa con sus detalles
-     */
     public Venta crearVenta(Long clienteId, Long metodoPagoId, List<Map<String, Object>> carrito) {
         if (carrito == null || carrito.isEmpty()) {
             throw new RuntimeException("El carrito está vacío");
         }
 
-        // Obtener cliente y método de pago
-        Cliente cliente = clienteRepository.findById(clienteId)
+        Cliente cliente = clienteRepository.findById(clienteId.intValue())
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
-        MetodoPago metodoPago = metodoPagoRepository.findById(metodoPagoId)
+        MetodoPago metodoPago = metodoPagoRepository.findById(metodoPagoId.intValue())
                 .orElseThrow(() -> new RuntimeException("Método de pago no encontrado"));
 
-        // Calcular total
         double total = calcularTotalVenta(carrito);
 
-        // Crear venta
-        Venta venta = new Venta();
-        venta.setCliente(cliente);
-        venta.setMetodoPago(metodoPago);
-        venta.setVentaFecha(java.time.LocalDate.now());
-        venta.setVentaHora(java.time.LocalTime.now());
-        venta.setVentaTotal(java.math.BigDecimal.valueOf(total));
+     Venta venta = new Venta();
+venta.setCliente(cliente);
+venta.setMetodoPago(metodoPago);
+venta.setVentaFecha(LocalDate.now());
+venta.setVentaHora(LocalTime.now());
+venta.setVentaTotal(BigDecimal.valueOf(total));
 
-        // Guardar venta
-        venta = ventaRepository.save(venta);
+// asignar codigo
+venta.setVentaId(generarCodigoVenta());
 
-        // Crear detalles de venta
+venta = ventaRepository.save(venta);
+
+
         for (Map<String, Object> item : carrito) {
             Long productoId = Long.valueOf(item.get("id").toString());
             Integer cantidad = Integer.valueOf(item.get("cantidad").toString());
@@ -91,9 +89,6 @@ public class VentaService {
         return venta;
     }
 
-    /**
-     * Calcular el total de una venta
-     */
     public double calcularTotalVenta(List<Map<String, Object>> carrito) {
         return carrito.stream()
                 .mapToDouble(item -> {
@@ -104,49 +99,43 @@ public class VentaService {
                 .sum();
     }
 
-    /**
-     * Buscar venta por ID
-     */
     public Optional<Venta> findById(Long id) {
         return ventaRepository.findById(id);
     }
 
-    /**
-     * Obtener venta o lanzar excepción
-     */
     public Venta getVentaOrThrow(Long id) {
         return ventaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Venta no encontrada con ID: " + id));
     }
 
-    /**
-     * Listar todas las ventas
-     */
     public List<Venta> findAll() {
         return ventaRepository.findAll();
     }
 
-    /**
-     * Guardar o actualizar venta
-     */
+    public List<Venta> findByClienteId(Integer clienteId) {
+        return ventaRepository.findAll().stream()
+                .filter(v -> v.getCliente() != null && v.getCliente().getClienteId().equals(clienteId))
+                .toList();
+    }
+
     public Venta save(Venta venta) {
         return ventaRepository.save(venta);
     }
 
-    /**
-     * Eliminar venta
-     */
     public void delete(Long id) {
         ventaRepository.deleteById(id);
     }
 
-    /**
-     * Obtener detalles de una venta
-     */
     public List<VentaDetalle> getDetallesByVenta(Long ventaId) {
         Venta venta = getVentaOrThrow(ventaId);
         return ventaDetalleRepository.findAll().stream()
-                .filter(d -> d.getVenta().getVentaId().equals(ventaId))
+                .filter(d -> d.getVenta().getVentaId().equals(ventaId.intValue()))
                 .toList();
     }
+    private Integer generarCodigoVenta() {
+    Integer max = ventaRepository.findMaxCodigo();
+    return (max == null) ? 1 : max + 1;
 }
+
+}
+

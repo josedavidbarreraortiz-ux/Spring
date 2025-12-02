@@ -35,14 +35,14 @@ public class MetodoPagoController {
     }
 
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model) {
+    public String editar(@PathVariable Integer id, Model model) {
         MetodoPago metodo = metodoPagoService.findById(id).orElse(null);
         model.addAttribute("metodo", metodo);
         return "metodosPago/form";
     }
 
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
+    public String eliminar(@PathVariable Integer id) {
         metodoPagoService.delete(id);
         return "redirect:/metodos-pago";
     }

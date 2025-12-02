@@ -1,158 +1,327 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/public-layout :: layout(~{::title}, ~{::content})">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/public-layout :: layout(~{::title}, ~{::content})}">
 
 <head>
-    <title>Finalizar Compra - Tienda Premium</title>
+    <title>Finalizar Compra - FH TechStore</title>
+    <link rel="stylesheet" th:href="@{/css/cart-style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+<body>
+    <section th:fragment="content">
+        <div class="cart-section">
+            <div class="container">
+                <h1 class="page-title">Finalizar Compra</h1>
+                <p class="page-subtitle">Completa tus datos para procesar tu pedido</p>
+
+                <!-- Empty Cart State -->
+                <div th:if="${carrito == null or carrito.size() == 0}" class="empty-cart">
+                    <div class="empty-cart-icon">
+                        <i class="bi bi-cart-x"></i>
+                    </div>
+                    <h3>No hay productos para procesar</h3>
+                    <p>Agrega productos a tu carrito antes de continuar con el checkout</p>
+                    <a th:href="@{/productos}" class="btn-shop-now">
+                        <i class="bi bi-bag-check me-2"></i>Explorar Productos
+                    </a>
+                </div>
+
+                <!-- Checkout Content -->
+                <div th:if="${carrito != null and carrito.size() > 0}">
+                    <form method="post" th:action="@{/checkout}" id="checkoutForm">
+                        <div class="row g-4">
+                            <!-- Left Column: Customer Info + Payment -->
+                            <div class="col-lg-7">
+                                <!-- Customer Information Section -->
+                                <div class="customer-info-section">
+                                    <h2 class="section-title">
+                                        <i class="bi bi-person-fill me-2"></i>Información del Cliente
+                                    </h2>
+
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="nombre">
+                                                Nombre Completo <span class="required">*</span>
+                                            </label>
+                                            <input type="text" id="nombre" name="nombre"
+                                                th:value="${#authentication != null ? #authentication.principal.name : ''}"
+                                                placeholder="Ingresa tu nombre completo" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="email">
+                                                Correo Electrónico <span class="required">*</span>
+                                            </label>
+                                            <input type="email" id="email" name="email"
+                                                th:value="${#authentication != null ? #authentication.principal.username : ''}"
+                                                placeholder="correo@ejemplo.com" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="telefono">
+                                                Teléfono <span class="required">*</span>
+                                            </label>
+                                            <input type="tel" id="telefono" name="telefono" placeholder="Ej: 3001234567" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="documento">
+                                                Número de Documento <span class="required">*</span>
+                                            </label>
+                                            <input type="text" id="documento" name="documento" placeholder="Ej: 1234567890" required>
+                                        </div>
+
+                                        <div class="form-group full-width">
+                                            <label for="direccion">
+                                                Dirección de Envío <span class="required">*</span>
+                                            </label>
+                                            <textarea id="direccion" name="direccion"
+                                                placeholder="Calle, número, apartamento, ciudad..." required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Payment Section -->
+                                <div class="customer-info-section">
+                                    <h2 class="section-title">
+                                        <i class="bi bi-credit-card me-2"></i>Método de Pago
+                                    </h2>
+
+                                    <!-- Security Badge -->
+                                    <div class="security-badge">
+                                        <i class="bi bi-shield-check"></i>
+                                        <div class="security-text">
+                                            <strong>Pago 100% Seguro</strong>
+                                            <span>Tus datos están protegidos</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Payment Methods -->
+                                    <div class="payment-methods-grid">
+                                        <label th:each="m, iter : ${metodosPago}" class="payment-method-wrapper">
+                                            <input type="radio" 
+                                                   name="metodoPagoId" 
+                                                   th:value="${m.metodoPagoId}"
+                                                   th:id="'metodo-' + ${m.metodoPagoId}"
+                                                   th:checked="${iter.index == 0}" 
+                                                   required>
+                                            <div class="payment-method-card">
+                                                <div class="payment-icon">
+                                                    <i class="bi bi-credit-card-fill"></i>
+                                                </div>
+                                                <div class="payment-info">
+                                                    <div class="payment-name" th:text="${m.metodoPagoNombre}">Método de Pago</div>
+                                                    <div class="payment-desc">Pago seguro y rápido</div>
+                                                </div>
+                                                <div class="payment-check">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Complete Purchase Button -->
+                                    <button type="submit" class="btn-checkout">
+                                        <i class="bi bi-lock-fill me-2"></i>Completar Compra
+                                    </button>
+
+                                    <div class="text-center mt-3">
+                                        <a th:href="@{/carrito}" class="back-link">
+                                            <i class="bi bi-arrow-left me-2"></i>Volver al Carrito
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Order Summary -->
+                            <div class="col-lg-5">
+                                <div class="order-summary">
+                                    <h2 class="section-title">
+                                        <i class="bi bi-receipt me-2"></i>Resumen del Pedido
+                                    </h2>
+
+                                    <!-- Products -->
+                                    <div th:each="item : ${carrito}" class="summary-item">
+                                        <div class="summary-item-image">
+                                            <img th:src="@{/img/default.png}" alt="Producto">
+                                        </div>
+                                        <div class="summary-item-details">
+                                            <div class="summary-item-name" th:text="${item['nombre']}">Producto</div>
+                                            <div class="summary-item-quantity">
+                                                Cantidad: <span th:text="${item['cantidad']}">1</span>
+                                            </div>
+                                            <div class="summary-item-price"
+                                                th:text="'$' + ${#numbers.formatDecimal((item['precio'] ?: 0) * (item['cantidad'] ?: 0), 1, 2)}">
+                                                $0.00</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Totals -->
+                                    <div class="summary-totals">
+                                        <div class="summary-row">
+                                            <span class="label">Subtotal</span>
+                                            <span class="value"
+                                                th:text="'$' + ${#numbers.formatDecimal(#aggregates.sum(carrito.![([precio] ?: 0) * ([cantidad] ?: 0)]), 1, 2)}">$0.00</span>
+                                        </div>
+                                        <div class="summary-row">
+                                            <span class="label">Envío</span>
+                                            <span class="value free">Gratis</span>
+                                        </div>
+                                        <div class="summary-row total">
+                                            <span class="label">Total</span>
+                                            <span class="value"
+                                                th:text="'$' + ${#numbers.formatDecimal(#aggregates.sum(carrito.![([precio] ?: 0) * ([cantidad] ?: 0)]), 1, 2)}">$0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <style>
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .checkout-section {
-            padding: 40px 0 80px;
-            background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
-            min-height: 70vh;
-        }
-
-        .page-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 0.5rem;
-        }
-
-        .page-subtitle {
-            color: #64748b;
-            font-size: 1.05rem;
-            margin-bottom: 2rem;
-        }
-
-        /* Progress Steps */
-        .progress-steps {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 3rem;
-            gap: 20px;
-        }
-
-        .step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-
-        .step-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #e2e8f0;
-            color: #94a3b8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .step.active .step-circle {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .step.completed .step-circle {
-            background: #22c55e;
-            color: white;
-        }
-
-        .step-label {
-            font-size: 0.85rem;
-            color: #64748b;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .step.active .step-label {
-            color: #667eea;
-        }
-
-        .step-line {
-            width: 80px;
-            height: 3px;
-            background: #e2e8f0;
-            margin-bottom: 30px;
-        }
-
-        .step.completed+.step-line {
-            background: #22c55e;
-        }
-
-        /* Empty State */
-        .empty-checkout {
-            background: white;
-            border-radius: 24px;
-            padding: 80px 40px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        }
-
-        .empty-checkout-icon {
-            font-size: 6rem;
-            color: #cbd5e0;
-            margin-bottom: 1.5rem;
-        }
-
-        .empty-checkout h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.8rem;
-            color: #2d3748;
-            margin-bottom: 1rem;
-        }
-
-        /* Payment Section */
-        .payment-section {
+        /* ===============================================
+           CHECKOUT FORM STYLES - FIXED VERSION
+        =============================================== */
+        
+        /* Customer Info Section */
+        .customer-info-section {
             background: white;
             border-radius: 20px;
             padding: 35px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
 
         .section-title {
-            font-family: 'Outfit', sans-serif;
             font-size: 1.5rem;
             font-weight: 700;
-            color: #2d3748;
+            color: #1e293b;
             margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
 
-        .payment-methods {
+        /* Form Grid */
+        .form-grid {
             display: grid;
-            gap: 15px;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
         }
 
-        .payment-method {
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .form-group label .required {
+            color: #dc2626;
+            margin-left: 2px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #1e293b;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #94a3b8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        /* Security Badge */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 20px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .security-badge i {
+            font-size: 1.5rem;
+            color: #22c55e;
+        }
+
+        .security-text {
+            flex: 1;
+        }
+
+        .security-text strong {
+            display: block;
+            color: #2d3748;
+            font-size: 0.95rem;
+            margin-bottom: 0.15rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .security-text span {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        /* Payment Methods - FIXED */
+        .payment-methods-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .payment-method-wrapper {
+            display: block;
+            cursor: pointer;
             position: relative;
         }
 
-        .payment-method input[type="radio"] {
+        .payment-method-wrapper input[type="radio"] {
             position: absolute;
             opacity: 0;
+            width: 0;
+            height: 0;
         }
 
         .payment-method-card {
@@ -162,27 +331,33 @@
             padding: 20px;
             border: 2px solid #e2e8f0;
             border-radius: 14px;
-            cursor: pointer;
             transition: all 0.3s ease;
             background: white;
         }
 
-        .payment-method input[type="radio"]:checked+.payment-method-card {
-            border-color: #667eea;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        .payment-method-wrapper:hover .payment-method-card {
+            border-color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
         }
 
-        .payment-method-card:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
+        /* Checked state */
+        .payment-method-wrapper input[type="radio"]:checked + .payment-method-card {
+            border-color: #dc2626 !important;
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(153, 27, 27, 0.05) 100%);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+        }
+
+        .payment-method-wrapper input[type="radio"]:checked + .payment-method-card .payment-check i {
+            color: #dc2626;
+            opacity: 1;
         }
 
         .payment-icon {
             width: 50px;
             height: 50px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -198,82 +373,75 @@
         .payment-name {
             font-weight: 600;
             color: #2d3748;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             margin-bottom: 0.25rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
 
-        .payment-description {
+        .payment-desc {
             font-size: 0.9rem;
             color: #64748b;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
 
         .payment-check {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #e2e8f0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .payment-method input[type="radio"]:checked+.payment-method-card .payment-check {
-            border-color: #667eea;
-            background: #667eea;
+            flex-shrink: 0;
         }
 
         .payment-check i {
-            color: white;
-            font-size: 0.8rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .payment-method input[type="radio"]:checked+.payment-method-card .payment-check i {
-            opacity: 1;
-        }
-
-        /* Security Badge */
-        .security-badge {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 15px;
-            background: rgba(34, 197, 94, 0.1);
-            border-radius: 12px;
-            margin-bottom: 2rem;
-        }
-
-        .security-badge i {
             font-size: 1.5rem;
-            color: #22c55e;
+            color: #cbd5e1;
+            opacity: 0.3;
+            transition: all 0.3s ease;
         }
 
-        .security-badge-text {
-            flex: 1;
+        /* Checkout Button */
+        .btn-checkout {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
         }
 
-        .security-badge-text strong {
-            display: block;
-            color: #2d3748;
-            font-size: 0.95rem;
-            margin-bottom: 0.15rem;
+        .btn-checkout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
         }
 
-        .security-badge-text span {
-            font-size: 0.85rem;
-            color: #64748b;
+        .btn-checkout:active {
+            transform: translateY(0);
+        }
+
+        /* Back Link */
+        .back-link {
+            color: #dc2626;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #991b1b;
         }
 
         /* Order Summary */
         .order-summary {
             background: white;
             border-radius: 20px;
-            padding: 35px;
+            padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             position: sticky;
-            top: 110px;
+            top: 20px;
         }
 
         .summary-item {
@@ -310,19 +478,21 @@
             font-weight: 600;
             color: #2d3748;
             margin-bottom: 0.5rem;
-            font-size: 1rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
 
         .summary-item-quantity {
             font-size: 0.9rem;
             color: #64748b;
             margin-bottom: 0.5rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
 
         .summary-item-price {
             font-weight: 700;
-            color: #667eea;
+            color: #dc2626;
             font-size: 1.1rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
 
         .summary-totals {
@@ -334,291 +504,62 @@
         .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .summary-row .label {
             color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .summary-row .value {
+            font-weight: 600;
+            color: #2d3748;
             font-size: 1rem;
         }
 
+        .summary-row .value.free {
+            color: #22c55e;
+        }
+
         .summary-row.total {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             padding-top: 1.5rem;
             border-top: 2px solid #f1f5f9;
-            font-size: 1.2rem;
         }
 
         .summary-row.total .label {
-            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
             font-weight: 700;
-            color: #2d3748;
+            color: #1e293b;
         }
 
         .summary-row.total .value {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Complete Purchase Button */
-        .btn-complete-purchase {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 14px;
-            padding: 18px 40px;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: white;
-            font-size: 1.15rem;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-            width: 100%;
-            margin-top: 2rem;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            color: #dc2626;
         }
 
-        .btn-complete-purchase::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn-complete-purchase:hover::before {
-            left: 100%;
-        }
-
-        .btn-complete-purchase:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-complete-purchase:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .payment-section,
-        .order-summary {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .order-summary {
-            animation-delay: 0.2s;
-            animation-fill-mode: both;
-        }
-
+        /* Responsive */
         @media (max-width: 768px) {
-            .page-title {
-                font-size: 2rem;
+            .form-grid {
+                grid-template-columns: 1fr;
             }
 
-            .progress-steps {
-                gap: 10px;
+            .form-group.full-width {
+                grid-column: span 1;
             }
 
-            .step-circle {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
-            }
-
-            .step-line {
-                width: 40px;
-            }
-
-            .step-label {
-                font-size: 0.75rem;
+            .customer-info-section {
+                padding: 25px;
             }
 
             .order-summary {
                 position: static;
-                margin-top: 2rem;
             }
         }
     </style>
-</head>
-
-<body>
-
-    <section th:fragment="content">
-
-        <div class="checkout-section">
-            <div class="container">
-
-                <h1 class="page-title">Finalizar Compra</h1>
-                <p class="page-subtitle">Estás a un paso de completar tu pedido</p>
-
-                <!-- Progress Steps -->
-                <div class="progress-steps">
-                    <div class="step completed">
-                        <div class="step-circle">
-                            <i class="bi bi-check"></i>
-                        </div>
-                        <div class="step-label">Carrito</div>
-                    </div>
-                    <div class="step-line"></div>
-                    <div class="step active">
-                        <div class="step-circle">2</div>
-                        <div class="step-label">Pago</div>
-                    </div>
-                    <div class="step-line"></div>
-                    <div class="step">
-                        <div class="step-circle">3</div>
-                        <div class="step-label">Confirmación</div>
-                    </div>
-                </div>
-
-                <!-- Empty Cart State -->
-                <div th:if="${carrito == null or carrito.size() == 0}" class="empty-checkout">
-                    <div class="empty-checkout-icon">
-                        <i class="bi bi-cart-x"></i>
-                    </div>
-                    <h3>No hay productos para procesar</h3>
-                    <p>Agrega productos a tu carrito antes de continuar con el checkout</p>
-                    <a th:href="@{/productos}" class="btn-shop-now"
-                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 14px; padding: 14px 40px; font-weight: 600; color: white; font-size: 1.05rem; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3); text-decoration: none; display: inline-block;">
-                        <i class="bi bi-bag-check me-2"></i>Explorar Productos
-                    </a>
-                </div>
-
-                <!-- Checkout Content -->
-                <div th:if="${carrito != null and carrito.size() > 0}">
-                    <form method="post" th:action="@{/checkout}" id="checkoutForm">
-                        <div class="row g-4">
-
-                            <!-- Payment Section -->
-                            <div class="col-lg-7">
-                                <div class="payment-section">
-                                    <h2 class="section-title">
-                                        <i class="bi bi-credit-card me-2"></i>Método de Pago
-                                    </h2>
-
-                                    <!-- Security Badge -->
-                                    <div class="security-badge">
-                                        <i class="bi bi-shield-check"></i>
-                                        <div class="security-badge-text">
-                                            <strong>Pago 100% Seguro</strong>
-                                            <span>Tus datos están protegidos con encriptación SSL</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Payment Methods -->
-                                    <div class="payment-methods">
-                                        <label class="payment-method" th:each="m, iter : ${metodosPago}">
-                                            <input type="radio" name="metodoPagoId" th:value="${m.metodoPagoId}"
-                                                th:checked="${iter.index == 0}" required>
-                                            <div class="payment-method-card">
-                                                <div class="payment-icon">
-                                                    <i class="bi" th:classappend="${m.metodoPagoNombre.toLowerCase().contains('tarjeta') ? 'bi-credit-card-fill' : 
-                                                                     m.metodoPagoNombre.toLowerCase().contains('efectivo') ? 'bi-cash-coin' : 
-                                                                     m.metodoPagoNombre.toLowerCase().contains('transferencia') ? 'bi-bank' : 
-                                                                     'bi-wallet2'}"></i>
-                                                </div>
-                                                <div class="payment-info">
-                                                    <div class="payment-name" th:text="${m.metodoPagoNombre}">Tarjeta de
-                                                        Crédito</div>
-                                                    <div class="payment-description">Pago seguro y rápido</div>
-                                                </div>
-                                                <div class="payment-check">
-                                                    <i class="bi bi-check"></i>
-                                                </div>
-                                            </div>
-                                        </label>
-                                    </div>
-
-                                    <!-- Complete Purchase Button -->
-                                    <button type="submit" class="btn-complete-purchase">
-                                        <i class="bi bi-lock-fill me-2"></i>Completar Compra
-                                    </button>
-
-                                    <div class="text-center mt-3">
-                                        <a th:href="@{/carrito}"
-                                            style="color: #667eea; text-decoration: none; font-weight: 600;">
-                                            <i class="bi bi-arrow-left me-2"></i>Volver al Carrito
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Order Summary -->
-                            <div class="col-lg-5">
-                                <div class="order-summary">
-                                    <h2 class="section-title">
-                                        <i class="bi bi-receipt me-2"></i>Resumen del Pedido
-                                    </h2>
-
-                                    <!-- Products -->
-                                    <div th:each="item : ${carrito}" class="summary-item">
-                                        <div class="summary-item-image">
-                                            <img th:src="@{/img/default.png}" alt="Producto">
-                                        </div>
-                                        <div class="summary-item-details">
-                                            <div class="summary-item-name" th:text="${item.nombre}">Producto</div>
-                                            <div class="summary-item-quantity">
-                                                Cantidad: <span th:text="${item.cantidad}">1</span>
-                                            </div>
-                                            <div class="summary-item-price"
-                                                th:text="'$' + ${#numbers.formatDecimal(item.precio * item.cantidad, 1, 2)}">
-                                                $0.00</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Totals -->
-                                    <div class="summary-totals">
-                                        <div class="summary-row">
-                                            <span class="label">Subtotal</span>
-                                            <span class="value"
-                                                th:text="'$' + ${#numbers.formatDecimal(#aggregates.sum(carrito.![precio * cantidad]), 1, 2)}">$0.00</span>
-                                        </div>
-                                        <div class="summary-row">
-                                            <span class="label">Envío</span>
-                                            <span class="value" style="color: #22c55e; font-weight: 600;">Gratis</span>
-                                        </div>
-                                        <div class="summary-row">
-                                            <span class="label">Impuestos</span>
-                                            <span class="value">$0.00</span>
-                                        </div>
-                                        <div class="summary-row total">
-                                            <span class="label">Total</span>
-                                            <span class="value"
-                                                th:text="'$' + ${#numbers.formatDecimal(#aggregates.sum(carrito.![precio * cantidad]), 1, 2)}">$0.00</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-
-    </section>
-
 </body>
-
 </html>

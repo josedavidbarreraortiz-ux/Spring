@@ -26,30 +26,40 @@ public class ClienteController {
         return "admin/clientes/index";
     }
 
-    @GetMapping("/crear")
-    public String crearForm(Model model) {
-        model.addAttribute("cliente", new Cliente());
-        model.addAttribute("usuarios", userService.findAll());
-        return "admin/clientes/create";
-    }
-
-    @PostMapping("/guardar")
-    public String guardar(@ModelAttribute Cliente cliente) {
-        clienteService.save(cliente);
-        return "redirect:/admin/clientes";
-    }
-
-    @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model) {
+    // VER DETALLE - HABILITADO
+    @GetMapping("/{id}")
+    public String verDetalle(@PathVariable Integer id, Model model) {
         Cliente cliente = clienteService.findById(id).orElse(null);
         model.addAttribute("cliente", cliente);
-        model.addAttribute("usuarios", userService.findAll());
-        return "admin/clientes/edit";
+        return "admin/clientes/show";
     }
 
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
-        clienteService.delete(id);
-        return "redirect:/admin/clientes";
-    }
+    // CREAR Y GUARDAR - DESHABILITADO
+    // @GetMapping("/crear")
+    // public String crearForm(Model model) {
+    // model.addAttribute("cliente", new Cliente());
+    // model.addAttribute("usuarios", userService.findAll());
+    // return "admin/clientes/create";
+    // }
+
+    // @PostMapping("/guardar")
+    // public String guardar(@ModelAttribute Cliente cliente) {
+    // clienteService.save(cliente);
+    // return "redirect:/admin/clientes";
+    // }
+
+    // EDITAR Y ELIMINAR - DESHABILITADO
+    // @GetMapping("/editar/{id}")
+    // public String editar(@PathVariable Integer id, Model model) {
+    // Cliente cliente = clienteService.findById(id).orElse(null);
+    // model.addAttribute("cliente", cliente);
+    // model.addAttribute("usuarios", userService.findAll());
+    // return "admin/clientes/edit";
+    // }
+
+    // @PostMapping("/eliminar/{id}")
+    // public String eliminar(@PathVariable Integer id) {
+    // clienteService.delete(id);
+    // return "redirect:/admin/clientes";
+    // }
 }

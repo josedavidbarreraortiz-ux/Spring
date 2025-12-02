@@ -18,9 +18,27 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Convertir el role del usuario a GrantedAuthority
+        String role = user.getRole();
+
+        // Validar que el rol no sea null o vacío
+        if (role == null || role.trim().isEmpty()) {
+            role = "USER"; // Rol por defecto
+            System.out.println("⚠️ Usuario " + user.getEmail() + " sin rol, asignando USER por defecto");
+        }
+
+        // Normalizar: eliminar espacios y convertir a mayúsculas
+        role = role.trim().toUpperCase();
+
+        // Construir la autoridad con el prefijo ROLE_
+        String authority = "ROLE_" + role;
+
+        // Log para debugging
+        System.out.println("🔐 Usuario: " + user.getEmail() +
+                " | Rol BD: '" + user.getRole() +
+                "' | Authority: '" + authority + "'");
+
         return Collections.singletonList(
-                new SimpleGrantedAuthority("ROLE_" + user.getRole()));
+                new SimpleGrantedAuthority(authority));
     }
 
     @Override
@@ -30,7 +48,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getEmail(); // Usamos email como username
+        return user.getEmail();
     }
 
     @Override
@@ -53,7 +71,6 @@ public class CustomUserDetails implements UserDetails {
         return user.getEnabled() != null && user.getEnabled();
     }
 
-    // Método helper para obtener el User original
     public User getUser() {
         return user;
     }

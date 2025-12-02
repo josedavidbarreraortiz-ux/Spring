@@ -8,7 +8,6 @@ import java.time.LocalDate;
 public class ProductoGarantia {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "producto_garantia_id")
     private Integer productoGarantiaId;
 

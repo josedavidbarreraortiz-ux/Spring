@@ -1,30 +1,79 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layouts/cliente-layout :: layout (~{::body}, ~{::title})">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/cliente-layout :: layout(~{::title}, ~{::content})">
 
 <head>
-    <title>Mi Perfil</title>
+    <title>Mi Perfil - FH</title>
 </head>
 
 <body>
 
-<h2 class="mb-4">Mi Perfil</h2>
+    <div th:fragment="content" class="cliente-section">
+        <div class="container">
 
-<div class="card shadow-sm">
-    <div class="card-body">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Mi Perfil</h1>
+                <p class="dashboard-subtitle">Información de tu cuenta</p>
+            </div>
 
-        <p><strong>Nombre:</strong> <span th:text="${cliente.nombre}"></span></p>
-        <p><strong>Correo:</strong> <span th:text="${cliente.email}"></span></p>
-        <p><strong>Teléfono:</strong> <span th:text="${cliente.telefono}"></span></p>
-        <p><strong>Dirección:</strong> <span th:text="${cliente.direccion}"></span></p>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="dashboard-card" th:if="${cliente != null}">
 
-        <div class="mt-4">
-            <a class="btn btn-primary" th:href="@{/cliente/perfil/editar}">Editar Perfil</a>
-            <a class="btn btn-warning" th:href="@{/cliente/perfil/password}">Cambiar Contraseña</a>
+                        <!-- Profile Avatar -->
+                        <div class="profile-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <h2 class="profile-name" th:text="${cliente.user != null ? cliente.user.name : 'Usuario'}">
+                            Nombre del Cliente</h2>
+                        <p class="profile-email"
+                            th:text="${cliente.user != null ? cliente.user.email : 'email@ejemplo.com'}">
+                            email@ejemplo.com</p>
+
+                        <!-- Profile Info -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-telephone me-2"></i>Teléfono
+                                </label>
+                                <p class="form-control-plaintext"
+                                    th:text="${cliente.clienteTelefono != null ? cliente.clienteTelefono : 'No especificado'}">
+                                    -</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-geo-alt me-2"></i>Dirección
+                                </label>
+                                <p class="form-control-plaintext"
+                                    th:text="${cliente.clienteDireccion != null ? cliente.clienteDireccion : 'No especificada'}">
+                                    -</p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-4 d-flex gap-2">
+                            <a th:href="@{/cliente/perfil/editar}" class="btn btn-primary-modern">
+                                <i class="bi bi-pencil-square me-2"></i>Editar Perfil
+                            </a>
+                            <a th:href="@{/cliente/perfil/cambiar-password}" class="btn btn-secondary-modern">
+                                <i class="bi bi-key me-2"></i>Cambiar Contraseña
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Message if no cliente -->
+                    <div class="dashboard-card text-center" th:if="${cliente == null}">
+                        <i class="bi bi-exclamation-circle fs-1 text-warning mb-3"></i>
+                        <h3>No se encontró información del cliente</h3>
+                        <p class="text-muted">Por favor, contacta al administrador.</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
-
     </div>
-</div>
 
 </body>
+
 </html>

@@ -1,6 +1,44 @@
 <!-- templates/fragments/footer.html -->
-<footer class="bg-dark text-white py-3 mt-5" xmlns:th="http://www.thymeleaf.org" th:fragment="footer">
-    <div class="container text-center">
-        <small>FH Store © 2025 - Todos los derechos reservados</small>
+<footer xmlns:th="http://www.thymeleaf.org" th:fragment="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>FH TechStore</h4>
+                <p>Tu destino número uno para tecnología de vanguardia.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Productos</h4>
+                <ul>
+                    <li><a th:href="@{/productos}">Electrónica</a></li>
+                    <li><a th:href="@{/productos}">Componentes</a></li>
+                    <li><a th:href="@{/productos}">Audio y Video</a></li>
+                    <li><a th:href="@{/productos}">Informática</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="#">Preguntas Frecuentes</a></li>
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Devoluciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-map-marker-alt"></i> Carrera 15 #93-47, Bogotá</p>
+                <p><i class="fas fa-phone"></i> +57 310 123 4567</p>
+                <p><i class="fas fa-envelope"></i> info@fh.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 FH. Todos los derechos reservados.</p>
+        </div>
     </div>
 </footer>

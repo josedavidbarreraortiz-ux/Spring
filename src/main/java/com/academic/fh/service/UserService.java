@@ -39,4 +39,10 @@ public class UserService {
                 .filter(u -> u.getName().equals(username))
                 .findFirst();
     }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findAll().stream()
+                .filter(u -> u.getEmail().equals(email))
+                .findFirst();
+    }
 }

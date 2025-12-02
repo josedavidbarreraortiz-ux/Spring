@@ -22,7 +22,7 @@ public class MetodoPagoService {
         return metodoPagoRepository.findAll();
     }
 
-    public Optional<MetodoPago> findById(Long id) {
+    public Optional<MetodoPago> findById(Integer id) {
         return metodoPagoRepository.findById(id);
     }
 
@@ -30,7 +30,7 @@ public class MetodoPagoService {
         return metodoPagoRepository.save(metodoPago);
     }
 
-    public void delete(Long id) {
+    public void delete(Integer id) {
         metodoPagoRepository.deleteById(id);
     }
 }

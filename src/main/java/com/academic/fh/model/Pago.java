@@ -9,7 +9,6 @@ import java.time.LocalDate;
 public class Pago {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pago_id")
     private Integer pagoId;
 

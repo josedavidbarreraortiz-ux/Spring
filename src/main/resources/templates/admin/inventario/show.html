@@ -27,13 +27,8 @@
 
                 <p><strong>Stock Mínimo:</strong> <span th:text="${inventario.inventarioStockMinimo}"></span></p>
                 <p><strong>Stock Máximo:</strong> <span th:text="${inventario.inventarioStockMaximo}"></span></p>
-
-                <h5 class="mt-4">Movimientos Registrados</h5>
-                <ul>
-                    <li th:each="m : ${inventario.movimientos}">
-                        <span th:text="${m.fecha} + ' - ' + ${m.tipo} + ' - ' + ${m.cantidad}"></span>
-                    </li>
-                </ul>
+                <p><strong>Ubicación:</strong> <span th:text="${inventario.inventarioUbicacion}"></span></p>
+                <p><strong>Observaciones:</strong> <span th:text="${inventario.observaciones}"></span></p>
 
                 <a th:href="@{/admin/inventario}" class="btn btn-secondary mt-3">Volver</a>
 

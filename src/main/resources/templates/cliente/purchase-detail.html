@@ -1,45 +1,110 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/cliente-layout :: layout (~{::body}, ~{::title})">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/cliente-layout :: layout(~{::title}, ~{::content})">
 
 <head>
-    <title>Detalle de Compra</title>
+    <title>Detalle de Compra - FH</title>
 </head>
 
 <body>
 
-    <h2 class="mb-4">Detalle de Compra</h2>
+    <div th:fragment="content" class="cliente-section">
+        <div class="container">
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <p><strong>ID Venta:</strong> <span th:text="${venta.ventaCodigo}"></span></p>
-            <p><strong>Fecha:</strong> <span th:text="${venta.ventaFecha} + ' ' + ${venta.ventaHora}"></span></p>
-            <p><strong>Total:</strong> $<span th:text="${venta.ventaTotal}"></span></p>
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Detalle de Compra</h1>
+                <p class="dashboard-subtitle">Información completa de tu pedido</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="dashboard-card">
+                        <h3 class="card-title">
+                            <i class="bi bi-receipt"></i>
+                            Orden <span th:text="'#' + ${venta.ventaId}"></span>
+                        </h3>
+
+                        <!-- Order Info -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <p class="mb-2">
+                                    <strong><i class="bi bi-calendar me-2"></i>Fecha:</strong>
+                                    <span th:text="${#temporals.format(venta.ventaFecha, 'dd/MM/yyyy HH:mm')}"></span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2">
+                                    <strong><i class="bi bi-tag me-2"></i>Estado:</strong>
+                                    <span class="badge badge-success-modern">Completada</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Products Table -->
+                        <h5 class="mb-3"><i class="bi bi-box-seam me-2"></i>Productos</h5>
+                        <div class="table-responsive">
+                            <table class="table table-modern">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="detalle : ${venta.detalles}">
+                                        <td th:text="${detalle.producto.productoNombre}"></td>
+                                        <td th:text="${detalle.detalleVentaCantidad}"></td>
+                                        <td>$<span
+                                                th:text="${#numbers.formatDecimal(detalle.detalleVentaPrecioUnitario, 1, 2)}"></span>
+                                        </td>
+                                        <td>$<span
+                                                th:text="${#numbers.formatDecimal(detalle.detalleVentaSubtotal, 1, 2)}"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="dashboard-card">
+                        <h3 class="card-title">
+                            <i class="bi bi-calculator"></i>
+                            Resumen
+                        </h3>
+
+                        <div class="mb-3 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal:</span>
+                                <span>$<span th:text="${#numbers.formatDecimal(venta.ventaTotal, 1, 2)}"></span></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>IVA (19%):</span>
+                                <span>$<span
+                                        th:text="${#numbers.formatDecimal(venta.ventaTotal * 0.19, 1, 2)}"></span></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <strong class="fs-5">Total:</strong>
+                            <strong class="fs-4 text-primary">
+                                $<span th:text="${#numbers.formatDecimal(venta.ventaTotal, 1, 2)}"></span>
+                            </strong>
+                        </div>
+
+                        <div class="mt-4">
+                            <a th:href="@{/cliente/dashboard}" class="btn btn-secondary-modern w-100">
+                                <i class="bi bi-arrow-left me-2"></i>Volver al Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-
-    <h4>Productos</h4>
-
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            <tr th:each="item : ${venta.detalles}">
-                <td th:text="${item.producto != null ? item.producto.productoNombre : 'N/A'}"></td>
-                <td th:text="${item.ventaDetalleCantidad}"></td>
-                <td th:text="'$' + ${item.ventaDetallePrecioVenta}"></td>
-                <td th:text="'$' + ${item.subtotal}"></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a th:href="@{/cliente/compras}" class="btn btn-secondary">Volver</a>
 
 </body>
 

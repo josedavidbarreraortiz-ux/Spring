@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-info .fa-solid {
+            font-size: 1.5rem;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.2;
+        }
+
+        .user-greeting {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header th:fragment="header">
+        <div class="main-nav-container">
+            <a href="/" class="logo">FH</a>
+
+            <ul class="nav-links-main">
+                <li><a href="/#inicio">Inicio</a></li>
+                <li><a href="/productos">Productos</a></li>
+                <li><a href="/#caracteristicas">Características</a></li>
+                <li><a href="/#contacto">Contacto</a></li>
+            </ul>
+
+            <div class="header-icons">
+                <!-- Si el usuario está autenticado -->
+                <div sec:authorize="isAuthenticated()" class="header-icon-item user-info">
+                    <i class="fa-solid fa-user"></i>
+                    <div class="user-details">
+                        <span class="user-greeting">Hola,</span>
+                        <span class="user-name" sec:authentication="name">Usuario</span>
+                    </div>
+                </div>
+
+                <!-- Si el usuario NO está autenticado -->
+                <a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="header-icon-item">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Mi cuenta</span>
+                </a>
+
+                <div class="icon-divider"></div>
+                <a href="#" class="header-icon-item">
+                    <i class="fa-solid fa-shopping-cart"></i>
+                    <span>Mi carrito</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Categorías -->
+        <div class="categories-nav">
+            <ul class="categories-list">
+                <li th:each="categoria : ${categorias}">
+                    <a th:href="@{'/productos/categoria/' + ${categoria.categoriaId}}"
+                        th:text="${categoria.categoriaNombre}">Categoría</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+</body>
+
+</html>

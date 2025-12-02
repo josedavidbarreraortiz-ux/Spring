@@ -9,7 +9,6 @@ import java.util.List;
 public class MetodoPago {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "metodo_pago_id")
     private Integer metodoPagoId;
 

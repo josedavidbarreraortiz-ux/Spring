@@ -29,7 +29,8 @@ public class SecurityConfig {
                                                 // Rutas públicas
                                                 .requestMatchers("/", "/productos/**", "/login", "/register", "/error")
                                                 .permitAll()
-                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**")
+                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**",
+                                                                "/img/**")
                                                 .permitAll()
                                                 .requestMatchers("/h2-console/**").permitAll()
 
@@ -51,7 +52,17 @@ public class SecurityConfig {
                                 .logout(logout -> logout
                                                 .logoutUrl("/logout")
                                                 .logoutSuccessUrl("/?logout=true")
+                                                .invalidateHttpSession(true)
+                                                .deleteCookies("JSESSIONID", "remember-me")
                                                 .permitAll())
+                                .rememberMe(remember -> remember
+                                                .key("uniqueAndSecretKey")
+                                                .tokenValiditySeconds(86400 * 30) // 30 días
+                                                .rememberMeParameter("remember-me")
+                                                .userDetailsService(userDetailsService))
+                                .sessionManagement(session -> session
+                                                .maximumSessions(1)
+                                                .maxSessionsPreventsLogin(false))
                                 .csrf(csrf -> csrf
                                                 .ignoringRequestMatchers("/h2-console/**"))
                                 .headers(headers -> headers

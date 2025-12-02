@@ -1,41 +1,67 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layouts/cliente-layout :: layout (~{::body}, ~{::title})">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/cliente-layout :: layout(~{::title}, ~{::content})">
 
 <head>
-    <title>Editar Perfil</title>
+    <title>Editar Perfil - FH</title>
 </head>
 
 <body>
 
-<h2 class="mb-4">Editar Perfil</h2>
+    <div th:fragment="content" class="cliente-section">
+        <div class="container">
 
-<form th:action="@{/cliente/perfil/editar}" method="post">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Editar Perfil</h1>
+                <p class="dashboard-subtitle">Actualiza tu información personal</p>
+            </div>
 
-    <div class="mb-3">
-        <label class="form-label">Nombre</label>
-        <input type="text" class="form-control" name="nombre" th:value="${cliente.nombre}">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="dashboard-card">
+
+                        <form th:action="@{/cliente/perfil/editar}" method="post" class="form-modern">
+
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">
+                                    <i class="bi bi-person me-2"></i>Nombre Completo
+                                </label>
+                                <input type="text" class="form-control" id="nombre" name="nombre"
+                                    th:value="${cliente.user.name}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="telefono" class="form-label">
+                                    <i class="bi bi-telephone me-2"></i>Teléfono
+                                </label>
+                                <input type="tel" class="form-control" id="telefono" name="telefono"
+                                    th:value="${cliente.clienteTelefono}" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="direccion" class="form-label">
+                                    <i class="bi bi-geo-alt me-2"></i>Dirección
+                                </label>
+                                <textarea class="form-control" id="direccion" name="direccion" rows="3"
+                                    th:text="${cliente.clienteDireccion}"></textarea>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary-modern">
+                                    <i class="bi bi-check-circle me-2"></i>Guardar Cambios
+                                </button>
+                                <a th:href="@{/cliente/perfil}" class="btn btn-secondary-modern">
+                                    <i class="bi bi-x-circle me-2"></i>Cancelar
+                                </a>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label">Correo</label>
-        <input type="email" class="form-control" name="email" th:value="${cliente.email}">
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Teléfono</label>
-        <input type="text" class="form-control" name="telefono" th:value="${cliente.telefono}">
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Dirección</label>
-        <input type="text" class="form-control" name="direccion" th:value="${cliente.direccion}">
-    </div>
-
-    <button class="btn btn-success" type="submit">Guardar Cambios</button>
-    <a class="btn btn-secondary" th:href="@{/cliente/perfil}">Cancelar</a>
-
-</form>
 
 </body>
+
 </html>

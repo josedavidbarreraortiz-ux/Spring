@@ -1,331 +1,223 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/public-layout :: layout(~{::title}, ~{::content})">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Inicio - Tienda Premium</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <style>
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            padding: 80px 0;
-            margin-top: -90px;
-            padding-top: 170px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            opacity: 0.3;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .hero-subtitle {
-            font-size: 1.3rem;
-            font-weight: 300;
-            opacity: 0.95;
-            margin-bottom: 2rem;
-        }
-
-        .section-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 2px;
-        }
-
-        .product-card {
-            border: none;
-            border-radius: 20px;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-        }
-
-        .product-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.25);
-        }
-
-        .product-image-wrapper {
-            position: relative;
-            overflow: hidden;
-            height: 280px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-
-        .product-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .product-card:hover img {
-            transform: scale(1.1);
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .product-card .card-body {
-            padding: 1.5rem;
-        }
-
-        .product-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 0.75rem;
-            min-height: 60px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .product-price {
-            font-size: 1.75rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0;
-        }
-
-        .product-card .card-footer {
-            background: transparent;
-            border: none;
-            padding: 0 1.5rem 1.5rem;
-        }
-
-        .btn-view-product {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 12px;
-            padding: 12px 24px;
-            font-weight: 600;
-            color: white;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 0.9rem;
-        }
-
-        .btn-view-product::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn-view-product:hover::before {
-            left: 100%;
-        }
-
-        .btn-view-product:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-            color: white;
-        }
-
-        .products-container {
-            padding: 60px 0;
-            background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .product-card {
-            animation: fadeInUp 0.6s ease-out;
-            animation-fill-mode: both;
-        }
-
-        .product-card:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .product-card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .product-card:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        .product-card:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-        .product-card:nth-child(5) {
-            animation-delay: 0.5s;
-        }
-
-        .product-card:nth-child(6) {
-            animation-delay: 0.6s;
-        }
-
-        .product-card:nth-child(7) {
-            animation-delay: 0.7s;
-        }
-
-        .product-card:nth-child(8) {
-            animation-delay: 0.8s;
-        }
-
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1.1rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FH - Los Mejores Productos Tecnológicos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/index-style.css}">
 </head>
 
 <body>
+    <header>
+        <div class="main-nav-container">
+            <a href="/" class="logo">FH</a>
 
-    <section th:fragment="content">
+            <ul class="nav-links-main">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="/productos">Productos</a></li>
+                <li><a href="#caracteristicas">Características</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
 
-        <!-- Hero Section -->
-        <div class="hero-section">
-            <div class="container">
-                <div class="hero-content text-center">
-                    <h1 class="hero-title">Descubre Productos Increíbles</h1>
-                    <p class="hero-subtitle">Calidad premium, precios excepcionales</p>
-                    <div class="d-flex justify-content-center gap-3">
-                        <a href="#productos" class="btn btn-light btn-lg px-4 py-3"
-                            style="border-radius: 12px; font-weight: 600;">
-                            <i class="bi bi-bag-check me-2"></i>Ver Productos
-                        </a>
-                    </div>
-                </div>
+            <div class="header-icons">
+                <a th:href="@{/login}" class="header-icon-item">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Mi cuenta</span>
+                </a>
+
+                <div class="icon-divider"></div>
+                <a href="#" class="header-icon-item">
+                    <i class="fa-solid fa-shopping-cart"></i>
+                    <span>Mi carrito</span>
+                </a>
             </div>
         </div>
 
-        <!-- Products Section -->
-        <div class="products-container" id="productos">
-            <div class="container">
+        <!-- Categorías -->
+        <div class="categories-nav">
+            <ul class="categories-list">
+                <li th:each="categoria : ${categorias}">
+                    <a th:href="@{'/productos/categoria/' + ${categoria.categoriaId}}"
+                        th:text="${categoria.categoriaNombre}">Categoría</a>
+                </li>
+            </ul>
+        </div>
+    </header>
 
-                <div class="text-center mb-5">
-                    <h2 class="section-title">Productos Destacados</h2>
-                    <p class="text-muted mt-4" style="font-size: 1.1rem;">Explora nuestra selección de productos más
-                        recientes</p>
-                </div>
-
-                <div class="row g-4">
-
-                    <div class="col-lg-3 col-md-4 col-sm-6" th:each="p : ${productos}">
-                        <div class="card product-card h-100">
-
-                            <div class="product-image-wrapper">
-                                <img th:src="@{/img/default.png}" alt="Producto">
-                                <span class="product-badge">Nuevo</span>
-                            </div>
-
-                            <div class="card-body">
-                                <h5 class="product-title" th:text="${p.productoNombre}">Nombre del Producto</h5>
-                                <p class="product-price"
-                                    th:text="'$' + ${#numbers.formatDecimal(p.productoPrecioVenta, 1, 2)}">$0.00</p>
-                            </div>
-
-                            <div class="card-footer">
-                                <a th:href="@{'/productos/' + ${p.productoId}}" class="btn btn-view-product w-100">
-                                    <i class="bi bi-eye me-2"></i>Ver Detalle
-                                </a>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-
+    <section class="hero" id="inicio">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Tecnología de Vanguardia a tu Alcance</h1>
+                <p>Descubre los últimos celulares, computadores, parlantes y accesorios tech al mejor precio</p>
+                <a href="/productos" class="cta-button">Explorar Productos</a>
             </div>
         </div>
-
     </section>
 
+    <section class="products featured-products-section" id="productos">
+        <div class="container">
+            <h2 class="section-title">Nuestros Productos Estrella</h2>
+            <div class="featured-products-grid product-grid">
+                <div class="product-card" th:each="producto, iterStat : ${productos}" th:if="${iterStat.index < 6}">
+                    <img th:src="${producto.foto != null && producto.foto != '' ? producto.foto : 'https://placehold.co/300x300/667eea/FFFFFF?text=Producto'}"
+                        th:alt="${producto.productoNombre}">
+                    <h3 th:text="${producto.productoNombre}">Producto</h3>
+                    <p class="description" th:text="${producto.resumen}">Descripción del producto</p>
+                    <p class="price">$<span
+                            th:text="${#numbers.formatDecimal(producto.productoPrecioVenta, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+                    </p>
+                    <div class="product-actions">
+                        <a th:href="@{'/productos/' + ${producto.productoId}}" class="cta-button">Ver detalles</a>
+                    </div>
+                </div>
+            </div>
+            <a href="/productos" class="cta-button products-button">Ver todos los productos</a>
+        </div>
+    </section>
+
+    <section class="carousel-section">
+        <div class="container">
+            <h2 class="section-title" style="color: white; margin-bottom: 3rem;">Nuestras Últimas Novedades</h2>
+            <div class="carousel-container">
+                <div class="carousel">
+                    <div class="carousel-slide active">
+                        <img src="https://placehold.co/1000x400/FF6B6B/FFFFFF?text=Ofertas+Especiales"
+                            alt="Oferta especial" class="carousel-image">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://placehold.co/1000x400/667eea/FFFFFF?text=Nuevos+Productos"
+                            alt="Nuevos productos" class="carousel-image">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://placehold.co/1000x400/764ba2/FFFFFF?text=Tecnologia+Avanzada"
+                            alt="Tecnología avanzada" class="carousel-image">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://placehold.co/1000x400/0d47a1/FFFFFF?text=Accesorios+Premium"
+                            alt="Accesorios premium" class="carousel-image">
+                    </div>
+
+                    <button class="carousel-nav carousel-prev" onclick="prevSlide()">‹</button>
+                    <button class="carousel-nav carousel-next" onclick="nextSlide()">›</button>
+
+                    <div class="carousel-indicators">
+                        <span class="carousel-indicator active" onclick="currentSlide(1)"></span>
+                        <span class="carousel-indicator" onclick="currentSlide(2)"></span>
+                        <span class="carousel-indicator" onclick="currentSlide(3)"></span>
+                        <span class="carousel-indicator" onclick="currentSlide(4)"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="action-buttons">
+        <div class="container">
+            <h2 class="section-title">¿Listo para mejorar tu experiencia?</h2>
+            <div class="button-grid">
+                <button class="cta-button secondary-button"
+                    onclick="alert('📍 Visita nuestra tienda en Carrera 15 #93-47, Bogotá')">
+                    <i class="fas fa-store"></i> Solicitar Demo en Tienda
+                </button>
+                <button class="cta-button secondary-button" onclick="alert('📥 Catálogo 2025 disponible próximamente')">
+                    <i class="fas fa-download"></i> Descargar Catálogo 2025
+                </button>
+                <button class="cta-button secondary-button" onclick="alert('📞 Contáctanos al +57 310 123 4567')">
+                    <i class="fas fa-headset"></i> Hablar con Ventas
+                </button>
+                <button class="cta-button secondary-button" onclick="window.location.href='/productos'">
+                    <i class="fas fa-tags"></i> Ver Precios y Ofertas
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section" id="caracteristicas">
+        <div class="container">
+            <h2 class="section-title">¿Por qué elegir FH?</h2>
+            <div class="features-grid">
+                <div class="feature-item fade-in">
+                    <i class="fas fa-shield-alt icon"></i>
+                    <h3>Seguridad Garantizada</h3>
+                    <p>Compra con confianza, tus datos y transacciones están protegidos con la más alta encriptación.
+                    </p>
+                </div>
+                <div class="feature-item fade-in">
+                    <i class="fas fa-truck icon"></i>
+                    <h3>Envío Rápido y Seguro</h3>
+                    <p>Recibe tus productos en tiempo récord, directamente en la puerta de tu casa.</p>
+                </div>
+                <div class="feature-item fade-in">
+                    <i class="fas fa-award icon"></i>
+                    <h3>Calidad y Garantía</h3>
+                    <p>Solo ofrecemos productos de las mejores marcas, con garantía y soporte postventa.</p>
+                </div>
+                <div class="feature-item fade-in">
+                    <i class="fas fa-headset icon"></i>
+                    <h3>Soporte 24/7</h3>
+                    <p>Nuestro equipo de expertos está siempre disponible para resolver tus dudas y ayudarte.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contacto">
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h4>FH TechStore</h4>
+                <p>Tu destino número uno para tecnología de vanguardia.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Productos</h4>
+                <ul>
+                    <li th:each="categoria, iterStat : ${categorias}" th:if="${iterStat.index < 6}">
+                        <a th:href="@{'/productos/categoria/' + ${categoria.categoriaId}}"
+                            th:text="${categoria.categoriaNombre}">Categoría</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="#">Preguntas Frecuentes</a></li>
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Devoluciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-map-marker-alt"></i> Carrera 15 #93-47, Bogotá</p>
+                <p><i class="fas fa-phone"></i> +57 310 123 4567</p>
+                <p><i class="fas fa-envelope"></i> info@fh.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 FH. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <div class="floating-buttons">
+        <button class="chat-button" onclick="alert('💬 Chat en vivo próximamente disponible')">
+            <i class="fas fa-comments"></i>
+        </button>
+        <button class="help-button" onclick="alert('❓ ¿Necesitas ayuda? Contáctanos al +57 310 123 4567')">
+            <i class="fas fa-question-circle"></i>
+        </button>
+        <button class="scroll-to-top" onclick="smoothScrollToTop()">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+
+    <script th:src="@{/js/index-script.js}"></script>
 </body>
 
 </html>

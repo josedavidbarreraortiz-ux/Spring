@@ -1,54 +1,84 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layouts/cliente-layout :: layout (~{::body}, ~{::title})">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/cliente-layout :: layout(~{::title}, ~{::content})">
 
 <head>
-    <title>Panel Cliente</title>
+    <title>Panel Cliente - FH</title>
 </head>
 
 <body>
 
-<h2 class="mb-4">Bienvenido a tu Panel</h2>
+    <div th:fragment="content" class="cliente-section">
+        <div class="container">
 
-<div class="row mb-4">
-    <div class="col-md-4">
-        <div class="card shadow-sm">
-            <div class="card-body text-center">
-                <h5 class="card-title">Total Compras</h5>
-                <p class="fs-3 fw-bold text-primary" th:text="${totalCompras}">0</p>
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Bienvenido a tu Panel</h1>
+                <p class="dashboard-subtitle">Gestiona tus compras y perfil</p>
             </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="stat-icon bi bi-bag-check"></i>
+                    <div class="stat-value" th:text="${comprasRecientes != null ? comprasRecientes.size() : 0}">0</div>
+                    <div class="stat-label">Compras Totales</div>
+                </div>
+
+                <div class="stat-card">
+                    <i class="stat-icon bi bi-person-circle"></i>
+                    <div class="stat-value">Mi Perfil</div>
+                    <div class="stat-label">
+                        <a href="/cliente/perfil" class="text-white text-decoration-none">Ver perfil →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Purchases -->
+            <div class="dashboard-card">
+                <h3 class="card-title">
+                    <i class="bi bi-clock-history"></i>
+                    Tus compras recientes
+                </h3>
+
+                <div class="table-responsive">
+                    <table class="table table-modern">
+                        <thead>
+                            <tr>
+                                <th>ID Venta</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="venta : ${comprasRecientes}">
+                                <td><strong th:text="'#' + ${venta.ventaId}"></strong></td>
+                                <td th:text="${#temporals.format(venta.ventaFecha, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td>
+                                    <span class="text-primary fw-bold">
+                                        $<span th:text="${#numbers.formatDecimal(venta.ventaTotal, 1, 2)}"></span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary-modern btn-sm"
+                                        th:href="@{'/cliente/compras/' + ${venta.ventaId}}">
+                                        <i class="bi bi-eye"></i> Ver Detalle
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${comprasRecientes == null || comprasRecientes.isEmpty()}">
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No tienes compras recientes
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- Aquí puedes agregar más tarjetas si lo deseas -->
-</div>
-
-<h4 class="mt-5 mb-3">Tus compras recientes</h4>
-
-<table class="table table-bordered">
-    <thead>
-    <tr>
-        <th>ID Venta</th>
-        <th>Fecha</th>
-        <th>Total</th>
-        <th></th>
-    </tr>
-    </thead>
-
-    <tbody>
-    <tr th:each="venta : ${compras}">
-        <td th:text="${venta.ventaId}"></td>
-        <td th:text="${#temporals.format(venta.ventaFecha, 'dd/MM/yyyy HH:mm')}"></td>
-        <td>$<span th:text="${venta.ventaTotal}"></span></td>
-        <td>
-            <a class="btn btn-primary btn-sm"
-               th:href="@{'/cliente/compras/' + ${venta.ventaId}}">
-                Ver Detalle
-            </a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
 </body>
+
 </html>

@@ -35,21 +35,21 @@ public class CategoriaController {
     }
 
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model) {
+    public String editar(@PathVariable Integer id, Model model) {
         Categoria categoria = categoriaService.findById(id).orElse(null);
         model.addAttribute("categoria", categoria);
         return "admin/categorias/edit";
     }
 
     @GetMapping("/{id}")
-    public String verDetalle(@PathVariable Long id, Model model) {
+    public String verDetalle(@PathVariable Integer id, Model model) {
         Categoria categoria = categoriaService.findById(id).orElse(null);
         model.addAttribute("categoria", categoria);
         return "admin/categorias/show";
     }
 
     @PostMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
+    public String eliminar(@PathVariable Integer id) {
         categoriaService.delete(id);
         return "redirect:/admin/categorias";
     }

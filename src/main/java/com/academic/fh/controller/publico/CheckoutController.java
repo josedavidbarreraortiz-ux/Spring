@@ -1,8 +1,10 @@
 package com.academic.fh.controller.publico;
 
+import com.academic.fh.model.Cliente;
 import com.academic.fh.service.VentaService;
 import com.academic.fh.service.MetodoPagoService;
 import com.academic.fh.service.CarritoService;
+import com.academic.fh.service.ClienteService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,15 +20,18 @@ public class CheckoutController {
     private final VentaService ventaService;
     private final MetodoPagoService metodoPagoService;
     private final CarritoService carritoService;
+    private final ClienteService clienteService;
 
     public CheckoutController(
             VentaService ventaService,
             MetodoPagoService metodoPagoService,
-            CarritoService carritoService) {
+            CarritoService carritoService,
+            ClienteService clienteService) {
 
         this.ventaService = ventaService;
         this.metodoPagoService = metodoPagoService;
         this.carritoService = carritoService;
+        this.clienteService = clienteService;
     }
 
     @GetMapping
@@ -42,11 +47,13 @@ public class CheckoutController {
 
     @PostMapping
     public String procesarCompra(
+            @RequestParam String nombre,
+            @RequestParam String email,
+            @RequestParam String telefono,
+            @RequestParam String documento,
+            @RequestParam String direccion,
             @RequestParam Long metodoPagoId,
             HttpSession session) {
-
-        // obtener usuario logueado (temporal)
-        Long clienteId = 1L;
 
         List<Map<String, Object>> carrito = carritoService.getCarrito(session);
 
@@ -54,8 +61,20 @@ public class CheckoutController {
             return "redirect:/carrito";
         }
 
-        // Crear venta usando el servicio (transaccional)
-        var venta = ventaService.crearVenta(clienteId, metodoPagoId, carrito);
+        // Buscar o crear cliente
+        Cliente cliente = clienteService.findByDocumento(documento)
+                .orElseGet(() -> {
+                    Cliente nuevoCliente = new Cliente();
+                    nuevoCliente.setClienteNombre(nombre);
+                    nuevoCliente.setClienteEmail(email);
+                    nuevoCliente.setClienteTelefono(telefono);
+                    nuevoCliente.setClienteNumeroDocumento(documento);
+                    nuevoCliente.setClienteDireccion(direccion);
+                    return clienteService.save(nuevoCliente);
+                });
+
+        // Crear venta
+        var venta = ventaService.crearVenta(cliente.getClienteId().longValue(), metodoPagoId, carrito);
 
         // Vaciar carrito
         carritoService.vaciarCarrito(session);

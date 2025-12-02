@@ -4,102 +4,82 @@ import com.academic.fh.model.Producto;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class CarritoService {
 
-    private static final String CARRITO_SESSION_KEY = "carrito";
+    private static final String CARRITO_KEY = "carrito";
     private final ProductoService productoService;
 
     public CarritoService(ProductoService productoService) {
         this.productoService = productoService;
     }
 
-    /**
-     * Obtener el carrito de la sesión
-     */
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getCarrito(HttpSession session) {
-        List<Map<String, Object>> carrito = (List<Map<String, Object>>) session.getAttribute(CARRITO_SESSION_KEY);
-
+        List<Map<String, Object>> carrito = (List<Map<String, Object>>) session.getAttribute(CARRITO_KEY);
         if (carrito == null) {
             carrito = new ArrayList<>();
-            session.setAttribute(CARRITO_SESSION_KEY, carrito);
+            session.setAttribute(CARRITO_KEY, carrito);
         }
-
         return carrito;
     }
 
-    /**
-     * Agregar producto al carrito
-     */
-    public void agregarProducto(Long productoId, Integer cantidad, HttpSession session) {
-        Producto producto = productoService.getProductoOrThrow(productoId);
-
+    public void agregarItem(HttpSession session, Integer productoId, String nombre, Double precio, Integer cantidad) {
         List<Map<String, Object>> carrito = getCarrito(session);
-
-        // Crear item del carrito
         Map<String, Object> item = new HashMap<>();
-        item.put("id", producto.getProductoId());
-        item.put("nombre", producto.getProductoNombre());
-        item.put("precio", producto.getProductoPrecioVenta());
+        item.put("id", productoId);
+        item.put("nombre", nombre);
+        item.put("precio", precio);
         item.put("cantidad", cantidad);
-
         carrito.add(item);
-        session.setAttribute(CARRITO_SESSION_KEY, carrito);
     }
 
-    /**
-     * Eliminar item del carrito por índice
-     */
+    public void agregarProducto(Long productoId, Integer cantidad, HttpSession session) {
+        // Buscar el producto en la base de datos
+        Producto producto = productoService.findById(productoId.intValue()).orElse(null);
+
+        if (producto != null) {
+            List<Map<String, Object>> carrito = getCarrito(session);
+
+            // Verificar si el producto ya está en el carrito
+            boolean encontrado = false;
+            for (Map<String, Object> item : carrito) {
+                if (item.get("id").equals(productoId.intValue())) {
+                    // Si ya existe, actualizar la cantidad
+                    Integer cantidadActual = (Integer) item.get("cantidad");
+                    item.put("cantidad", cantidadActual + cantidad);
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            // Si no existe, agregarlo
+            if (!encontrado) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("id", productoId.intValue());
+                item.put("nombre", producto.getProductoNombre());
+                item.put("precio",
+                        producto.getProductoPrecioVenta() != null ? producto.getProductoPrecioVenta().doubleValue()
+                                : 0.0);
+                item.put("cantidad", cantidad);
+                carrito.add(item);
+            }
+        }
+    }
+
     public void eliminarItem(int index, HttpSession session) {
         List<Map<String, Object>> carrito = getCarrito(session);
-
         if (index >= 0 && index < carrito.size()) {
             carrito.remove(index);
-            session.setAttribute(CARRITO_SESSION_KEY, carrito);
         }
     }
 
-    /**
-     * Vaciar el carrito completamente
-     */
     public void vaciarCarrito(HttpSession session) {
-        session.removeAttribute(CARRITO_SESSION_KEY);
-    }
-
-    /**
-     * Calcular el total del carrito
-     */
-    public BigDecimal calcularTotal(List<Map<String, Object>> carrito) {
-        if (carrito == null || carrito.isEmpty()) {
-            return BigDecimal.ZERO;
-        }
-
-        return carrito.stream()
-                .map(item -> {
-                    Integer cantidad = (Integer) item.get("cantidad");
-                    BigDecimal precio = (BigDecimal) item.get("precio");
-                    return precio.multiply(BigDecimal.valueOf(cantidad));
-                })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    /**
-     * Verificar si el carrito está vacío
-     */
-    public boolean isCarritoVacio(HttpSession session) {
-        List<Map<String, Object>> carrito = getCarrito(session);
-        return carrito.isEmpty();
-    }
-
-    /**
-     * Obtener cantidad de items en el carrito
-     */
-    public int getCantidadItems(HttpSession session) {
-        List<Map<String, Object>> carrito = getCarrito(session);
-        return carrito.size();
+        session.removeAttribute(CARRITO_KEY);
     }
 }

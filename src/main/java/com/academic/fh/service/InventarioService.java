@@ -22,7 +22,7 @@ public class InventarioService {
         return inventarioRepository.findAll();
     }
 
-    public Optional<Inventario> findById(Long id) {
+    public Optional<Inventario> findById(Integer id) {
         return inventarioRepository.findById(id);
     }
 
@@ -30,33 +30,7 @@ public class InventarioService {
         return inventarioRepository.save(inventario);
     }
 
-    public void delete(Long id) {
+    public void delete(Integer id) {
         inventarioRepository.deleteById(id);
-    }
-
-    /**
-     * Verificar disponibilidad de stock para un producto
-     */
-    public boolean verificarDisponibilidad(Long productoId, int cantidadRequerida) {
-        List<Inventario> inventarios = inventarioRepository.findAll();
-
-        int stockTotal = inventarios.stream()
-                .filter(inv -> inv.getProducto().getProductoId().equals(productoId))
-                .mapToInt(inv -> inv.getInventarioStockActual())
-                .sum();
-
-        return stockTotal >= cantidadRequerida;
-    }
-
-    /**
-     * Obtener stock total de un producto
-     */
-    public int obtenerStockTotal(Long productoId) {
-        List<Inventario> inventarios = inventarioRepository.findAll();
-
-        return inventarios.stream()
-                .filter(inv -> inv.getProducto().getProductoId().equals(productoId))
-                .mapToInt(inv -> inv.getInventarioStockActual())
-                .sum();
     }
 }

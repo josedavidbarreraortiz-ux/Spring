@@ -24,14 +24,12 @@ public class InventarioController {
         this.userService = userService;
     }
 
-    // LISTAR
     @GetMapping
     public String listar(Model model) {
         model.addAttribute("inventarios", inventarioService.findAll());
         return "admin/inventario/index";
     }
 
-    // FORMULARIO CREAR
     @GetMapping("/crear")
     public String crearForm(Model model) {
         model.addAttribute("inventario", new Inventario());
@@ -40,16 +38,21 @@ public class InventarioController {
         return "admin/inventario/create";
     }
 
-    // GUARDAR
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute Inventario inventario) {
         inventarioService.save(inventario);
         return "redirect:/admin/inventario";
     }
 
-    // FORMULARIO EDITAR
+    @GetMapping("/{id}")
+    public String verDetalle(@PathVariable Integer id, Model model) {
+        Inventario inventario = inventarioService.findById(id).orElse(null);
+        model.addAttribute("inventario", inventario);
+        return "admin/inventario/show";
+    }
+
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model) {
+    public String editar(@PathVariable Integer id, Model model) {
         Inventario inventario = inventarioService.findById(id).orElse(null);
         model.addAttribute("inventario", inventario);
         model.addAttribute("productos", productoService.findAll());
@@ -57,9 +60,8 @@ public class InventarioController {
         return "admin/inventario/edit";
     }
 
-    // ELIMINAR
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
+    public String eliminar(@PathVariable Integer id) {
         inventarioService.delete(id);
         return "redirect:/admin/inventario";
     }

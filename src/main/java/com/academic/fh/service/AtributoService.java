@@ -33,4 +33,5 @@ public class AtributoService {
     public void delete(Integer id) {
         atributoRepository.deleteById(id);
     }
+    
 }

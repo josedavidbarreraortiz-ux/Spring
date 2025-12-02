@@ -12,6 +12,7 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer clienteId;
 
+    private String clienteNombre;
     private String clienteTipoDocumento;
     private String clienteNumeroDocumento;
     private String clienteDireccion;
@@ -32,30 +33,83 @@ public class Cliente {
 
     // Getters y Setters
 
-    public Integer getClienteId() { return clienteId; }
-    public void setClienteId(Integer clienteId) { this.clienteId = clienteId; }
+    public Integer getClienteId() {
+        return clienteId;
+    }
 
-    public String getClienteTipoDocumento() { return clienteTipoDocumento; }
-    public void setClienteTipoDocumento(String clienteTipoDocumento) { this.clienteTipoDocumento = clienteTipoDocumento; }
+    public void setClienteId(Integer clienteId) {
+        this.clienteId = clienteId;
+    }
 
-    public String getClienteNumeroDocumento() { return clienteNumeroDocumento; }
-    public void setClienteNumeroDocumento(String clienteNumeroDocumento) { this.clienteNumeroDocumento = clienteNumeroDocumento; }
+    public String getClienteNombre() {
+        return clienteNombre;
+    }
 
-    public String getClienteDireccion() { return clienteDireccion; }
-    public void setClienteDireccion(String clienteDireccion) { this.clienteDireccion = clienteDireccion; }
+    public void setClienteNombre(String clienteNombre) {
+        this.clienteNombre = clienteNombre;
+    }
 
-    public String getClienteTelefono() { return clienteTelefono; }
-    public void setClienteTelefono(String clienteTelefono) { this.clienteTelefono = clienteTelefono; }
+    public String getClienteTipoDocumento() {
+        return clienteTipoDocumento;
+    }
 
-    public String getClienteEmail() { return clienteEmail; }
-    public void setClienteEmail(String clienteEmail) { this.clienteEmail = clienteEmail; }
+    public void setClienteTipoDocumento(String clienteTipoDocumento) {
+        this.clienteTipoDocumento = clienteTipoDocumento;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public String getClienteNumeroDocumento() {
+        return clienteNumeroDocumento;
+    }
 
-    public List<Venta> getVentas() { return ventas; }
-    public void setVentas(List<Venta> ventas) { this.ventas = ventas; }
+    public void setClienteNumeroDocumento(String clienteNumeroDocumento) {
+        this.clienteNumeroDocumento = clienteNumeroDocumento;
+    }
 
-    public List<PQRS> getPqrsList() { return pqrsList; }
-    public void setPqrsList(List<PQRS> pqrsList) { this.pqrsList = pqrsList; }
+    public String getClienteDireccion() {
+        return clienteDireccion;
+    }
+
+    public void setClienteDireccion(String clienteDireccion) {
+        this.clienteDireccion = clienteDireccion;
+    }
+
+    public String getClienteTelefono() {
+        return clienteTelefono;
+    }
+
+    public void setClienteTelefono(String clienteTelefono) {
+        this.clienteTelefono = clienteTelefono;
+    }
+
+    public String getClienteEmail() {
+        return clienteEmail;
+    }
+
+    public void setClienteEmail(String clienteEmail) {
+        this.clienteEmail = clienteEmail;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Venta> getVentas() {
+        return ventas;
+    }
+
+    public void setVentas(List<Venta> ventas) {
+        this.ventas = ventas;
+    }
+
+    public List<PQRS> getPqrsList() {
+        return pqrsList;
+    }
+
+    public void setPqrsList(List<PQRS> pqrsList) {
+        this.pqrsList = pqrsList;
+    }
 }

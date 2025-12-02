@@ -8,7 +8,6 @@ import java.time.LocalDate;
 public class PQRS {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pqrs_id")
     private Integer pqrsId;
 

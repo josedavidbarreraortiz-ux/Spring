@@ -13,8 +13,8 @@ public class Venta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "venta_codigo")
-    private Long ventaId;
+   @Column(name = "venta_codigo", unique = true, length = 50)
+    private Integer ventaId;
 
     @Column(name = "venta_fecha")
     private LocalDate ventaFecha;
@@ -28,6 +28,7 @@ public class Venta {
     private Integer cantidad;
 
     private String observaciones;
+    
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
@@ -55,11 +56,11 @@ public class Venta {
 
     // Getters & Setters
 
-    public Long getVentaId() {
+    public Integer getVentaId() {
         return ventaId;
     }
 
-    public void setVentaId(Long ventaId) {
+    public void setVentaId(Integer ventaId) {
         this.ventaId = ventaId;
     }
 

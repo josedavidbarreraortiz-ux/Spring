@@ -39,7 +39,8 @@
                             <select name="categoriaPrincipal.categoriaId" class="form-select" required>
                                 <option value="">Seleccione una categoría</option>
                                 <option th:each="c : ${categorias}" th:value="${c.categoriaId}"
-                                    th:text="${c.categoriaNombre}"></option>
+                                    th:text="${c.categoriaNombre}">
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -82,6 +83,24 @@
                         <textarea th:field="*{especificacion}" class="form-control" rows="3"></textarea>
                     </div>
 
+                    <!-- ATRIBUTOS -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">Color del Producto</h5>
+
+                        <div>
+                            <label for="colorSelect" class="form-label">Seleccione un color</label>
+                            <select id="colorSelect" name="atributoValor.id" class="form-select" required>
+                                <option value="">Seleccione...</option>
+                                <th:block th:each="v : ${valoresColor}">
+                                    <option th:value="${v.valorId}" th:text="${v.valor}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="producto.productoId" th:value="${producto.productoId}" />
+                    </div>
+
+
                     <div class="mb-3">
                         <label class="form-label">URL de Foto</label>
                         <input type="text" th:field="*{foto}" class="form-control" placeholder="https://...">
@@ -94,6 +113,110 @@
             </div>
 
         </form>
+
+        <!-- TEMPLATE DE ATRIBUTO -->
+        <template id="atributo-template">
+            <div class="atributo-item card mb-2 p-3">
+                <div class="row align-items-end">
+
+                    <!-- SELECT DEL ATRIBUTO -->
+                    <div class="col-md-5">
+                        <label class="form-label">Atributo</label>
+                        <select class="form-select atributo-select" name="atributos[].atributo.atributoId"
+                            onchange="cargarValores(this)">
+                            <option value="">Seleccione un atributo</option>
+                            <option th:each="attr : ${atributos}" th:value="${attr.atributoId}"
+                                th:text="${attr.atributoNombre}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- VALOR -->
+                    <div class="col-md-5 valor-container">
+                        <label class="form-label">Valor</label>
+                        <input type="text" class="form-control" name="atributos[].valorTexto"
+                            placeholder="Ingrese el valor">
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger btn-sm w-100" onclick="eliminarAtributo(this)">
+                            Eliminar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </template>
+
+        <!-- SCRIPT -->
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            let atributosData = /*[[${atributos}]]*/[];
+            let contadorAtributos = 0;
+
+            function agregarAtributo() {
+                const template = document.getElementById('atributo-template');
+                const clone = template.content.cloneNode(true);
+
+                clone.querySelectorAll('input, select').forEach(input => {
+                    if (input.name) {
+                        input.name = input.name.replace('[]', `[${contadorAtributos}]`);
+                    }
+                });
+
+                document.getElementById('atributos-container').appendChild(clone);
+                contadorAtributos++;
+            }
+
+            function eliminarAtributo(btn) {
+                btn.closest('.atributo-item').remove();
+            }
+
+            function cargarValores(selectAtributo) {
+
+                const atributoId = selectAtributo.value;
+                const row = selectAtributo.closest(".atributo-item");
+                const valorContainer = row.querySelector(".valor-container");
+
+                if (!atributoId) {
+                    valorContainer.innerHTML = `
+                <label class="form-label">Valor</label>
+                <input type="text" class="form-control"
+                       name="${selectAtributo.name.replace('atributoId', 'valorTexto')}"
+                       placeholder="Ingrese el valor">
+                `;
+                    return;
+                }
+
+                const atributo = atributosData.find(a => a.atributoId == atributoId);
+
+                if (atributo && atributo.valores && atributo.valores.length > 0) {
+
+                    let html = `
+                <label class="form-label">Valor</label>
+                <select class="form-select"
+                        name="${selectAtributo.name.replace('atributoId', 'atributoValorId')}">
+                    <option value="">Seleccione un valor</option>
+                `;
+
+                    atributo.valores.forEach(v => {
+                        html += `<option value="${v.atributoValorId}">${v.valor}</option>`;
+                    });
+
+                    html += `</select>`;
+                    valorContainer.innerHTML = html;
+
+                } else {
+                    valorContainer.innerHTML = `
+                <label class="form-label">Valor</label>
+                <input type="text" class="form-control"
+                       name="${selectAtributo.name.replace('atributoId', 'valorTexto')}"
+                       placeholder="Ingrese el valor">
+                `;
+                }
+            }
+            /*]]>*/
+        </script>
 
     </section>
 

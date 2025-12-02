@@ -21,12 +21,11 @@ public class PublicProductController {
     @GetMapping
     public String listado(
             @RequestParam(required = false) String nombre,
-            @RequestParam(required = false) Long categoriaId,
+            @RequestParam(required = false) Integer categoriaId,
             @RequestParam(required = false) Double precioMin,
             @RequestParam(required = false) Double precioMax,
             Model model) {
 
-        // Aplicar filtros
         var productos = productoService.buscarConFiltros(nombre, categoriaId, precioMin, precioMax);
 
         model.addAttribute("productos", productos);
@@ -35,13 +34,24 @@ public class PublicProductController {
         return "products";
     }
 
+    @GetMapping("/categoria/{id}")
+    public String productosPorCategoria(@PathVariable Integer id, Model model) {
+        var productos = productoService.buscarConFiltros(null, id, null, null);
+
+        model.addAttribute("productos", productos);
+        model.addAttribute("categorias", categoriaService.findAll());
+        model.addAttribute("categoriaActual", categoriaService.findById(id).orElse(null));
+
+        return "products";
+    }
+
     @GetMapping("/{id}")
-    public String detalle(@PathVariable Long id, Model model) {
+    public String detalle(@PathVariable Integer id, Model model) {
 
         var producto = productoService.findById(id).orElse(null);
 
         model.addAttribute("producto", producto);
-        // model.addAttribute("imagenes", producto.getImagenes()); // si tienes
+        model.addAttribute("categorias", categoriaService.findAll());
 
         return "product-detail";
     }

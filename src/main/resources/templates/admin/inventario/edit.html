@@ -11,7 +11,10 @@
 
         <h2 class="mb-3">Editar Inventario</h2>
 
-        <form method="post" th:action="@{'/admin/inventario/editar/' + ${inventario.inventarioId}}">
+        <form method="post" th:action="@{/admin/inventario/guardar}" th:object="${inventario}">
+
+            <input type="hidden" th:field="*{inventarioId}">
+            <input type="hidden" th:field="*{producto.productoId}">
 
             <div class="card shadow-sm">
                 <div class="card-body">
@@ -23,23 +26,36 @@
 
                     <div class="mb-3">
                         <label class="form-label">Stock Actual</label>
-                        <input type="number" name="inventarioStockActual" class="form-control"
-                            th:value="${inventario.inventarioStockActual}">
+                        <input type="number" th:field="*{inventarioStockActual}" class="form-control" required>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Stock Mínimo</label>
-                        <input type="number" name="inventarioStockMinimo" class="form-control"
-                            th:value="${inventario.inventarioStockMinimo}">
+                        <input type="number" th:field="*{inventarioStockMinimo}" class="form-control" required>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Stock Máximo</label>
-                        <input type="number" name="inventarioStockMaximo" class="form-control"
-                            th:value="${inventario.inventarioStockMaximo}">
+                        <input type="number" th:field="*{inventarioStockMaximo}" class="form-control" required>
                     </div>
 
-                    <button class="btn btn-warning">Actualizar</button>
+                    <div class="mb-3">
+                        <label class="form-label">Ubicación</label>
+                        <input type="text" th:field="*{inventarioUbicacion}" class="form-control"
+                            placeholder="Ej: BOG-1, ALM-A-01">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Fecha de Actualización</label>
+                        <input type="date" th:field="*{inventarioFechaActualizacion}" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Observaciones</label>
+                        <textarea th:field="*{observaciones}" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning">Actualizar</button>
                     <a th:href="@{/admin/inventario}" class="btn btn-secondary">Cancelar</a>
 
                 </div>

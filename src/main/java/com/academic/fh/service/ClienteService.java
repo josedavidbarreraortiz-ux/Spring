@@ -22,7 +22,7 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
-    public Optional<Cliente> findById(Long id) {
+    public Optional<Cliente> findById(Integer id) {
         return clienteRepository.findById(id);
     }
 
@@ -30,13 +30,25 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
-    public void delete(Long id) {
+    public void delete(Integer id) {
         clienteRepository.deleteById(id);
     }
 
     public Optional<Cliente> findByEmail(String email) {
         return clienteRepository.findAll().stream()
                 .filter(c -> c.getClienteEmail().equals(email))
+                .findFirst();
+    }
+
+    public Optional<Cliente> findByUserId(Long userId) {
+        return clienteRepository.findAll().stream()
+                .filter(c -> c.getUser() != null && c.getUser().getId().equals(userId))
+                .findFirst();
+    }
+
+    public Optional<Cliente> findByDocumento(String documento) {
+        return clienteRepository.findAll().stream()
+                .filter(c -> c.getClienteNumeroDocumento() != null && c.getClienteNumeroDocumento().equals(documento))
                 .findFirst();
     }
 }

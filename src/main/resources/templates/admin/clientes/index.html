@@ -9,11 +9,8 @@
 
     <section th:fragment="content">
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="mb-3">
             <h2>Clientes</h2>
-            <a class="btn btn-primary" th:href="@{/admin/clientes/crear}">
-                <i class="bi bi-person-plus"></i> Nuevo Cliente
-            </a>
         </div>
 
         <div class="card shadow-sm">
@@ -40,21 +37,9 @@
                             <td th:text="${c.clienteDireccion}"></td>
 
                             <td class="text-end">
-
-                                <a th:href="@{'/admin/clientes/' + ${c.clienteId}}" class="btn btn-sm btn-secondary">
-                                    Ver
+                                <a th:href="@{'/admin/clientes/' + ${c.clienteId}}" class="btn btn-sm btn-info">
+                                    <i class="bi bi-eye"></i> Ver
                                 </a>
-
-                                <a th:href="@{'/admin/clientes/editar/' + ${c.clienteId}}"
-                                    class="btn btn-sm btn-warning">
-                                    Editar
-                                </a>
-
-                                <form th:action="@{'/admin/clientes/eliminar/' + ${c.clienteId}}" method="post"
-                                    class="d-inline">
-                                    <button class="btn btn-sm btn-danger">Eliminar</button>
-                                </form>
-
                             </td>
                         </tr>
 

@@ -4,263 +4,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - FH</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <title>Iniciar Sesión / Registrarse - FH</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .login-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            max-width: 900px;
-            width: 100%;
-            display: flex;
-        }
-
-        .login-left {
-            flex: 1;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 60px 40px;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .login-left h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .login-left p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-
-        .login-right {
-            flex: 1;
-            padding: 60px 50px;
-        }
-
-        .login-right h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #1a1a1a;
-        }
-
-        .login-right p {
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .form-control {
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: 2px solid #e0e0e0;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .input-group-text {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-right: none;
-            border-radius: 10px 0 0 10px;
-            color: #667eea;
-        }
-
-        .input-group .form-control {
-            border-left: none;
-            border-radius: 0 10px 10px 0;
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .alert {
-            border-radius: 10px;
-            border: none;
-        }
-
-        .alert-danger {
-            background: #fee;
-            color: #c33;
-        }
-
-        .alert-success {
-            background: #efe;
-            color: #3c3;
-        }
-
-        .feature-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-
-        .feature-icon i {
-            font-size: 24px;
-        }
-
-        .feature-item {
-            margin-bottom: 25px;
-        }
-
-        .feature-item h4 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .feature-item p {
-            font-size: 0.95rem;
-            opacity: 0.85;
-            margin: 0;
-        }
-
-        @media (max-width: 768px) {
-            .login-container {
-                flex-direction: column;
-            }
-
-            .login-left {
-                padding: 40px 30px;
-            }
-
-            .login-right {
-                padding: 40px 30px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/login-style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="login-container">
-        <div class="login-left">
-            <h1>Bienvenido a FH</h1>
-            <p>Gestiona tu tienda de manera eficiente y profesional</p>
+    <div class="form-container">
+        <h2 id="formTitle" class="form-title">Iniciar Sesión</h2>
 
-            <div class="mt-4">
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="bi bi-shield-check"></i>
-                    </div>
-                    <h4>Seguro y Confiable</h4>
-                    <p>Tus datos están protegidos con encriptación de última generación</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="bi bi-graph-up"></i>
-                    </div>
-                    <h4>Gestión Completa</h4>
-                    <p>Administra productos, ventas, inventario y clientes en un solo lugar</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="bi bi-lightning-charge"></i>
-                    </div>
-                    <h4>Rápido y Eficiente</h4>
-                    <p>Interfaz moderna y optimizada para tu productividad</p>
-                </div>
-            </div>
+        <!-- Error Messages -->
+        <div th:if="${error}" class="alert alert-danger">
+            <i class="bi bi-exclamation-circle"></i>
+            <span th:text="${error}">Error</span>
         </div>
 
-        <div class="login-right">
-            <h2>Iniciar Sesión</h2>
-            <p>Ingresa tus credenciales para continuar</p>
+        <!-- Success Messages -->
+        <div th:if="${message}" class="alert alert-success">
+            <i class="bi bi-check-circle"></i>
+            <span th:text="${message}">Mensaje</span>
+        </div>
 
-            <div th:if="${error}" class="alert alert-danger" role="alert">
-                <i class="bi bi-exclamation-circle me-2"></i>
-                <span th:text="${error}">Error</span>
+        <!-- Login Form -->
+        <form id="loginForm" th:action="@{/login}" method="post" style="display: block;">
+            <div class="input-group">
+                <label for="loginEmail">
+                    <i class="bi bi-envelope"></i> Correo Electrónico
+                </label>
+                <input type="email" id="loginEmail" name="username" placeholder="Correo" required>
             </div>
 
-            <div th:if="${message}" class="alert alert-success" role="alert">
-                <i class="bi bi-check-circle me-2"></i>
-                <span th:text="${message}">Mensaje</span>
+            <div class="input-group">
+                <label for="loginPassword">
+                    <i class="bi bi-lock"></i> Contraseña
+                </label>
+                <input type="password" id="loginPassword" name="password" placeholder="Contraseña" required>
             </div>
 
-            <form th:action="@{/login}" method="post">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Correo Electrónico</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-envelope"></i>
-                        </span>
-                        <input type="email" class="form-control" id="username" name="username"
-                            placeholder="tu@email.com" required autofocus>
-                    </div>
-                </div>
+            <button type="submit" class="submit-btn">
+                <i class="bi bi-box-arrow-in-right"></i> Ingresar
+            </button>
+        </form>
 
-                <div class="mb-4">
-                    <label for="password" class="form-label">Contraseña</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-lock"></i>
-                        </span>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="••••••••"
-                            required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-login">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>
-                    Iniciar Sesión
-                </button>
-            </form>
-
-            <div class="text-center mt-4">
-                <p class="text-muted mb-2">Credenciales de prueba:</p>
-                <small class="text-muted">
-                    <strong>Admin:</strong> admin@fh.com / admin123<br>
-                    <strong>Cliente:</strong> cliente@fh.com / cliente123
-                </small>
+        <!-- Register Form -->
+        <form id="registerForm" th:action="@{/register}" method="post" style="display: none;">
+            <div class="input-group">
+                <label for="registerName">
+                    <i class="bi bi-person"></i> Nombre
+                </label>
+                <input type="text" id="registerName" name="name" placeholder="Nombre" required>
             </div>
+
+            <div class="input-group">
+                <label for="registerEmail">
+                    <i class="bi bi-envelope"></i> Correo Electrónico
+                </label>
+                <input type="email" id="registerEmail" name="email" placeholder="Correo" required>
+            </div>
+
+            <div class="input-group">
+                <label for="registerPassword">
+                    <i class="bi bi-lock"></i> Contraseña
+                </label>
+                <input type="password" id="registerPassword" name="password" placeholder="Contraseña" required>
+            </div>
+
+            <div class="input-group">
+                <label for="registerPasswordConfirm">
+                    <i class="bi bi-lock-fill"></i> Confirmar Contraseña
+                </label>
+                <input type="password" id="registerPasswordConfirm" name="password_confirmation"
+                    placeholder="Confirmar contraseña" required>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <i class="bi bi-person-plus"></i> Registrarse
+            </button>
+        </form>
+
+        <!-- Toggle Button -->
+        <div class="text-center mt-4">
+            <p style="color: #6b7280; font-size: 0.9rem;">
+                <span id="toggleText">¿No tienes cuenta?</span>
+                <a href="#" id="toggleBtn" class="text-link">Regístrate aquí</a>
+            </p>
+        </div>
+
+        <!-- Test Credentials (only show on login) -->
+        <div id="testCredentials" class="text-center mt-4" style="padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+            <p style="color: #9ca3af; font-size: 0.875rem; margin-bottom: 0.5rem;">Credenciales de prueba:</p>
+            <small style="color: #6b7280; font-size: 0.8rem;">
+                <strong>Admin:</strong> admin@fh.com / admin123<br>
+                <strong>Cliente:</strong> cliente@fh.com / cliente123
+            </small>
         </div>
     </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const formTitle = document.getElementById('formTitle');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const toggleText = document.getElementById('toggleText');
+        const testCredentials = document.getElementById('testCredentials');
+
+        toggleBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            if (loginForm.style.display === 'none') {
+                // Show login
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                formTitle.textContent = 'Iniciar Sesión';
+                toggleText.textContent = '¿No tienes cuenta?';
+                toggleBtn.textContent = 'Regístrate aquí';
+                testCredentials.style.display = 'block';
+            } else {
+                // Show register
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                formTitle.textContent = 'Registrarse';
+                toggleText.textContent = '¿Ya tienes cuenta?';
+                toggleBtn.textContent = 'Inicia sesión aquí';
+                testCredentials.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 
 </html>

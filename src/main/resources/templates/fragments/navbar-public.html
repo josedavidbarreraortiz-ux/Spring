@@ -1,34 +1,38 @@
 <!-- templates/fragments/navbar-public.html -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" xmlns:th="http://www.thymeleaf.org" th:fragment="navbar">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/}">FH Store</a>
+<header xmlns:th="http://www.thymeleaf.org" th:fragment="navbar">
+    <div class="main-nav-container">
+        <a th:href="@{/}" class="logo">FH</a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navPublic">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <ul class="nav-links-main">
+            <li><a th:href="@{/}">Inicio</a></li>
+            <li><a th:href="@{/productos}">Productos</a></li>
+            <li><a href="#caracteristicas">Características</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
 
-        <div class="collapse navbar-collapse" id="navPublic">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <div class="header-icons">
+            <a th:href="@{/login}" class="header-icon-item">
+                <i class="fa-solid fa-user"></i>
+                <span>Mi cuenta</span>
+            </a>
 
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/tienda/products}">Productos</a>
-                </li>
+            <div class="icon-divider"></div>
 
-            </ul>
-
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/carrito}">
-                        <i class="bi bi-cart"></i> Carrito
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/cliente/dashboard}">
-                        <i class="bi bi-person-circle"></i> Mi Cuenta
-                    </a>
-                </li>
-            </ul>
+            <a th:href="@{/carrito}" class="header-icon-item">
+                <i class="fa-solid fa-shopping-cart"></i>
+                <span>Mi carrito</span>
+            </a>
         </div>
     </div>
-</nav>
+
+    <div class="categories-nav">
+        <ul class="categories-list">
+            <li><a th:href="@{/productos}">Electrónica</a></li>
+            <li><a th:href="@{/productos}">Componentes</a></li>
+            <li><a th:href="@{/productos}">Audio y Video</a></li>
+            <li><a th:href="@{/productos}">Informática</a></li>
+            <li><a th:href="@{/productos}">Cámaras</a></li>
+            <li><a th:href="@{/productos}">Redes</a></li>
+        </ul>
+    </div>
+</header>
