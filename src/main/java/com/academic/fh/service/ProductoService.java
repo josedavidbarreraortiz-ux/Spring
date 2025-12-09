@@ -28,6 +28,10 @@ public class ProductoService {
                 .toList();
     }
 
+    public List<Producto> findTopSelling() {
+        return productoRepository.findTopSellingProducts();
+    }
+
     public Optional<Producto> findById(Integer id) {
         return productoRepository.findById(id);
     }

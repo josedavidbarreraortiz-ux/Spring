@@ -163,6 +163,7 @@
     min-height: 48px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -235,4 +236,23 @@
     .filters-card {
         margin-bottom: 1.5rem;
     }
+}
+
+/* Out of Stock Styles */
+.product-card.out-of-stock {
+    opacity: 0.75;
+}
+
+.product-card.out-of-stock:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.product-card.out-of-stock img {
+    filter: grayscale(30%);
+}
+
+.badge-agotado {
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4) !important;
 }

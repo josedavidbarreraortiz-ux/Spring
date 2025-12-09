@@ -61,7 +61,12 @@
             <h2 class="section-title">Nuestros Productos Estrella</h2>
             <div class="featured-products-grid product-grid">
                 <div class="product-card" th:each="producto, iterStat : ${productos}" th:if="${iterStat.index < 6}">
-                    <img th:src="${producto.foto != null && producto.foto != '' ? producto.foto : 'https://placehold.co/300x300/667eea/FFFFFF?text=Producto'}"
+                    <!-- Valid image file (ends with .png, .jpg, .jpeg, .gif, .webp) -->
+                    <img th:if="${producto.foto != null and (producto.foto.endsWith('.png') or producto.foto.endsWith('.jpg') or producto.foto.endsWith('.jpeg') or producto.foto.endsWith('.gif') or producto.foto.endsWith('.webp') or producto.foto.endsWith('.PNG') or producto.foto.endsWith('.JPG'))}"
+                        th:src="@{'/uploads/productos/' + ${producto.foto}}" th:alt="${producto.productoNombre}">
+                    <!-- No valid image - show placeholder -->
+                    <img th:unless="${producto.foto != null and (producto.foto.endsWith('.png') or producto.foto.endsWith('.jpg') or producto.foto.endsWith('.jpeg') or producto.foto.endsWith('.gif') or producto.foto.endsWith('.webp') or producto.foto.endsWith('.PNG') or producto.foto.endsWith('.JPG'))}"
+                        src="https://placehold.co/300x300/667eea/FFFFFF?text=Producto"
                         th:alt="${producto.productoNombre}">
                     <h3 th:text="${producto.productoNombre}">Producto</h3>
                     <p class="description" th:text="${producto.resumen}">Descripción del producto</p>

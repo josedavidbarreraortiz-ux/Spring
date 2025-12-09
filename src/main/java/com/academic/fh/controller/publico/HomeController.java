@@ -19,8 +19,8 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        // Mostrar solo productos activos en la página principal
-        model.addAttribute("productos", productoService.findAllActivos());
+        // Mostrar los productos más vendidos en la página principal
+        model.addAttribute("productos", productoService.findTopSelling());
         model.addAttribute("categorias", categoriaService.findAll());
         return "index";
     }

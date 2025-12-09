@@ -78,7 +78,8 @@
                         <div th:if="${productos != null && productos.size() > 0}">
                             <div class="row g-4">
                                 <div class="col-lg-4 col-md-6 col-sm-6" th:each="p : ${productos}">
-                                    <div class="card product-card">
+                                    <div class="card product-card"
+                                        th:classappend="${stockMap[p.productoId] == null || stockMap[p.productoId] <= 0} ? 'out-of-stock' : ''">
 
                                         <div class="product-image-wrapper">
                                             <!-- Valid image file (ends with .png, .jpg, .jpeg, .gif, .webp) -->
@@ -89,7 +90,13 @@
                                             <img th:unless="${p.foto != null and (p.foto.endsWith('.png') or p.foto.endsWith('.jpg') or p.foto.endsWith('.jpeg') or p.foto.endsWith('.gif') or p.foto.endsWith('.webp') or p.foto.endsWith('.PNG') or p.foto.endsWith('.JPG'))}"
                                                 src="https://placehold.co/300x300/667eea/FFFFFF?text=Sin+Imagen"
                                                 th:alt="${p.productoNombre}">
-                                            <span class="product-badge">Nuevo</span>
+                                            <!-- Badge: Agotado si stock es 0, Nuevo si hay stock -->
+                                            <span
+                                                th:if="${stockMap[p.productoId] == null || stockMap[p.productoId] <= 0}"
+                                                class="product-badge badge-agotado">Agotado</span>
+                                            <span
+                                                th:unless="${stockMap[p.productoId] == null || stockMap[p.productoId] <= 0}"
+                                                class="product-badge">Nuevo</span>
                                         </div>
 
                                         <div class="card-body">

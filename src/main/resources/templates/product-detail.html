@@ -60,9 +60,13 @@
                             </p>
 
                             <!-- Stock Status -->
-                            <div class="stock-status">
+                            <div th:if="${stockProducto > 0}" class="stock-status stock-disponible">
                                 <i class="bi bi-check-circle-fill"></i>
-                                <span>Disponible en stock</span>
+                                <span>Disponible en stock (<span th:text="${stockProducto}"></span> unidades)</span>
+                            </div>
+                            <div th:unless="${stockProducto > 0}" class="stock-status stock-agotado">
+                                <i class="bi bi-x-circle-fill"></i>
+                                <span>Agotado</span>
                             </div>
 
                             <!-- Price -->
@@ -84,8 +88,9 @@
                                 <p class="product-specs" th:text="${producto.especificacion}"></p>
                             </div>
 
-                            <!-- Add to Cart Form -->
-                            <form method="post" th:action="@{/carrito/agregar}" id="addToCartForm">
+                            <!-- Add to Cart Form - Solo si hay stock -->
+                            <form th:if="${stockProducto > 0}" method="post" th:action="@{/carrito/agregar}"
+                                id="addToCartForm">
                                 <input type="hidden" name="productoId" th:value="${producto.productoId}">
 
                                 <!-- Quantity Selector -->
@@ -97,7 +102,7 @@
                                                 <i class="bi bi-dash"></i>
                                             </button>
                                             <input type="number" name="cantidad" id="quantityInput" value="1" min="1"
-                                                max="99" class="quantity-input" readonly>
+                                                th:max="${stockProducto}" class="quantity-input" readonly>
                                             <button type="button" class="quantity-btn" onclick="increaseQuantity()">
                                                 <i class="bi bi-plus"></i>
                                             </button>
@@ -111,6 +116,14 @@
                                     Agregar al Carrito
                                 </button>
                             </form>
+
+                            <!-- Mensaje si no hay stock -->
+                            <div th:unless="${stockProducto > 0}" class="out-of-stock-message">
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    Este producto no está disponible actualmente. Por favor, vuelve más tarde.
+                                </div>
+                            </div>
 
                             <!-- Product Features -->
                             <div class="product-features">
@@ -140,10 +153,11 @@
             </div>
         </div>
 
-        <script>
+        <script th:inline="javascript">
+            var maxStock = [[${ stockProducto }]];
             function increaseQuantity() {
                 const input = document.getElementById('quantityInput');
-                if (parseInt(input.value) < 99) input.value = parseInt(input.value) + 1;
+                if (parseInt(input.value) < maxStock) input.value = parseInt(input.value) + 1;
             }
             function decreaseQuantity() {
                 const input = document.getElementById('quantityInput');

@@ -95,8 +95,25 @@
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
+}
+
+.stock-status.stock-disponible {
     background: rgba(34, 197, 94, 0.1);
     color: #16a34a;
+}
+
+.stock-status.stock-agotado {
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+}
+
+.out-of-stock-message {
+    margin: 1.5rem 0;
+}
+
+.out-of-stock-message .alert {
+    border-radius: 12px;
+    font-weight: 500;
 }
 
 .product-price {
