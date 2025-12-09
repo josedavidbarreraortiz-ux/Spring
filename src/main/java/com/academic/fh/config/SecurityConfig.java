@@ -27,10 +27,11 @@ public class SecurityConfig {
                 http
                                 .authorizeHttpRequests(auth -> auth
                                                 // Rutas públicas
-                                                .requestMatchers("/", "/productos/**", "/login", "/register", "/error")
+                                                .requestMatchers("/", "/productos/**", "/login", "/register", "/error",
+                                                                "/mi-cuenta")
                                                 .permitAll()
                                                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**",
-                                                                "/img/**")
+                                                                "/img/**", "/uploads/**")
                                                 .permitAll()
                                                 .requestMatchers("/h2-console/**").permitAll()
 

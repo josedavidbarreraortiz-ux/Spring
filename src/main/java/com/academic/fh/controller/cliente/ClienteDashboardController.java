@@ -39,18 +39,14 @@ public class ClienteDashboardController {
             User user = userService.findByEmail(userEmail).orElse(null);
 
             if (user != null) {
-                // Buscar el Cliente asociado al User
-                Cliente cliente = clienteService.findByUserId(user.getId()).orElse(null);
-
-                if (cliente != null) {
-                    model.addAttribute("cliente", cliente);
-                    // Buscar solo las compras del cliente autenticado
-                    model.addAttribute("comprasRecientes", ventaService.findByClienteId(cliente.getClienteId()));
-                } else {
-                    model.addAttribute("cliente", null);
-                    model.addAttribute("comprasRecientes", java.util.Collections.emptyList());
-                }
+                model.addAttribute("user", user);
+                // Buscar las compras del usuario autenticado por user_id
+                model.addAttribute("comprasRecientes", ventaService.findByUserId(user.getId()));
+            } else {
+                model.addAttribute("comprasRecientes", java.util.Collections.emptyList());
             }
+        } else {
+            model.addAttribute("comprasRecientes", java.util.Collections.emptyList());
         }
 
         model.addAttribute("categorias", categoriaService.findAll());

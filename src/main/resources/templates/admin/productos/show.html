@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
 
 <head>
@@ -15,45 +15,87 @@
             <div class="card-body">
 
                 <div class="row">
+                    <!-- InformaciÃ³n del producto -->
                     <div class="col-md-8">
-                        <p><strong>ID:</strong> <span th:text="${producto.productoId}"></span></p>
-                        <p><strong>Nombre:</strong> <span th:text="${producto.productoNombre}"></span></p>
-                        <p><strong>Código de Barras:</strong> <span th:text="${producto.productoCodigoBar}"></span></p>
-                        <p><strong>Marca:</strong> <span th:text="${producto.productoMarca}"></span></p>
-                        <p><strong>Categoría:</strong>
-                            <span
-                                th:text="${producto.categoriaPrincipal != null ? producto.categoriaPrincipal.categoriaNombre : 'N/A'}"></span>
-                        </p>
-                        <p><strong>Precio de Venta:</strong> $<span th:text="${producto.productoPrecioVenta}"></span>
-                        </p>
-                        <p><strong>Tipo de Unidad:</strong> <span th:text="${producto.tipoUnidad}"></span></p>
-                        <p><strong>Estado:</strong>
-                            <span class="badge"
-                                th:classappend="${producto.productoEstado == 'Activo' ? 'bg-success' : 'bg-secondary'}"
-                                th:text="${producto.productoEstado}"></span>
-                        </p>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p><strong>ID:</strong> <span th:text="${producto.productoId}"></span></p>
+                                <p><strong>Nombre:</strong> <span th:text="${producto.productoNombre}"></span></p>
+                                <p><strong>CÃ³digo de Barras:</strong> <span
+                                        th:text="${producto.productoCodigoBar ?: 'N/A'}"></span></p>
+                                <p><strong>Marca:</strong> <span th:text="${producto.productoMarca ?: 'N/A'}"></span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>CategorÃ­a:</strong>
+                                    <span
+                                        th:text="${producto.categoriaPrincipal != null ? producto.categoriaPrincipal.categoriaNombre : 'N/A'}"></span>
+                                </p>
+                                <p><strong>Precio de Venta:</strong> $<span
+                                        th:text="${#numbers.formatInteger(producto.productoPrecioVenta, 1, 2)}"></span>
+                                </p>
+                                <p><strong>Tipo de Unidad:</strong> <span
+                                        th:text="${producto.tipoUnidad ?: 'N/A'}"></span></p>
+                                <p><strong>Estado:</strong>
+                                    <span class="badge"
+                                        th:classappend="${producto.productoEstado == 'Activo' ? 'bg-success' : 'bg-secondary'}"
+                                        th:text="${producto.productoEstado}"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Color del producto -->
+                        <div class="mb-3" th:if="${producto.atributos != null && !producto.atributos.isEmpty()}">
+                            <th:block th:each="pa : ${producto.atributos}">
+                                <th:block th:if="${pa.atributo != null && pa.atributo.atributoId == 1}">
+                                    <p><strong>Color:</strong>
+                                        <span class="badge bg-info" th:if="${pa.valor != null}"
+                                            th:text="${pa.valor.valor}"></span>
+                                        <span th:if="${pa.valorTexto != null}" th:text="${pa.valorTexto}"></span>
+                                    </p>
+                                </th:block>
+                            </th:block>
+                        </div>
                     </div>
 
-                    <div class="col-md-4" th:if="${producto.foto != null && producto.foto != ''}">
-                        <img th:src="${producto.foto}" class="img-fluid rounded" alt="Foto del producto">
+                    <!-- Imagen del producto -->
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <th:block th:if="${producto.foto != null && producto.foto != ''}">
+                                <img th:if="${producto.foto.startsWith('http') || producto.foto.startsWith('storage')}"
+                                    th:src="${producto.foto}" class="img-fluid rounded shadow"
+                                    style="max-height: 250px;" alt="Foto del producto">
+                                <img th:unless="${producto.foto.startsWith('http') || producto.foto.startsWith('storage')}"
+                                    th:src="@{'/uploads/productos/' + ${producto.foto}}"
+                                    class="img-fluid rounded shadow" style="max-height: 250px;" alt="Foto del producto">
+                            </th:block>
+                            <th:block th:if="${producto.foto == null || producto.foto == ''}">
+                                <div class="border rounded p-4 text-muted"
+                                    style="min-height: 150px; display: flex; align-items: center; justify-content: center;">
+                                    <span>Sin imagen</span>
+                                </div>
+                            </th:block>
+                        </div>
                     </div>
                 </div>
 
                 <hr>
 
-                <div th:if="${producto.resumen != null && producto.resumen != ''}">
+                <!-- Resumen -->
+                <div th:if="${producto.resumen != null && producto.resumen != ''}" class="mb-3">
                     <h5>Resumen</h5>
                     <p th:text="${producto.resumen}"></p>
                 </div>
 
-                <div th:if="${producto.especificacion != null && producto.especificacion != ''}">
+                <!-- Especificaciones -->
+                <div th:if="${producto.especificacion != null && producto.especificacion != ''}" class="mb-3">
                     <h5>Especificaciones</h5>
                     <p th:text="${producto.especificacion}"></p>
                 </div>
 
-                <!-- Sección de Atributos -->
-                <div th:if="${producto.atributos != null && !producto.atributos.isEmpty()}">
-                    <h5>Atributos del Producto</h5>
+                <!-- Otros atributos (excluyendo color) -->
+                <div th:if="${producto.atributos != null && !producto.atributos.isEmpty()}" class="mb-3">
+                    <h5>Atributos Adicionales</h5>
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered">
                             <thead class="table-light">
@@ -63,20 +105,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="pa : ${producto.atributos}">
-                                    <td th:text="${pa.atributo != null ? pa.atributo.atributoNombre : 'N/A'}"></td>
-                                    <td>
-                                        <span th:if="${pa.valorTexto != null}" th:text="${pa.valorTexto}"></span>
-                                        <span th:if="${pa.valorNumero != null}" th:text="${pa.valorNumero}"></span>
-                                        <span th:if="${pa.valor != null}" th:text="${pa.valor.valor}"></span>
-                                    </td>
-                                </tr>
+                                <th:block th:each="pa : ${producto.atributos}">
+                                    <tr th:if="${pa.atributo != null && pa.atributo.atributoId != 1}">
+                                        <td th:text="${pa.atributo.atributoNombre}"></td>
+                                        <td>
+                                            <span th:if="${pa.valorTexto != null}" th:text="${pa.valorTexto}"></span>
+                                            <span th:if="${pa.valorNumero != null}" th:text="${pa.valorNumero}"></span>
+                                            <span th:if="${pa.valor != null}" th:text="${pa.valor.valor}"></span>
+                                        </td>
+                                    </tr>
+                                </th:block>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class="mt-3">
+                <div class="mt-4">
                     <a th:href="@{'/admin/productos/editar/' + ${producto.productoId}}"
                         class="btn btn-warning">Editar</a>
                     <a th:href="@{/admin/productos}" class="btn btn-secondary">Volver</a>

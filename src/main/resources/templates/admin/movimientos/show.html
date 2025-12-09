@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layouts/admin-layout :: layout(~{::title}, ~{::content})">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout(~{::title}, ~{::content})">
 
 <head>
     <title>Detalle Movimiento</title>
@@ -8,41 +7,42 @@
 
 <body>
 
-<section th:fragment="content">
+    <section th:fragment="content">
 
-    <h2 class="mb-3">Detalle del Movimiento</h2>
+        <h2 class="mb-3">Detalle del Movimiento</h2>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+        <div class="card shadow-sm">
+            <div class="card-body">
 
-            <p><strong>ID:</strong> <span th:text="${movimiento.id}"></span></p>
+                <p><strong>ID:</strong> <span th:text="${movimiento.movimientoId}"></span></p>
 
-            <p><strong>Producto:</strong>
-                <span th:text="${movimiento.inventario.producto.nombre}"></span>
-            </p>
+                <p><strong>Producto:</strong>
+                    <span th:text="${movimiento.producto?.productoNombre}"></span>
+                </p>
 
-            <p><strong>Tipo:</strong>
-                <span th:text="${movimiento.tipo}"
-                      th:classappend="${movimiento.tipo == 'ENTRADA'} ? 'text-success fw-bold' : 'text-danger fw-bold'">
-                </span>
-            </p>
+                <p><strong>Tipo:</strong>
+                    <span th:text="${movimiento.movimientoTipo}"
+                        th:classappend="${movimiento.movimientoTipo == 'ENTRADA'} ? 'text-success fw-bold' : 'text-danger fw-bold'">
+                    </span>
+                </p>
 
-            <p><strong>Cantidad:</strong> <span th:text="${movimiento.cantidad}"></span></p>
+                <p><strong>Cantidad:</strong> <span th:text="${movimiento.movimientoCantidad}"></span></p>
 
-            <p><strong>Stock Anterior:</strong> <span th:text="${movimiento.stockAnterior}"></span></p>
-            <p><strong>Stock Nuevo:</strong> <span th:text="${movimiento.stockNuevo}"></span></p>
+                <p><strong>Stock Anterior:</strong> <span th:text="${movimiento.movimientoStockAnterior}"></span></p>
+                <p><strong>Stock Nuevo:</strong> <span th:text="${movimiento.movimientoStockNuevo}"></span></p>
 
-            <p><strong>Fecha:</strong> <span th:text="${movimiento.fecha}"></span></p>
+                <p><strong>Fecha:</strong> <span th:text="${movimiento.movimientoFecha}"></span></p>
 
-            <p><strong>Descripción:</strong></p>
-            <p th:text="${movimiento.descripcion}"></p>
+                <p><strong>Motivo:</strong></p>
+                <p th:text="${movimiento.movimientoMotivo}"></p>
 
-            <a th:href="@{/admin/movimientos}" class="btn btn-secondary mt-3">Volver</a>
+                <a th:href="@{/admin/movimientos}" class="btn btn-secondary mt-3">Volver</a>
 
+            </div>
         </div>
-    </div>
 
-</section>
+    </section>
 
 </body>
+
 </html>

@@ -25,18 +25,24 @@
                     </p>
 
                     <div class="mb-3">
-                        <label class="form-label">Stock Actual</label>
-                        <input type="number" th:field="*{inventarioStockActual}" class="form-control" required>
+                        <label class="form-label">Stock Actual <span class="text-danger">*</span></label>
+                        <input type="number" th:field="*{inventarioStockActual}" class="form-control" required
+                            data-validate="required|nonNegative|integer">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Stock Mínimo</label>
-                        <input type="number" th:field="*{inventarioStockMinimo}" class="form-control" required>
+                        <label class="form-label">Stock Mínimo <span class="text-danger">*</span></label>
+                        <input type="number" th:field="*{inventarioStockMinimo}" class="form-control" required
+                            data-validate="required|nonNegative|integer">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Stock Máximo</label>
-                        <input type="number" th:field="*{inventarioStockMaximo}" class="form-control" required>
+                        <label class="form-label">Stock Máximo <span class="text-danger">*</span></label>
+                        <input type="number" th:field="*{inventarioStockMaximo}" class="form-control" required
+                            data-validate="required|nonNegative|integer">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">

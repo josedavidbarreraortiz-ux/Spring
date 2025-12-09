@@ -40,17 +40,22 @@
 
                     <div class="mb-3">
                         <label class="form-label">Número Documento</label>
-                        <input type="text" th:field="*{clienteNumeroDocumento}" class="form-control">
+                        <input type="text" th:field="*{clienteNumeroDocumento}" class="form-control"
+                            data-validate="document">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" th:field="*{clienteEmail}" class="form-control" required>
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" th:field="*{clienteEmail}" class="form-control" required
+                            data-validate="required|email">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Teléfono</label>
-                        <input type="text" th:field="*{clienteTelefono}" class="form-control">
+                        <input type="text" th:field="*{clienteTelefono}" class="form-control" data-validate="phone">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">

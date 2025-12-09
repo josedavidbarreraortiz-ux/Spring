@@ -13,7 +13,7 @@ public class Venta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "venta_codigo", unique = true, length = 50)
+    @Column(name = "venta_codigo")
     private Integer ventaId;
 
     @Column(name = "venta_fecha")
@@ -28,7 +28,6 @@ public class Venta {
     private Integer cantidad;
 
     private String observaciones;
-    
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
@@ -42,7 +41,7 @@ public class Venta {
     @JoinColumn(name = "metodo_pago_id")
     private MetodoPago metodoPago;
 
-    @OneToMany(mappedBy = "venta")
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<VentaDetalle> detalles;
 

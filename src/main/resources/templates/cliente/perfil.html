@@ -17,56 +17,46 @@
 
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <div class="dashboard-card" th:if="${cliente != null}">
+                    <div class="dashboard-card" th:if="${user != null}">
 
                         <!-- Profile Avatar -->
                         <div class="profile-avatar">
                             <i class="bi bi-person-fill"></i>
                         </div>
 
-                        <h2 class="profile-name" th:text="${cliente.user != null ? cliente.user.name : 'Usuario'}">
-                            Nombre del Cliente</h2>
-                        <p class="profile-email"
-                            th:text="${cliente.user != null ? cliente.user.email : 'email@ejemplo.com'}">
-                            email@ejemplo.com</p>
+                        <h2 class="profile-name" th:text="${user.name}">Nombre del Usuario</h2>
+                        <p class="profile-email" th:text="${user.email}">email@ejemplo.com</p>
 
                         <!-- Profile Info -->
-                        <div class="row g-3">
-                            <div class="col-md-6">
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-12">
                                 <label class="form-label fw-bold">
-                                    <i class="bi bi-telephone me-2"></i>Teléfono
+                                    <i class="bi bi-envelope me-2"></i>Correo Electrónico
                                 </label>
-                                <p class="form-control-plaintext"
-                                    th:text="${cliente.clienteTelefono != null ? cliente.clienteTelefono : 'No especificado'}">
-                                    -</p>
+                                <p class="form-control-plaintext" th:text="${user.email}">-</p>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label class="form-label fw-bold">
-                                    <i class="bi bi-geo-alt me-2"></i>Dirección
+                                    <i class="bi bi-person me-2"></i>Nombre Completo
                                 </label>
-                                <p class="form-control-plaintext"
-                                    th:text="${cliente.clienteDireccion != null ? cliente.clienteDireccion : 'No especificada'}">
-                                    -</p>
+                                <p class="form-control-plaintext" th:text="${user.name}">-</p>
                             </div>
                         </div>
 
                         <!-- Action Buttons -->
                         <div class="mt-4 d-flex gap-2">
-                            <a th:href="@{/cliente/perfil/editar}" class="btn btn-primary-modern">
-                                <i class="bi bi-pencil-square me-2"></i>Editar Perfil
-                            </a>
-                            <a th:href="@{/cliente/perfil/cambiar-password}" class="btn btn-secondary-modern">
+                            <a th:href="@{/cliente/perfil/cambiar-password}" class="btn btn-primary-modern">
                                 <i class="bi bi-key me-2"></i>Cambiar Contraseña
                             </a>
                         </div>
                     </div>
 
-                    <!-- Message if no cliente -->
-                    <div class="dashboard-card text-center" th:if="${cliente == null}">
+                    <!-- Message if no user -->
+                    <div class="dashboard-card text-center" th:if="${user == null}">
                         <i class="bi bi-exclamation-circle fs-1 text-warning mb-3"></i>
-                        <h3>No se encontró información del cliente</h3>
-                        <p class="text-muted">Por favor, contacta al administrador.</p>
+                        <h3>No se encontró información del usuario</h3>
+                        <p class="text-muted">Por favor, inicia sesión nuevamente.</p>
                     </div>
                 </div>
             </div>

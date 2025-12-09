@@ -11,10 +11,14 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Ventas</h2>
-
-            <a class="btn btn-primary" th:href="@{/admin/ventas/crear}">
-                <i class="bi bi-cart-plus"></i> Nueva Venta
-            </a>
+            <div class="d-flex gap-2">
+                <a class="btn btn-danger" th:href="@{/admin/reportes/ventas}">
+                    <i class="bi bi-file-pdf"></i> Generar Reporte
+                </a>
+                <a class="btn btn-primary" th:href="@{/admin/ventas/crear}">
+                    <i class="bi bi-cart-plus"></i> Nueva Venta
+                </a>
+            </div>
         </div>
 
         <div class="card shadow-sm">
@@ -35,8 +39,10 @@
                     <tbody>
                         <tr th:each="v : ${ventas}">
                             <td th:text="${v.ventaId}"></td>
-                            <td th:text="${v.cliente != null ? v.cliente.user.name : 'N/A'}"></td>
-                            <td th:text="'$' + ${v.ventaTotal}"></td>
+                            <td
+                                th:text="${v.user != null ? v.user.name : (v.cliente != null ? v.cliente.clienteNombre : 'N/A')}">
+                            </td>
+                            <td th:text="'$' + ${#numbers.formatInteger(v.ventaTotal, 0, 'POINT')}"></td>
                             <td th:text="${v.metodoPago != null ? v.metodoPago.metodoPagoNombre : 'N/A'}"></td>
                             <td th:text="${v.ventaFecha} + ' ' + ${v.ventaHora}"></td>
 

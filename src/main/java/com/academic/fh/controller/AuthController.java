@@ -65,7 +65,8 @@ public class AuthController {
             newUser.setName(name);
             newUser.setEmail(email);
             newUser.setPassword(passwordEncoder.encode(password));
-            newUser.setRole("CLIENTE");
+            newUser.setRole("USER");
+            newUser.setEnabled(true); // Asegurar que el usuario esté habilitado
 
             userService.save(newUser);
 

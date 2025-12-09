@@ -44,7 +44,7 @@ public class ClienteCompraController {
 
     @GetMapping("/{id}")
     public String detalleCompra(@PathVariable Long id, Model model) {
-        model.addAttribute("venta", ventaService.findById(id));
+        model.addAttribute("venta", ventaService.findById(id).orElse(null));
         model.addAttribute("categorias", categoriaService.findAll());
         return "cliente/purchase-detail";
     }

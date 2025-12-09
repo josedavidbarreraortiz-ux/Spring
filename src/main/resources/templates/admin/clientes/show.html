@@ -15,7 +15,8 @@
             <div class="card-body">
 
                 <p><strong>ID:</strong> <span th:text="${cliente.clienteId}"></span></p>
-                <p><strong>Nombre:</strong> <span th:text="${cliente.user.name}"></span></p>
+                <p><strong>Nombre:</strong> <span
+                        th:text="${cliente.user != null ? cliente.user.name : cliente.clienteNombre}"></span></p>
                 <p><strong>Email:</strong> <span th:text="${cliente.clienteEmail}"></span></p>
                 <p><strong>Teléfono:</strong> <span th:text="${cliente.clienteTelefono}"></span></p>
                 <p><strong>Dirección:</strong> <span th:text="${cliente.clienteDireccion}"></span></p>

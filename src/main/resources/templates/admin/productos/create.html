@@ -2,36 +2,65 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
 
 <head>
-    <title>Nuevo Producto</title>
+    <title>Crear Producto</title>
 </head>
 
 <body>
 
     <section th:fragment="content">
 
-        <h2 class="mb-3">Nuevo Producto</h2>
+        <h2 class="mb-3">Crear Producto</h2>
 
-        <form method="post" th:action="@{/admin/productos/guardar}" th:object="${producto}">
+        <form id="productoForm" method="post" th:action="@{/admin/productos/guardar}" th:object="${producto}"
+            enctype="multipart/form-data">
 
             <div class="card shadow-sm">
                 <div class="card-body">
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Nombre</label>
-                            <input type="text" th:field="*{productoNombre}" class="form-control" required>
+                            <label class="form-label">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{productoNombre}" class="form-control" required
+                                data-validate="required|minLength:3|maxLength:100">
+                            <div class="invalid-feedback"></div>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Código de Barras</label>
-                            <input type="text" th:field="*{productoCodigoBar}" class="form-control">
+                            <div class="input-group">
+                                <input type="text" th:field="*{productoCodigoBar}" id="codigoBarrasInput"
+                                    class="form-control" data-validate="barcode" readonly>
+                                <button type="button" class="btn btn-outline-primary" onclick="generarCodigoBarras()"
+                                    title="Generar nuevo código">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                            <small class="text-muted">Se genera automáticamente. Click en <i
+                                    class="bi bi-arrow-repeat"></i> para regenerar.</small>
                         </div>
                     </div>
 
                     <div class="row">
+                        <!-- MARCA COMO SELECT DROPDOWN -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Marca</label>
-                            <input type="text" th:field="*{productoMarca}" class="form-control">
+                            <div class="row">
+                                <div class="col-8">
+                                    <select id="marcaSelect" name="productoMarca" class="form-select" required>
+                                        <option value="">Seleccione...</option>
+                                        <th:block th:each="marca : ${marcasExistentes}">
+                                            <option th:value="${marca}" th:text="${marca}"></option>
+                                        </th:block>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <button type="button" class="btn btn-outline-success w-100" data-bs-toggle="modal"
+                                        data-bs-target="#nuevaMarcaModal">
+                                        <i class="bi bi-plus"></i> Nueva Marca
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-md-6 mb-3">
@@ -39,28 +68,7 @@
                             <select name="categoriaPrincipal.categoriaId" class="form-select" required>
                                 <option value="">Seleccione una categoría</option>
                                 <option th:each="c : ${categorias}" th:value="${c.categoriaId}"
-                                    th:text="${c.categoriaNombre}">
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Precio de Venta</label>
-                            <input type="number" step="0.01" th:field="*{productoPrecioVenta}" class="form-control"
-                                required>
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Tipo de Unidad</label>
-                            <select th:field="*{tipoUnidad}" class="form-select">
-                                <option value="">Seleccione</option>
-                                <option value="Unidad">Unidad</option>
-                                <option value="Kg">Kilogramo</option>
-                                <option value="Litro">Litro</option>
-                                <option value="Metro">Metro</option>
-                                <option value="Caja">Caja</option>
+                                    th:text="${c.categoriaNombre}"></option>
                             </select>
                         </div>
 
@@ -74,39 +82,65 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Resumen</label>
-                        <textarea th:field="*{resumen}" class="form-control" rows="2"></textarea>
+                        <label class="form-label">Resumen <span class="text-danger">*</span></label>
+                        <textarea th:field="*{resumen}" class="form-control" rows="2" required
+                            data-validate="required|minLength:10|maxLength:500"></textarea>
+                        <div class="invalid-feedback"></div>
+                        <small class="text-muted">Breve descripción del producto (mínimo 10 caracteres)</small>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Especificaciones</label>
-                        <textarea th:field="*{especificacion}" class="form-control" rows="3"></textarea>
+                        <label class="form-label">Especificaciones <span class="text-danger">*</span></label>
+                        <textarea th:field="*{especificacion}" class="form-control" rows="3" required
+                            data-validate="required|minLength:10|maxLength:1000"></textarea>
+                        <div class="invalid-feedback"></div>
+                        <small class="text-muted">Detalles técnicos del producto (mínimo 10 caracteres)</small>
                     </div>
 
-                    <!-- ATRIBUTOS -->
+                    <!-- COLOR DEL PRODUCTO -->
                     <div class="mb-4">
                         <h5 class="mb-3">Color del Producto</h5>
-
-                        <div>
-                            <label for="colorSelect" class="form-label">Seleccione un color</label>
-                            <select id="colorSelect" name="atributoValor.id" class="form-select" required>
-                                <option value="">Seleccione...</option>
-                                <th:block th:each="v : ${valoresColor}">
-                                    <option th:value="${v.valorId}" th:text="${v.valor}"></option>
-                                </th:block>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <select id="colorSelect" name="atributoValor.id" class="form-select" required>
+                                    <option value="">Seleccione...</option>
+                                    <th:block th:each="v : ${valoresColor}">
+                                        <option th:value="${v.valorId}" th:text="${v.valor}">
+                                        </option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-outline-success w-100" data-bs-toggle="modal"
+                                    data-bs-target="#nuevoColorModal">
+                                    <i class="bi bi-plus-circle"></i> Agregar Nuevo Color
+                                </button>
+                            </div>
                         </div>
-
-                        <input type="hidden" name="producto.productoId" th:value="${producto.productoId}" />
                     </div>
 
-
-                    <div class="mb-3">
-                        <label class="form-label">URL de Foto</label>
-                        <input type="text" th:field="*{foto}" class="form-control" placeholder="https://...">
+                    <!-- IMAGEN DEL PRODUCTO -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">Imagen del Producto</h5>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label for="imagenFile" class="form-label">Subir Imagen</label>
+                                <input type="file" id="imagenFile" name="imagenFile" class="form-control"
+                                    accept="image/*" onchange="previewImage(event)">
+                                <small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF, WEBP. Tamaño
+                                    máximo: 5MB</small>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Previsualización</label>
+                                <div id="imagePreview" class="border rounded p-2 text-center"
+                                    style="min-height: 150px; display: flex; align-items: center; justify-content: center;">
+                                    <span class="text-muted">No hay imagen seleccionada</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                     <a th:href="@{/admin/productos}" class="btn btn-secondary">Cancelar</a>
 
                 </div>
@@ -114,106 +148,165 @@
 
         </form>
 
-        <!-- TEMPLATE DE ATRIBUTO -->
-        <template id="atributo-template">
-            <div class="atributo-item card mb-2 p-3">
-                <div class="row align-items-end">
-
-                    <!-- SELECT DEL ATRIBUTO -->
-                    <div class="col-md-5">
-                        <label class="form-label">Atributo</label>
-                        <select class="form-select atributo-select" name="atributos[].atributo.atributoId"
-                            onchange="cargarValores(this)">
-                            <option value="">Seleccione un atributo</option>
-                            <option th:each="attr : ${atributos}" th:value="${attr.atributoId}"
-                                th:text="${attr.atributoNombre}">
-                            </option>
-                        </select>
+        <!-- Modal para agregar nuevo color -->
+        <div class="modal fade" id="nuevoColorModal" tabindex="-1" aria-labelledby="nuevoColorModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="nuevoColorModalLabel">Agregar Nuevo Color</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-
-                    <!-- VALOR -->
-                    <div class="col-md-5 valor-container">
-                        <label class="form-label">Valor</label>
-                        <input type="text" class="form-control" name="atributos[].valorTexto"
-                            placeholder="Ingrese el valor">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nuevoColorNombre" class="form-label">Nombre del Color</label>
+                            <input type="text" id="nuevoColorNombre" class="form-control"
+                                placeholder="Ej: Verde, Amarillo, etc.">
+                        </div>
+                        <div id="colorMensaje" class="alert d-none"></div>
                     </div>
-
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-danger btn-sm w-100" onclick="eliminarAtributo(this)">
-                            Eliminar
-                        </button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" onclick="guardarNuevoColor()">Guardar
+                            Color</button>
                     </div>
-
                 </div>
             </div>
-        </template>
+        </div>
 
-        <!-- SCRIPT -->
+        <!-- Modal para agregar nueva marca -->
+        <div class="modal fade" id="nuevaMarcaModal" tabindex="-1" aria-labelledby="nuevaMarcaModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="nuevaMarcaModalLabel">Agregar Nueva Marca</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nuevaMarcaNombre" class="form-label">Nombre de la Marca</label>
+                            <input type="text" id="nuevaMarcaNombre" class="form-control"
+                                placeholder="Ej: Samsung, Apple, etc.">
+                        </div>
+                        <div class="alert alert-info">
+                            <small><i class="bi bi-info-circle"></i> La marca se guardará cuando envíe el formulario del
+                                producto.</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" onclick="agregarNuevaMarca()">Usar Esta
+                            Marca</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script th:inline="javascript">
             /*<![CDATA[*/
-            let atributosData = /*[[${atributos}]]*/[];
-            let contadorAtributos = 0;
+            // Generar código de barras EAN-13 aleatorio
+            function generarCodigoBarras() {
+                let codigo = '';
+                for (let i = 0; i < 12; i++) {
+                    codigo += Math.floor(Math.random() * 10);
+                }
+                let suma = 0;
+                for (let i = 0; i < 12; i++) {
+                    suma += parseInt(codigo[i]) * (i % 2 === 0 ? 1 : 3);
+                }
+                codigo += (10 - (suma % 10)) % 10;
+                const input = document.getElementById('codigoBarrasInput');
+                if (input) {
+                    input.value = codigo;
+                    input.classList.remove('is-invalid', 'is-valid');
+                }
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+                const input = document.getElementById('codigoBarrasInput');
+                if (input && !input.value) generarCodigoBarras();
+            });
 
-            function agregarAtributo() {
-                const template = document.getElementById('atributo-template');
-                const clone = template.content.cloneNode(true);
+            function previewImage(event) {
+                const file = event.target.files[0];
+                const preview = document.getElementById('imagePreview');
 
-                clone.querySelectorAll('input, select').forEach(input => {
-                    if (input.name) {
-                        input.name = input.name.replace('[]', `[${contadorAtributos}]`);
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded" style="max-height: 150px;" alt="Preview">`;
                     }
-                });
-
-                document.getElementById('atributos-container').appendChild(clone);
-                contadorAtributos++;
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.innerHTML = '<span class="text-muted">No hay imagen seleccionada</span>';
+                }
             }
 
-            function eliminarAtributo(btn) {
-                btn.closest('.atributo-item').remove();
-            }
+            function guardarNuevoColor() {
+                const nombreColor = document.getElementById('nuevoColorNombre').value.trim();
+                const mensaje = document.getElementById('colorMensaje');
 
-            function cargarValores(selectAtributo) {
-
-                const atributoId = selectAtributo.value;
-                const row = selectAtributo.closest(".atributo-item");
-                const valorContainer = row.querySelector(".valor-container");
-
-                if (!atributoId) {
-                    valorContainer.innerHTML = `
-                <label class="form-label">Valor</label>
-                <input type="text" class="form-control"
-                       name="${selectAtributo.name.replace('atributoId', 'valorTexto')}"
-                       placeholder="Ingrese el valor">
-                `;
+                if (!nombreColor) {
+                    mensaje.className = 'alert alert-danger';
+                    mensaje.textContent = 'Por favor ingrese el nombre del color';
+                    mensaje.classList.remove('d-none');
                     return;
                 }
 
-                const atributo = atributosData.find(a => a.atributoId == atributoId);
+                const csrfToken = document.querySelector('#productoForm input[name="_csrf"]').value;
 
-                if (atributo && atributo.valores && atributo.valores.length > 0) {
+                fetch('/admin/productos/color/nuevo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'nombreColor=' + encodeURIComponent(nombreColor) + '&_csrf=' + encodeURIComponent(csrfToken)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const select = document.getElementById('colorSelect');
+                            const option = document.createElement('option');
+                            option.value = data.valorId;
+                            option.text = data.valor;
+                            option.selected = true;
+                            select.appendChild(option);
 
-                    let html = `
-                <label class="form-label">Valor</label>
-                <select class="form-select"
-                        name="${selectAtributo.name.replace('atributoId', 'atributoValorId')}">
-                    <option value="">Seleccione un valor</option>
-                `;
-
-                    atributo.valores.forEach(v => {
-                        html += `<option value="${v.atributoValorId}">${v.valor}</option>`;
+                            document.getElementById('nuevoColorNombre').value = '';
+                            mensaje.classList.add('d-none');
+                            bootstrap.Modal.getInstance(document.getElementById('nuevoColorModal')).hide();
+                        } else {
+                            mensaje.className = 'alert alert-danger';
+                            mensaje.textContent = data.mensaje || 'Error al guardar el color';
+                            mensaje.classList.remove('d-none');
+                        }
+                    })
+                    .catch(error => {
+                        mensaje.className = 'alert alert-danger';
+                        mensaje.textContent = 'Error de conexión: ' + error.message;
+                        mensaje.classList.remove('d-none');
                     });
+            }
 
-                    html += `</select>`;
-                    valorContainer.innerHTML = html;
+            function agregarNuevaMarca() {
+                const nuevaMarca = document.getElementById('nuevaMarcaNombre').value.trim();
 
-                } else {
-                    valorContainer.innerHTML = `
-                <label class="form-label">Valor</label>
-                <input type="text" class="form-control"
-                       name="${selectAtributo.name.replace('atributoId', 'valorTexto')}"
-                       placeholder="Ingrese el valor">
-                `;
+                if (!nuevaMarca) {
+                    alert('Por favor ingrese el nombre de la marca');
+                    return;
                 }
+
+                // Agregar la nueva marca al select y seleccionarla
+                const select = document.getElementById('marcaSelect');
+                const option = document.createElement('option');
+                option.value = nuevaMarca;
+                option.text = nuevaMarca;
+                option.selected = true;
+                select.appendChild(option);
+
+                // Cerrar modal y limpiar
+                document.getElementById('nuevaMarcaNombre').value = '';
+                bootstrap.Modal.getInstance(document.getElementById('nuevaMarcaModal')).hide();
             }
             /*]]>*/
         </script>

@@ -9,8 +9,11 @@
 
     <section th:fragment="content">
 
-        <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Clientes</h2>
+            <a th:href="@{/admin/reportes/clientes}" class="btn btn-danger">
+                <i class="bi bi-file-pdf"></i> Generar Reporte
+            </a>
         </div>
 
         <div class="card shadow-sm">
@@ -31,7 +34,9 @@
                     <tbody>
                         <tr th:each="c : ${clientes}">
                             <td th:text="${c.clienteId}"></td>
-                            <td th:text="${c.user != null ? c.user.name : 'N/A'}"></td>
+                            <td
+                                th:text="${c.clienteNombre != null ? c.clienteNombre : (c.user != null ? c.user.name : 'N/A')}">
+                            </td>
                             <td th:text="${c.clienteEmail}"></td>
                             <td th:text="${c.clienteTelefono}"></td>
                             <td th:text="${c.clienteDireccion}"></td>

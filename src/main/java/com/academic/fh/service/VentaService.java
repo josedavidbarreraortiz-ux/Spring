@@ -9,6 +9,11 @@ import com.academic.fh.repository.ClienteRepository;
 import com.academic.fh.repository.MetodoPagoRepository;
 import com.academic.fh.repository.VentaRepository;
 import com.academic.fh.repository.VentaDetalleRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.academic.fh.model.User;
+import com.academic.fh.repository.UserRepository;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,25 +33,39 @@ public class VentaService {
     private final ClienteRepository clienteRepository;
     private final MetodoPagoRepository metodoPagoRepository;
     private final ProductoService productoService;
+    private final UserRepository userRepository;
+    private final InventarioService inventarioService;
 
     public VentaService(
             VentaRepository ventaRepository,
             VentaDetalleRepository ventaDetalleRepository,
             ClienteRepository clienteRepository,
             MetodoPagoRepository metodoPagoRepository,
-            ProductoService productoService) {
+            ProductoService productoService,
+            UserRepository userRepository,
+            InventarioService inventarioService) {
 
         this.ventaRepository = ventaRepository;
         this.ventaDetalleRepository = ventaDetalleRepository;
         this.clienteRepository = clienteRepository;
         this.metodoPagoRepository = metodoPagoRepository;
         this.productoService = productoService;
+        this.userRepository = userRepository;
+        this.inventarioService = inventarioService;
     }
 
     public Venta crearVenta(Long clienteId, Long metodoPagoId, List<Map<String, Object>> carrito) {
-        if (carrito == null || carrito.isEmpty()) {
-            throw new RuntimeException("El carrito está vacío");
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new RuntimeException("No hay un usuario autenticado");
         }
+
+        String email = auth.getName(); // Spring usa el email como username
+
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + email));
 
         Cliente cliente = clienteRepository.findById(clienteId.intValue())
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
@@ -56,18 +75,16 @@ public class VentaService {
 
         double total = calcularTotalVenta(carrito);
 
-     Venta venta = new Venta();
-venta.setCliente(cliente);
-venta.setMetodoPago(metodoPago);
-venta.setVentaFecha(LocalDate.now());
-venta.setVentaHora(LocalTime.now());
-venta.setVentaTotal(BigDecimal.valueOf(total));
+        Venta venta = new Venta();
+        venta.setCliente(cliente);
+        venta.setMetodoPago(metodoPago);
 
-// asignar codigo
-venta.setVentaId(generarCodigoVenta());
+        venta.setUser(user); // ← AQUÍ SE GUARDA EL USUARIO
+        venta.setVentaFecha(LocalDate.now());
+        venta.setVentaHora(LocalTime.now());
+        venta.setVentaTotal(BigDecimal.valueOf(total));
 
-venta = ventaRepository.save(venta);
-
+        venta = ventaRepository.save(venta);
 
         for (Map<String, Object> item : carrito) {
             Long productoId = Long.valueOf(item.get("id").toString());
@@ -80,10 +97,13 @@ venta = ventaRepository.save(venta);
             detalle.setVenta(venta);
             detalle.setProducto(producto);
             detalle.setVentaDetalleCantidad(cantidad);
-            detalle.setVentaDetallePrecioVenta(java.math.BigDecimal.valueOf(precio));
-            detalle.setSubtotal(java.math.BigDecimal.valueOf(cantidad * precio));
+            detalle.setVentaDetallePrecioVenta(BigDecimal.valueOf(precio));
+            detalle.setSubtotal(BigDecimal.valueOf(cantidad * precio));
 
             ventaDetalleRepository.save(detalle);
+
+            // Reducir el stock del producto en el inventario
+            inventarioService.reducirStock(producto.getProductoId(), cantidad);
         }
 
         return venta;
@@ -118,6 +138,12 @@ venta = ventaRepository.save(venta);
                 .toList();
     }
 
+    public List<Venta> findByUserId(Long userId) {
+        return ventaRepository.findAll().stream()
+                .filter(v -> v.getUser() != null && v.getUser().getId().equals(userId))
+                .toList();
+    }
+
     public Venta save(Venta venta) {
         return ventaRepository.save(venta);
     }
@@ -132,10 +158,10 @@ venta = ventaRepository.save(venta);
                 .filter(d -> d.getVenta().getVentaId().equals(ventaId.intValue()))
                 .toList();
     }
+
     private Integer generarCodigoVenta() {
-    Integer max = ventaRepository.findMaxCodigo();
-    return (max == null) ? 1 : max + 1;
-}
+        Integer max = ventaRepository.findMaxCodigo();
+        return (max == null) ? 1 : max + 1;
+    }
 
 }
-

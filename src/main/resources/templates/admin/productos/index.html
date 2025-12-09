@@ -11,9 +11,22 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Productos</h2>
-            <a class="btn btn-primary" th:href="@{/admin/productos/crear}">
-                Nuevo Producto
-            </a>
+            <div>
+                <a th:href="@{/admin/reportes/productos}" class="btn btn-danger">
+                    <i class="bi bi-file-pdf"></i> Generar Reporte
+                </a>
+                <a th:href="@{/admin/productos}" class="btn btn-outline-secondary"
+                    th:classappend="${mostrarTodos == null || !mostrarTodos} ? 'active' : ''">
+                    Solo Activos
+                </a>
+                <a th:href="@{/admin/productos(mostrarTodos=true)}" class="btn btn-outline-secondary"
+                    th:classappend="${mostrarTodos != null && mostrarTodos} ? 'active' : ''">
+                    Mostrar Todos
+                </a>
+                <a class="btn btn-primary" th:href="@{/admin/productos/crear}">
+                    Nuevo Producto
+                </a>
+            </div>
         </div>
 
         <div class="card shadow-sm">
@@ -24,20 +37,29 @@
                         <tr>
                             <th>ID</th>
                             <th>Nombre</th>
+                            <th>Marca</th>
                             <th>Categoría</th>
                             <th>Precio</th>
+                            <th>Estado</th>
                             <th></th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr th:each="p : ${productos}">
+                        <tr th:each="p : ${productos}"
+                            th:classappend="${p.productoEstado == 'Inactivo'} ? 'table-secondary' : ''">
                             <td th:text="${p.productoId}"></td>
                             <td th:text="${p.productoNombre}"></td>
+                            <td th:text="${p.productoMarca ?: 'N/A'}"></td>
                             <td
                                 th:text="${p.categoriaPrincipal != null ? p.categoriaPrincipal.categoriaNombre : 'N/A'}">
                             </td>
-                            <td th:text="'$' + ${p.productoPrecioVenta}"></td>
+                            <td th:text="'$' + ${#numbers.formatInteger(p.productoPrecioVenta, 0, 'POINT')}"></td>
+                            <td>
+                                <span class="badge"
+                                    th:classappend="${p.productoEstado == 'Activo' or p.productoEstado == 'Disponible'} ? 'bg-success' : 'bg-secondary'"
+                                    th:text="${p.productoEstado}"></span>
+                            </td>
 
                             <td class="text-end">
                                 <a th:href="@{'/admin/productos/' + ${p.productoId}}"
@@ -45,15 +67,25 @@
                                 <a th:href="@{'/admin/productos/editar/' + ${p.productoId}}"
                                     class="btn btn-sm btn-warning">Editar</a>
 
-                                <form th:action="@{'/admin/productos/eliminar/' + ${p.productoId}}" method="post"
-                                    class="d-inline">
-                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                <!-- Botón Activar/Inactivar -->
+                                <form th:if="${p.productoEstado == 'Activo' or p.productoEstado == 'Disponible'}"
+                                    th:action="@{'/admin/productos/inactivar/' + ${p.productoId}}" method="post"
+                                    class="d-inline"
+                                    onsubmit="return confirm('¿Está seguro que desea INACTIVAR este producto?');">
+                                    <button class="btn btn-sm btn-danger">Inactivar</button>
+                                </form>
+
+                                <form th:unless="${p.productoEstado == 'Activo' or p.productoEstado == 'Disponible'}"
+                                    th:action="@{'/admin/productos/activar/' + ${p.productoId}}" method="post"
+                                    class="d-inline"
+                                    onsubmit="return confirm('¿Está seguro que desea ACTIVAR este producto?');">
+                                    <button class="btn btn-sm btn-success">Activar</button>
                                 </form>
                             </td>
                         </tr>
 
                         <tr th:if="${productos.size()} == 0">
-                            <td colspan="5" class="text-center">No hay productos registrados</td>
+                            <td colspan="7" class="text-center">No hay productos registrados</td>
                         </tr>
 
                     </tbody>

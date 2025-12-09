@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout (~{::title}, ~{::content})">
+
+<head>
+    <title>Reportes de Movimientos de Inventario</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="bi bi-file-earmark-bar-graph me-2"></i>Reportes de Movimientos</h2>
+            <a class="btn btn-outline-secondary" th:href="@{/admin/movimientos}">
+                <i class="bi bi-arrow-left"></i> Volver a Movimientos
+            </a>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <h3 th:text="${totalMovimientos}">0</h3>
+                        <small>Total Movimientos</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h3 th:text="${totalEntradas}">0</h3>
+                        <small><i class="bi bi-arrow-down-circle"></i> Entradas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body text-center">
+                        <h3 th:text="${totalSalidas}">0</h3>
+                        <small><i class="bi bi-arrow-up-circle"></i> Salidas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-secondary text-white">
+                    <div class="card-body text-center">
+                        <h3 th:text="${totalAjustes}">0</h3>
+                        <small><i class="bi bi-gear"></i> Ajustes</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de Reportes -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Generar Reporte PDF</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/admin/reportes/movimientos/pdf}" method="get" target="_blank">
+
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Tipo de Movimiento</label>
+                            <select name="tipo" class="form-select">
+                                <option value="">Todos los tipos</option>
+                                <option value="ENTRADA">Entrada</option>
+                                <option value="SALIDA">Salida</option>
+                                <option value="AJUSTE">Ajuste</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Producto</label>
+                            <select name="productoId" class="form-select">
+                                <option value="">Todos los productos</option>
+                                <option th:each="p : ${productos}" th:value="${p.productoId}"
+                                    th:text="${p.productoNombre}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Fecha Desde</label>
+                            <input type="date" name="fechaInicio" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Fecha Hasta</label>
+                            <input type="date" name="fechaFin" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Ordenar por</label>
+                            <select name="ordenarPor" class="form-select">
+                                <option value="fecha">Fecha</option>
+                                <option value="id">ID</option>
+                                <option value="producto">Producto</option>
+                                <option value="tipo">Tipo</option>
+                                <option value="cantidad">Cantidad</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Dirección</label>
+                            <select name="direccion" class="form-select">
+                                <option value="desc">Descendente (más reciente primero)</option>
+                                <option value="asc">Ascendente (más antiguo primero)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-danger btn-lg w-100">
+                                <i class="bi bi-file-earmark-pdf me-2"></i>Generar PDF
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Reportes Rápidos -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-arrow-down-circle text-success fs-1"></i>
+                        <h5 class="mt-3">Solo Entradas</h5>
+                        <p class="text-muted">Reporte de todos los movimientos de entrada</p>
+                        <a th:href="@{/admin/reportes/movimientos/pdf(tipo='ENTRADA')}" class="btn btn-outline-success"
+                            target="_blank">
+                            <i class="bi bi-download"></i> Descargar PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-arrow-up-circle text-warning fs-1"></i>
+                        <h5 class="mt-3">Solo Salidas</h5>
+                        <p class="text-muted">Reporte de todos los movimientos de salida</p>
+                        <a th:href="@{/admin/reportes/movimientos/pdf(tipo='SALIDA')}" class="btn btn-outline-warning"
+                            target="_blank">
+                            <i class="bi bi-download"></i> Descargar PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-list-columns text-info fs-1"></i>
+                        <h5 class="mt-3">Reporte Completo</h5>
+                        <p class="text-muted">Todos los movimientos sin filtros</p>
+                        <a th:href="@{/admin/reportes/movimientos/pdf}" class="btn btn-outline-info" target="_blank">
+                            <i class="bi bi-download"></i> Descargar PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>

@@ -3,9 +3,6 @@
 
 <head>
     <title>Carrito de Compras - FH TechStore</title>
-
-    <!-- Cart specific styles -->
-    <link rel="stylesheet" th:href="@{/css/cart-style.css}">
 </head>
 
 <body>
@@ -15,8 +12,13 @@
         <div class="cart-section">
             <div class="container">
 
-                <h1 class="page-title">Carrito de Compras</h1>
-                <p class="page-subtitle">Revisa tus productos antes de finalizar la compra</p>
+                <!-- Page Header -->
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <i class="bi bi-cart3 me-3"></i>Carrito de Compras
+                    </h1>
+                    <p class="page-subtitle">Revisa tus productos antes de finalizar la compra</p>
+                </div>
 
                 <!-- Empty Cart State -->
                 <div th:if="${carrito == null or carrito.size() == 0}" class="empty-cart">
@@ -34,7 +36,7 @@
                 <div th:if="${carrito != null and carrito.size() > 0}">
                     <div class="row g-4">
 
-                        <!-- Cart Items -->
+                        <!-- Cart Items Column -->
                         <div class="col-lg-8">
                             <div class="cart-items-container">
 
@@ -42,7 +44,11 @@
 
                                     <!-- Product Image -->
                                     <div class="cart-item-image">
-                                        <img th:src="@{/img/default.png}" alt="Producto">
+                                        <img th:if="${item['foto'] != null and (item['foto'].endsWith('.png') or item['foto'].endsWith('.jpg') or item['foto'].endsWith('.jpeg') or item['foto'].endsWith('.gif') or item['foto'].endsWith('.webp') or item['foto'].endsWith('.PNG') or item['foto'].endsWith('.JPG'))}"
+                                            th:src="@{'/uploads/productos/' + ${item['foto']}}" alt="Producto">
+                                        <img th:unless="${item['foto'] != null and (item['foto'].endsWith('.png') or item['foto'].endsWith('.jpg') or item['foto'].endsWith('.jpeg') or item['foto'].endsWith('.gif') or item['foto'].endsWith('.webp') or item['foto'].endsWith('.PNG') or item['foto'].endsWith('.JPG'))}"
+                                            src="https://placehold.co/140x140/667eea/FFFFFF?text=Producto"
+                                            alt="Producto">
                                     </div>
 
                                     <!-- Product Details -->
@@ -52,16 +58,33 @@
                                             </h3>
                                             <p class="cart-item-price">
                                                 Precio unitario: <strong
-                                                    th:text="'$' + ${#numbers.formatDecimal(item['precio'] ?: 0, 1, 2)}">$0.00</strong>
+                                                    th:text="'$' + ${#numbers.formatInteger(item['precio'] ?: 0, 0, 'POINT')}">$0</strong>
                                             </p>
                                         </div>
 
                                         <div class="cart-item-actions">
-                                            <!-- Quantity Display -->
-                                            <div class="quantity-display">
-                                                <i class="bi bi-box"></i>
-                                                <span th:text="${item['cantidad']}">1</span>
-                                                <span style="color: #94a3b8;">unidades</span>
+                                            <!-- Quantity Controls -->
+                                            <div class="quantity-controls">
+                                                <form method="post" th:action="@{/carrito/actualizar}" class="qty-form">
+                                                    <input type="hidden" name="index" th:value="${iter.index}">
+                                                    <input type="hidden" name="cantidad"
+                                                        th:value="${item['cantidad'] - 1}">
+                                                    <button type="submit" class="qty-btn minus"
+                                                        th:disabled="${item['cantidad'] <= 1}">
+                                                        <i class="bi bi-dash"></i>
+                                                    </button>
+                                                </form>
+
+                                                <span class="qty-value" th:text="${item['cantidad']}">1</span>
+
+                                                <form method="post" th:action="@{/carrito/actualizar}" class="qty-form">
+                                                    <input type="hidden" name="index" th:value="${iter.index}">
+                                                    <input type="hidden" name="cantidad"
+                                                        th:value="${item['cantidad'] + 1}">
+                                                    <button type="submit" class="qty-btn plus">
+                                                        <i class="bi bi-plus"></i>
+                                                    </button>
+                                                </form>
                                             </div>
 
                                             <!-- Remove Button -->
@@ -78,8 +101,8 @@
                                     <div class="cart-item-subtotal">
                                         <div class="subtotal-label">Subtotal</div>
                                         <div class="subtotal-amount"
-                                            th:text="'$' + ${#numbers.formatDecimal((item['precio'] ?: 0) * (item['cantidad'] ?: 0), 1, 2)}">
-                                            $0.00</div>
+                                            th:text="'$' + ${#numbers.formatInteger((item['precio'] ?: 0) * (item['cantidad'] ?: 0), 0, 'POINT')}">
+                                            $0</div>
                                     </div>
 
                                 </div>
@@ -87,10 +110,12 @@
                             </div>
                         </div>
 
-                        <!-- Order Summary -->
+                        <!-- Order Summary Column -->
                         <div class="col-lg-4">
                             <div class="order-summary">
-                                <h2 class="summary-title">Resumen del Pedido</h2>
+                                <h2 class="summary-title">
+                                    <i class="bi bi-receipt me-2"></i>Resumen del Pedido
+                                </h2>
 
                                 <div class="summary-row">
                                     <span class="label">Productos</span>
@@ -100,18 +125,21 @@
                                 <div class="summary-row">
                                     <span class="label">Subtotal</span>
                                     <span class="value"
-                                        th:text="'$' + ${#numbers.formatDecimal(#aggregates.sum(carrito.![([precio] ?: 0) * ([cantidad] ?: 0)]), 1, 2)}">$0.00</span>
+                                        th:text="'$' + ${#numbers.formatInteger(#aggregates.sum(carrito.![([precio] ?: 0) * ([cantidad] ?: 0)]), 0, 'POINT')}">$0</span>
                                 </div>
 
                                 <div class="summary-row">
                                     <span class="label">Envío</span>
-                                    <span class="value" style="color: #22c55e; font-weight: 600;">Gratis</span>
+                                    <span class="value free-shipping">
+                                        <i class="bi bi-truck me-1"></i>Gratis
+                                    </span>
                                 </div>
 
                                 <div class="summary-row total">
                                     <span class="label">Total</span>
                                     <span class="value"
-                                        th:text="'$' + ${#numbers.formatDecimal(#aggregates.sum(carrito.![([precio] ?: 0) * ([cantidad] ?: 0)]), 1, 2)}">$0.00</span>
+                                        th:text="'$' + ${#numbers.formatInteger(#aggregates.sum(carrito.![([precio] ?: 0) * ([cantidad] ?: 0)]), 0, 'POINT')} + ' COP'">$0
+                                        COP</span>
                                 </div>
 
                                 <!-- Checkout Button -->
@@ -132,6 +160,22 @@
                                         <i class="bi bi-arrow-left me-2"></i>Continuar Comprando
                                     </a>
                                 </div>
+
+                                <!-- Trust Badges -->
+                                <div class="trust-badges">
+                                    <div class="badge-item">
+                                        <i class="bi bi-shield-check"></i>
+                                        <span>Compra Segura</span>
+                                    </div>
+                                    <div class="badge-item">
+                                        <i class="bi bi-truck"></i>
+                                        <span>Envío Gratis</span>
+                                    </div>
+                                    <div class="badge-item">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                        <span>Devoluciones</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -140,6 +184,57 @@
 
             </div>
         </div>
+
+        <style>
+            /* Quantity Controls */
+            .quantity-controls {
+                display: flex;
+                align-items: center;
+                gap: 0;
+                background: #f8fafc;
+                border-radius: 12px;
+                border: 2px solid #e2e8f0;
+                overflow: hidden;
+            }
+
+            .qty-form {
+                margin: 0;
+                padding: 0;
+            }
+
+            .qty-btn {
+                width: 42px;
+                height: 42px;
+                border: none;
+                background: transparent;
+                color: #667eea;
+                font-size: 1.2rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .qty-btn:hover:not(:disabled) {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+
+            .qty-btn:disabled {
+                color: #cbd5e1;
+                cursor: not-allowed;
+            }
+
+            .qty-value {
+                min-width: 50px;
+                text-align: center;
+                font-weight: 700;
+                font-size: 1.1rem;
+                color: #1a202c;
+                padding: 0 10px;
+            }
+        </style>
 
     </section>
 

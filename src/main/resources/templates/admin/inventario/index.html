@@ -11,6 +11,83 @@
 
         <h2 class="mb-3">Inventario</h2>
 
+        <!-- Alertas de Stock -->
+        <div th:if="${countSinStock > 0 or countStockCritico > 0}" class="mb-4">
+
+            <!-- Alerta: Productos sin stock -->
+            <div th:if="${countSinStock > 0}" class="alert alert-danger d-flex align-items-center" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
+                <div class="flex-grow-1">
+                    <strong>¡Alerta de Stock Agotado!</strong>
+                    <span th:text="'Hay ' + ${countSinStock} + ' producto(s) sin stock disponible.'"></span>
+                </div>
+                <button class="btn btn-sm btn-outline-danger" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#sinStockList">
+                    <i class="bi bi-eye"></i> Ver productos
+                </button>
+            </div>
+
+            <!-- Lista de productos sin stock (colapsable) -->
+            <div th:if="${sinStock != null and sinStock.size() > 0}" class="collapse mb-3" id="sinStockList">
+                <div class="card card-body border-danger">
+                    <h6 class="text-danger mb-2"><i class="bi bi-box-seam me-2"></i>Productos sin stock:</h6>
+                    <ul class="list-group list-group-flush">
+                        <li th:each="i : ${sinStock}"
+                            class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <span>
+                                <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                                <span
+                                    th:text="${i.producto != null ? i.producto.productoNombre : 'N/A'}">Producto</span>
+                            </span>
+                            <a th:href="@{'/admin/inventario/editar/' + ${i.inventarioId}}"
+                                class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i> Actualizar stock
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Alerta: Productos con stock crítico -->
+            <div th:if="${countStockCritico > 0}" class="alert alert-warning d-flex align-items-center" role="alert">
+                <i class="bi bi-exclamation-circle-fill me-3 fs-4"></i>
+                <div class="flex-grow-1">
+                    <strong>¡Alerta de Stock Crítico!</strong>
+                    <span
+                        th:text="'Hay ' + ${countStockCritico} + ' producto(s) con stock en nivel mínimo o inferior.'"></span>
+                </div>
+                <button class="btn btn-sm btn-outline-warning" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#stockCriticoList">
+                    <i class="bi bi-eye"></i> Ver productos
+                </button>
+            </div>
+
+            <!-- Lista de productos con stock crítico (colapsable) -->
+            <div th:if="${stockCritico != null and stockCritico.size() > 0}" class="collapse mb-3"
+                id="stockCriticoList">
+                <div class="card card-body border-warning">
+                    <h6 class="text-warning mb-2"><i class="bi bi-box-seam me-2"></i>Productos con stock crítico:</h6>
+                    <ul class="list-group list-group-flush">
+                        <li th:each="i : ${stockCritico}"
+                            class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <span>
+                                <i class="bi bi-exclamation-circle-fill text-warning me-2"></i>
+                                <span
+                                    th:text="${i.producto != null ? i.producto.productoNombre : 'N/A'}">Producto</span>
+                                <span class="badge bg-warning text-dark ms-2"
+                                    th:text="'Stock: ' + ${i.inventarioStockActual} + ' / Mín: ' + ${i.inventarioStockMinimo}"></span>
+                            </span>
+                            <a th:href="@{'/admin/inventario/editar/' + ${i.inventarioId}}"
+                                class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i> Reponer
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
         <div class="card shadow-sm">
             <div class="card-body">
 
@@ -32,7 +109,7 @@
                             <td th:text="${i.producto != null ? i.producto.productoNombre : 'N/A'}"></td>
 
                             <td th:text="${i.inventarioStockActual}"
-                                th:classappend="${i.inventarioStockActual <= i.inventarioStockMinimo} ? 'text-danger fw-bold'">
+                                th:classappend="${i.inventarioStockActual == 0} ? 'text-danger fw-bold' : (${i.inventarioStockActual <= i.inventarioStockMinimo} ? 'text-warning fw-bold' : '')">
                             </td>
 
                             <td th:text="${i.inventarioStockMinimo}"></td>

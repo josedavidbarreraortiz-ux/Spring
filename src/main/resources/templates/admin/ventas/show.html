@@ -18,7 +18,8 @@
                     <div class="col-md-6">
                         <p><strong>ID Venta:</strong> <span th:text="${venta.ventaId}"></span></p>
                         <p><strong>Cliente:</strong>
-                            <span th:text="${venta.cliente != null ? venta.cliente.user.name : 'N/A'}"></span>
+                            <span
+                                th:text="${venta.user != null ? venta.user.name : (venta.cliente != null ? venta.cliente.clienteNombre : 'N/A')}"></span>
                         </p>
                         <p><strong>Método de Pago:</strong>
                             <span
@@ -60,8 +61,10 @@
                         <tr th:each="d : ${venta.detalles}">
                             <td th:text="${d.producto != null ? d.producto.productoNombre : 'N/A'}"></td>
                             <td th:text="${d.ventaDetalleCantidad}"></td>
-                            <td th:text="'$' + ${d.ventaDetallePrecioVenta}"></td>
-                            <td th:text="'$' + ${d.ventaDetalleCantidad * d.ventaDetallePrecioVenta}"></td>
+                            <td th:text="'$' + ${#numbers.formatInteger(d.ventaDetallePrecioVenta, 0, 'POINT')}"></td>
+                            <td
+                                th:text="'$' + ${#numbers.formatInteger(d.ventaDetalleCantidad * d.ventaDetallePrecioVenta, 0, 'POINT')}">
+                            </td>
                         </tr>
                     </tbody>
 
@@ -72,7 +75,7 @@
                 </p>
 
                 <h4 class="text-end mt-3">
-                    Total: $<span th:text="${venta.ventaTotal}"></span>
+                    Total: $<span th:text="${#numbers.formatInteger(venta.ventaTotal, 0, 'POINT')}"></span>
                 </h4>
 
                 <a th:href="@{/admin/ventas}" class="btn btn-secondary mt-3">

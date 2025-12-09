@@ -19,7 +19,17 @@ public class CartController {
     @GetMapping
     public String verCarrito(Model model, HttpSession session) {
 
-        model.addAttribute("carrito", carritoService.getCarrito(session));
+        var carrito = carritoService.getCarrito(session);
+        model.addAttribute("carrito", carrito);
+
+        // Calcular total para evitar lambdas en Thymeleaf (SpEL no las soporta)
+        double total = 0;
+        for (var item : carrito) {
+            Double precio = Double.valueOf(item.get("precio").toString());
+            Integer cantidad = Integer.valueOf(item.get("cantidad").toString());
+            total += precio * cantidad;
+        }
+        model.addAttribute("totalCarrito", total);
 
         return "cart";
     }
@@ -46,6 +56,15 @@ public class CartController {
     @PostMapping("/vaciar")
     public String vaciar(HttpSession session) {
         carritoService.vaciarCarrito(session);
+        return "redirect:/carrito";
+    }
+
+    @PostMapping("/actualizar")
+    public String actualizarCantidad(
+            @RequestParam int index,
+            @RequestParam int cantidad,
+            HttpSession session) {
+        carritoService.actualizarCantidad(index, cantidad, session);
         return "redirect:/carrito";
     }
 }

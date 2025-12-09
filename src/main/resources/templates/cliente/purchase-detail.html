@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/cliente-layout :: layout(~{::title}, ~{::content})">
 
 <head>
@@ -12,7 +12,7 @@
 
             <div class="dashboard-header">
                 <h1 class="dashboard-title">Detalle de Compra</h1>
-                <p class="dashboard-subtitle">Información completa de tu pedido</p>
+                <p class="dashboard-subtitle">Informacion completa de tu pedido</p>
             </div>
 
             <div class="row">
@@ -28,7 +28,7 @@
                             <div class="col-md-6">
                                 <p class="mb-2">
                                     <strong><i class="bi bi-calendar me-2"></i>Fecha:</strong>
-                                    <span th:text="${#temporals.format(venta.ventaFecha, 'dd/MM/yyyy HH:mm')}"></span>
+                                    <span th:text="${venta.ventaFecha}"></span>
                                 </p>
                             </div>
                             <div class="col-md-6">
@@ -54,12 +54,12 @@
                                 <tbody>
                                     <tr th:each="detalle : ${venta.detalles}">
                                         <td th:text="${detalle.producto.productoNombre}"></td>
-                                        <td th:text="${detalle.detalleVentaCantidad}"></td>
+                                        <td th:text="${detalle.ventaDetalleCantidad}"></td>
                                         <td>$<span
-                                                th:text="${#numbers.formatDecimal(detalle.detalleVentaPrecioUnitario, 1, 2)}"></span>
+                                                th:text="${#numbers.formatInteger(detalle.ventaDetallePrecioVenta, 0, 'POINT')}"></span>
                                         </td>
                                         <td>$<span
-                                                th:text="${#numbers.formatDecimal(detalle.detalleVentaSubtotal, 1, 2)}"></span>
+                                                th:text="${#numbers.formatInteger(detalle.subtotal, 0, 'POINT')}"></span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -78,19 +78,15 @@
                         <div class="mb-3 pb-3 border-bottom">
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Subtotal:</span>
-                                <span>$<span th:text="${#numbers.formatDecimal(venta.ventaTotal, 1, 2)}"></span></span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>IVA (19%):</span>
                                 <span>$<span
-                                        th:text="${#numbers.formatDecimal(venta.ventaTotal * 0.19, 1, 2)}"></span></span>
+                                        th:text="${#numbers.formatInteger(venta.ventaTotal, 0, 'POINT')}"></span></span>
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-between">
                             <strong class="fs-5">Total:</strong>
                             <strong class="fs-4 text-primary">
-                                $<span th:text="${#numbers.formatDecimal(venta.ventaTotal, 1, 2)}"></span>
+                                $<span th:text="${#numbers.formatInteger(venta.ventaTotal, 0, 'POINT')}"></span>
                             </strong>
                         </div>
 

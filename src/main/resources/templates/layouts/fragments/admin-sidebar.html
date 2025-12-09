@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
@@ -36,8 +36,12 @@
                 <i class="bi bi-clipboard-check"></i> Inventario
             </a>
 
-            <a th:href="@{/admin/pqrs}" th:classappend="${active == 'pqrs'} ? 'active'">
-                <i class="bi bi-question-circle"></i> PQRS
+            <a th:href="@{/admin/movimientos}" th:classappend="${active == 'movimientos'} ? 'active'">
+                <i class="bi bi-arrow-left-right"></i> Movimientos
+            </a>
+
+            <a th:href="@{/admin/reportes/movimientos}" th:classappend="${active == 'reportes-movimientos'} ? 'active'">
+                <i class="bi bi-file-earmark-bar-graph"></i> Reportes
             </a>
 
             <form th:action="@{/logout}" method="post" class="mt-3">

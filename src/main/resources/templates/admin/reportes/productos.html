@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout(~{::title}, ~{::content})">
+
+<head>
+    <title>Reporte de Productos</title>
+</head>
+
+<body>
+
+    <section th:fragment="content">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-file-earmark-pdf me-2"></i>Reporte de Productos</h2>
+            <a th:href="@{/admin/productos}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver a Productos
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-funnel me-2"></i>Filtros del Reporte
+            </div>
+            <div class="card-body">
+                <form id="reportForm" th:action="@{/admin/reportes/productos/pdf}" method="get" target="_blank">
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">ID del Producto</label>
+                            <input type="number" name="id" class="form-control" placeholder="Ej: 1">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" name="nombre" class="form-control" placeholder="Buscar por nombre...">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Marca</label>
+                            <select name="marca" class="form-select">
+                                <option value="">Todas las marcas</option>
+                                <option th:each="m : ${marcas}" th:value="${m}" th:text="${m}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Categoría</label>
+                            <select name="categoriaId" class="form-select">
+                                <option value="">Todas las categorías</option>
+                                <option th:each="c : ${categorias}" th:value="${c.categoriaId}"
+                                    th:text="${c.categoriaNombre}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Estado del Producto</label>
+                            <select name="estado" class="form-select">
+                                <option value="">Todos</option>
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Stock</label>
+                            <select name="stock" class="form-select">
+                                <option value="">Todos</option>
+                                <option value="Agotado">Agotado (Sin Stock)</option>
+                                <option value="ConStock">Con Stock Disponible</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Rango de Precios</label>
+                            <div class="input-group">
+                                <input type="number" name="precioMin" class="form-control" step="0.01"
+                                    placeholder="Mín">
+                                <span class="input-group-text">-</span>
+                                <input type="number" name="precioMax" class="form-control" step="0.01"
+                                    placeholder="Máx">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Ordenar por</label>
+                            <select name="ordenarPor" class="form-select">
+                                <option value="nombre">Nombre</option>
+                                <option value="id">ID</option>
+                                <option value="precio">Precio</option>
+                                <option value="stock">Stock</option>
+                                <option value="marca">Marca</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Dirección</label>
+                            <select name="direccion" class="form-select">
+                                <option value="asc">Ascendente (A-Z, menor a mayor)</option>
+                                <option value="desc">Descendente (Z-A, mayor a menor)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="bi bi-file-pdf me-2"></i>Generar PDF
+                        </button>
+                        <button type="reset" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-x-circle me-2"></i>Limpiar Filtros
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-4">
+            <div class="card-body">
+                <h5><i class="bi bi-info-circle me-2"></i>Información</h5>
+                <ul class="mb-0">
+                    <li>Deja los campos vacíos para incluir todos los productos</li>
+                    <li><strong>Estado:</strong> Filtra por estado del producto (Activo/Inactivo)</li>
+                    <li><strong>Stock:</strong> Filtra por disponibilidad de inventario</li>
+                    <li>El PDF se abrirá en una nueva pestaña</li>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>

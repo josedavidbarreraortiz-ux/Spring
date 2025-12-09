@@ -53,7 +53,8 @@
                 <label for="registerName">
                     <i class="bi bi-person"></i> Nombre
                 </label>
-                <input type="text" id="registerName" name="name" placeholder="Nombre" required>
+                <input type="text" id="registerName" name="name" placeholder="Nombre" required minlength="3">
+                <small class="validation-message" id="nameValidation"></small>
             </div>
 
             <div class="input-group">
@@ -61,13 +62,34 @@
                     <i class="bi bi-envelope"></i> Correo Electrónico
                 </label>
                 <input type="email" id="registerEmail" name="email" placeholder="Correo" required>
+                <small class="validation-message" id="emailValidation"></small>
             </div>
 
             <div class="input-group">
                 <label for="registerPassword">
                     <i class="bi bi-lock"></i> Contraseña
                 </label>
-                <input type="password" id="registerPassword" name="password" placeholder="Contraseña" required>
+                <input type="password" id="registerPassword" name="password" placeholder="Contraseña" required
+                    minlength="8">
+                <small class="validation-message" id="passwordValidation"></small>
+                <!-- Password Strength Indicator -->
+                <div class="password-strength" id="passwordStrength" style="display: none;">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <span class="strength-text" id="strengthText"></span>
+                </div>
+                <!-- Password Requirements -->
+                <div class="password-requirements" id="passwordRequirements">
+                    <small><i class="bi bi-info-circle"></i> La contraseña debe contener:</small>
+                    <ul>
+                        <li id="req-length"><i class="bi bi-x-circle"></i> Al menos 8 caracteres</li>
+                        <li id="req-uppercase"><i class="bi bi-x-circle"></i> Una letra mayúscula</li>
+                        <li id="req-lowercase"><i class="bi bi-x-circle"></i> Una letra minúscula</li>
+                        <li id="req-number"><i class="bi bi-x-circle"></i> Un número</li>
+                        <li id="req-special"><i class="bi bi-x-circle"></i> Un carácter especial (!@_#$%^&*)</li>
+                    </ul>
+                </div>
             </div>
 
             <div class="input-group">
@@ -76,6 +98,7 @@
                 </label>
                 <input type="password" id="registerPasswordConfirm" name="password_confirmation"
                     placeholder="Confirmar contraseña" required>
+                <small class="validation-message" id="passwordConfirmValidation"></small>
             </div>
 
             <button type="submit" class="submit-btn">
@@ -92,13 +115,7 @@
         </div>
 
         <!-- Test Credentials (only show on login) -->
-        <div id="testCredentials" class="text-center mt-4" style="padding-top: 1rem; border-top: 1px solid #e5e7eb;">
-            <p style="color: #9ca3af; font-size: 0.875rem; margin-bottom: 0.5rem;">Credenciales de prueba:</p>
-            <small style="color: #6b7280; font-size: 0.8rem;">
-                <strong>Admin:</strong> admin@fh.com / admin123<br>
-                <strong>Cliente:</strong> cliente@fh.com / cliente123
-            </small>
-        </div>
+
     </div>
 
     <script>
@@ -109,6 +126,25 @@
         const toggleText = document.getElementById('toggleText');
         const testCredentials = document.getElementById('testCredentials');
 
+        // Form elements
+        const registerName = document.getElementById('registerName');
+        const registerEmail = document.getElementById('registerEmail');
+        const registerPassword = document.getElementById('registerPassword');
+        const registerPasswordConfirm = document.getElementById('registerPasswordConfirm');
+
+        // Validation message elements
+        const nameValidation = document.getElementById('nameValidation');
+        const emailValidation = document.getElementById('emailValidation');
+        const passwordValidation = document.getElementById('passwordValidation');
+        const passwordConfirmValidation = document.getElementById('passwordConfirmValidation');
+
+        // Password strength elements
+        const passwordStrength = document.getElementById('passwordStrength');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthText');
+        const passwordRequirements = document.getElementById('passwordRequirements');
+
+        // Toggle between login and register forms
         toggleBtn.addEventListener('click', function (e) {
             e.preventDefault();
 
@@ -119,7 +155,7 @@
                 formTitle.textContent = 'Iniciar Sesión';
                 toggleText.textContent = '¿No tienes cuenta?';
                 toggleBtn.textContent = 'Regístrate aquí';
-                testCredentials.style.display = 'block';
+                if (testCredentials) testCredentials.style.display = 'block';
             } else {
                 // Show register
                 loginForm.style.display = 'none';
@@ -127,7 +163,176 @@
                 formTitle.textContent = 'Registrarse';
                 toggleText.textContent = '¿Ya tienes cuenta?';
                 toggleBtn.textContent = 'Inicia sesión aquí';
-                testCredentials.style.display = 'none';
+                if (testCredentials) testCredentials.style.display = 'none';
+            }
+        });
+
+        // Validation functions
+        function showValidationMessage(element, message, isValid) {
+            element.textContent = message;
+            element.style.color = isValid ? '#10b981' : '#ef4444';
+            element.style.display = message ? 'block' : 'none';
+        }
+
+        function validateName() {
+            const name = registerName.value.trim();
+            if (name.length === 0) {
+                showValidationMessage(nameValidation, '', false);
+                return false;
+            } else if (name.length < 3) {
+                showValidationMessage(nameValidation, 'El nombre debe tener al menos 3 caracteres', false);
+                return false;
+            } else {
+                showValidationMessage(nameValidation, '✓ Nombre válido', true);
+                return true;
+            }
+        }
+
+        function validateEmail() {
+            const email = registerEmail.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email.length === 0) {
+                showValidationMessage(emailValidation, '', false);
+                return false;
+            } else if (!emailRegex.test(email)) {
+                showValidationMessage(emailValidation, 'Por favor ingresa un correo válido', false);
+                return false;
+            } else {
+                showValidationMessage(emailValidation, '✓ Correo válido', true);
+                return true;
+            }
+        }
+
+        function checkPasswordRequirement(requirementId, condition) {
+            const element = document.getElementById(requirementId);
+            if (condition) {
+                element.classList.add('valid');
+                element.querySelector('i').className = 'bi bi-check-circle';
+            } else {
+                element.classList.remove('valid');
+                element.querySelector('i').className = 'bi bi-x-circle';
+            }
+            return condition;
+        }
+
+        function calculatePasswordStrength(password) {
+            let strength = 0;
+            const checks = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[!@#$%^&*(),._?":{}|<>]/.test(password)
+            };
+
+            // Update requirement indicators
+            checkPasswordRequirement('req-length', checks.length);
+            checkPasswordRequirement('req-uppercase', checks.uppercase);
+            checkPasswordRequirement('req-lowercase', checks.lowercase);
+            checkPasswordRequirement('req-number', checks.number);
+            checkPasswordRequirement('req-special', checks.special);
+
+            // Calculate strength score
+            Object.values(checks).forEach(check => {
+                if (check) strength++;
+            });
+
+            return { strength, checks };
+        }
+
+        function updatePasswordStrength() {
+            const password = registerPassword.value;
+
+            if (password.length === 0) {
+                passwordStrength.style.display = 'none';
+                passwordRequirements.style.display = 'none';
+                showValidationMessage(passwordValidation, '', false);
+                return false;
+            }
+
+            passwordStrength.style.display = 'block';
+            passwordRequirements.style.display = 'block';
+
+            const { strength, checks } = calculatePasswordStrength(password);
+            const percentage = (strength / 5) * 100;
+
+            strengthFill.style.width = percentage + '%';
+
+            // Update strength bar color and text
+            if (strength <= 2) {
+                strengthFill.style.backgroundColor = '#ef4444';
+                strengthText.textContent = 'Débil';
+                strengthText.style.color = '#ef4444';
+            } else if (strength === 3) {
+                strengthFill.style.backgroundColor = '#f59e0b';
+                strengthText.textContent = 'Media';
+                strengthText.style.color = '#f59e0b';
+            } else if (strength === 4) {
+                strengthFill.style.backgroundColor = '#3b82f6';
+                strengthText.textContent = 'Buena';
+                strengthText.style.color = '#3b82f6';
+            } else {
+                strengthFill.style.backgroundColor = '#10b981';
+                strengthText.textContent = 'Excelente';
+                strengthText.style.color = '#10b981';
+            }
+
+            // Check if all requirements are met
+            const allValid = Object.values(checks).every(check => check);
+            if (allValid) {
+                showValidationMessage(passwordValidation, '✓ Contraseña segura', true);
+                return true;
+            } else {
+                showValidationMessage(passwordValidation, '', false);
+                return false;
+            }
+        }
+
+        function validatePasswordConfirm() {
+            const password = registerPassword.value;
+            const confirmPassword = registerPasswordConfirm.value;
+
+            if (confirmPassword.length === 0) {
+                showValidationMessage(passwordConfirmValidation, '', false);
+                return false;
+            } else if (password !== confirmPassword) {
+                showValidationMessage(passwordConfirmValidation, 'Las contraseñas no coinciden', false);
+                return false;
+            } else {
+                showValidationMessage(passwordConfirmValidation, '✓ Las contraseñas coinciden', true);
+                return true;
+            }
+        }
+
+        // Event listeners for real-time validation
+        registerName.addEventListener('input', validateName);
+        registerName.addEventListener('blur', validateName);
+
+        registerEmail.addEventListener('input', validateEmail);
+        registerEmail.addEventListener('blur', validateEmail);
+
+        registerPassword.addEventListener('input', updatePasswordStrength);
+        registerPassword.addEventListener('blur', updatePasswordStrength);
+
+        registerPasswordConfirm.addEventListener('input', validatePasswordConfirm);
+        registerPasswordConfirm.addEventListener('blur', validatePasswordConfirm);
+
+        // Form submission validation
+        registerForm.addEventListener('submit', function (e) {
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isPasswordValid = updatePasswordStrength();
+            const isPasswordConfirmValid = validatePasswordConfirm();
+
+            if (!isNameValid || !isEmailValid || !isPasswordValid || !isPasswordConfirmValid) {
+                e.preventDefault();
+
+                // Scroll to first invalid field
+                if (!isNameValid) registerName.focus();
+                else if (!isEmailValid) registerEmail.focus();
+                else if (!isPasswordValid) registerPassword.focus();
+                else if (!isPasswordConfirmValid) registerPasswordConfirm.focus();
             }
         });
     </script>

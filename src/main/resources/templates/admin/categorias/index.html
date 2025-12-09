@@ -11,9 +11,14 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Categorías</h2>
-            <a class="btn btn-primary" th:href="@{/admin/categorias/crear}">
-                <i class="bi bi-plus-circle"></i> Nueva Categoría
-            </a>
+            <div class="d-flex gap-2">
+                <a class="btn btn-danger" th:href="@{/admin/reportes/categorias}">
+                    <i class="bi bi-file-pdf"></i> Generar Reporte
+                </a>
+                <a class="btn btn-primary" th:href="@{/admin/categorias/crear}">
+                    <i class="bi bi-plus-circle"></i> Nueva Categoría
+                </a>
+            </div>
         </div>
 
         <div class="card shadow-sm">

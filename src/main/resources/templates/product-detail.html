@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/public-layout :: layout(~{::title}, ~{::content})">
 
 <head>
@@ -27,7 +27,13 @@
                     <div class="col-lg-5 col-md-6">
                         <div class="product-image-container">
                             <div class="product-image-wrapper">
-                                <img th:src="${producto.foto != null && producto.foto != '' ? producto.foto : 'https://placehold.co/500x500/667eea/FFFFFF?text=Producto'}"
+                                <!-- Valid image file -->
+                                <img th:if="${producto.foto != null and (producto.foto.endsWith('.png') or producto.foto.endsWith('.jpg') or producto.foto.endsWith('.jpeg') or producto.foto.endsWith('.gif') or producto.foto.endsWith('.webp') or producto.foto.endsWith('.PNG') or producto.foto.endsWith('.JPG'))}"
+                                    th:src="@{'/uploads/productos/' + ${producto.foto}}"
+                                    th:alt="${producto.productoNombre}">
+                                <!-- No valid image -->
+                                <img th:unless="${producto.foto != null and (producto.foto.endsWith('.png') or producto.foto.endsWith('.jpg') or producto.foto.endsWith('.jpeg') or producto.foto.endsWith('.gif') or producto.foto.endsWith('.webp') or producto.foto.endsWith('.PNG') or producto.foto.endsWith('.JPG'))}"
+                                    src="https://placehold.co/500x500/667eea/FFFFFF?text=Sin+Imagen"
                                     th:alt="${producto.productoNombre}">
                             </div>
                         </div>
@@ -41,11 +47,17 @@
                             <div class="category-badge">
                                 <i class="bi bi-tag-fill me-2"></i>
                                 <span
-                                    th:text="${producto.categoriaPrincipal != null ? producto.categoriaPrincipal.categoriaNombre : 'Sin categoría'}">Categoría</span>
+                                    th:text="${producto.categoriaPrincipal != null ? producto.categoriaPrincipal.categoriaNombre : 'Sin categoria'}">Categoria</span>
                             </div>
 
                             <!-- Product Title -->
                             <h1 class="product-title" th:text="${producto.productoNombre}">Nombre del Producto</h1>
+
+                            <!-- Brand -->
+                            <p class="product-brand"
+                                th:if="${producto.productoMarca != null and producto.productoMarca != ''}">
+                                <strong>Marca:</strong> <span th:text="${producto.productoMarca}"></span>
+                            </p>
 
                             <!-- Stock Status -->
                             <div class="stock-status">
@@ -55,14 +67,22 @@
 
                             <!-- Price -->
                             <div class="product-price"
-                                th:text="'$' + ${#numbers.formatDecimal(producto.productoPrecioVenta, 1, 2)}">$0.00
+                                th:text="'$' + ${#numbers.formatInteger(producto.productoPrecioVenta, 0, 'POINT')}">$0
                             </div>
 
                             <!-- Description -->
-                            <p class="product-description"
-                                th:text="${producto.resumen != null && producto.resumen != '' ? producto.resumen : 'Producto de alta calidad disponible en nuestra tienda. Aprovecha esta oportunidad para adquirir este increíble producto con las mejores garantías y servicio al cliente.'}">
-                                Descripción del producto
-                            </p>
+                            <div class="product-description-section"
+                                th:if="${producto.resumen != null and producto.resumen != ''}">
+                                <h5>Descripcion</h5>
+                                <p class="product-description" th:text="${producto.resumen}"></p>
+                            </div>
+
+                            <!-- Specifications -->
+                            <div class="product-specs-section"
+                                th:if="${producto.especificacion != null and producto.especificacion != ''}">
+                                <h5>Especificaciones</h5>
+                                <p class="product-specs" th:text="${producto.especificacion}"></p>
+                            </div>
 
                             <!-- Add to Cart Form -->
                             <form method="post" th:action="@{/carrito/agregar}" id="addToCartForm">
@@ -96,15 +116,15 @@
                             <div class="product-features">
                                 <div class="feature-item">
                                     <i class="bi bi-truck"></i>
-                                    <span>Envío rápido y seguro</span>
+                                    <span>Envio rapido</span>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-shield-check"></i>
-                                    <span>Garantía de calidad</span>
+                                    <span>Garantia</span>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-arrow-clockwise"></i>
-                                    <span>Devoluciones fáciles</span>
+                                    <span>Devoluciones</span>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-credit-card"></i>
@@ -121,21 +141,13 @@
         </div>
 
         <script>
-            // Quantity controls
             function increaseQuantity() {
                 const input = document.getElementById('quantityInput');
-                const currentValue = parseInt(input.value);
-                if (currentValue < 99) {
-                    input.value = currentValue + 1;
-                }
+                if (parseInt(input.value) < 99) input.value = parseInt(input.value) + 1;
             }
-
             function decreaseQuantity() {
                 const input = document.getElementById('quantityInput');
-                const currentValue = parseInt(input.value);
-                if (currentValue > 1) {
-                    input.value = currentValue - 1;
-                }
+                if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
             }
         </script>
 

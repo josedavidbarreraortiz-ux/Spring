@@ -19,23 +19,28 @@
                 <div class="card-body">
 
                     <div class="mb-3">
-                        <label class="form-label">Nombre</label>
-                        <input type="text" th:field="*{name}" class="form-control" required>
+                        <label class="form-label">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" th:field="*{name}" class="form-control" required
+                            data-validate="required|minLength:2|maxLength:100">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" th:field="*{email}" class="form-control" required>
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" th:field="*{email}" class="form-control" required
+                            data-validate="required|email">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Rol</label>
+                        <label class="form-label">Rol <span class="text-danger">*</span></label>
                         <select th:field="*{role}" class="form-select" required>
                             <option value="">Seleccione un rol</option>
                             <option value="ADMIN">Administrador</option>
                             <option value="CLIENTE">Cliente</option>
                             <option value="EMPLEADO">Empleado</option>
                         </select>
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="alert alert-info">
@@ -44,7 +49,8 @@
 
                     <div class="mb-3">
                         <label class="form-label">Nueva Contraseña (opcional)</label>
-                        <input type="password" name="newPassword" class="form-control">
+                        <input type="password" name="newPassword" class="form-control" data-validate="password">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <button type="submit" class="btn btn-warning">Actualizar</button>

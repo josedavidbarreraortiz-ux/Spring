@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/public-layout :: layout(~{::title}, ~{::content})">
 
 <head>
@@ -36,9 +36,9 @@
 
                                 <!-- Category Filter -->
                                 <div class="filter-group">
-                                    <label class="filter-label">Categoría</label>
+                                    <label class="filter-label">Categoria</label>
                                     <select name="categoriaId" class="form-select">
-                                        <option value="">Todas las categorías</option>
+                                        <option value="">Todas las categorias</option>
                                         <option th:each="cat : ${categorias}" th:value="${cat.categoriaId}"
                                             th:text="${cat.categoriaNombre}"
                                             th:selected="${param.categoriaId != null && param.categoriaId[0] == cat.categoriaId.toString()}">
@@ -48,13 +48,13 @@
 
                                 <!-- Price Range -->
                                 <div class="filter-group">
-                                    <label class="filter-label">Precio Mínimo</label>
+                                    <label class="filter-label">Precio Minimo</label>
                                     <input type="number" name="precioMin" class="form-control" placeholder="$0"
                                         th:value="${param.precioMin}" step="0.01">
                                 </div>
 
                                 <div class="filter-group">
-                                    <label class="filter-label">Precio Máximo</label>
+                                    <label class="filter-label">Precio Maximo</label>
                                     <input type="number" name="precioMax" class="form-control" placeholder="$999999"
                                         th:value="${param.precioMax}" step="0.01">
                                 </div>
@@ -81,7 +81,13 @@
                                     <div class="card product-card">
 
                                         <div class="product-image-wrapper">
-                                            <img th:src="${p.foto != null && p.foto != '' ? p.foto : 'https://placehold.co/300x300/667eea/FFFFFF?text=Producto'}"
+                                            <!-- Valid image file (ends with .png, .jpg, .jpeg, .gif, .webp) -->
+                                            <img th:if="${p.foto != null and (p.foto.endsWith('.png') or p.foto.endsWith('.jpg') or p.foto.endsWith('.jpeg') or p.foto.endsWith('.gif') or p.foto.endsWith('.webp') or p.foto.endsWith('.PNG') or p.foto.endsWith('.JPG'))}"
+                                                th:src="@{'/uploads/productos/' + ${p.foto}}"
+                                                th:alt="${p.productoNombre}">
+                                            <!-- No valid image - show placeholder -->
+                                            <img th:unless="${p.foto != null and (p.foto.endsWith('.png') or p.foto.endsWith('.jpg') or p.foto.endsWith('.jpeg') or p.foto.endsWith('.gif') or p.foto.endsWith('.webp') or p.foto.endsWith('.PNG') or p.foto.endsWith('.JPG'))}"
+                                                src="https://placehold.co/300x300/667eea/FFFFFF?text=Sin+Imagen"
                                                 th:alt="${p.productoNombre}">
                                             <span class="product-badge">Nuevo</span>
                                         </div>
@@ -90,8 +96,8 @@
                                             <h5 class="product-title" th:text="${p.productoNombre}">Nombre del Producto
                                             </h5>
                                             <p class="product-price"
-                                                th:text="'$' + ${#numbers.formatDecimal(p.productoPrecioVenta, 1, 2)}">
-                                                $0.00</p>
+                                                th:text="'$' + ${#numbers.formatInteger(p.productoPrecioVenta, 0, 'POINT')}">
+                                                $0</p>
                                         </div>
 
                                         <div class="card-footer">
@@ -110,7 +116,7 @@
                         <div th:if="${productos == null || productos.size() == 0}" class="no-products">
                             <i class="bi bi-inbox"></i>
                             <h3>No se encontraron productos</h3>
-                            <p>Intenta ajustar los filtros de búsqueda</p>
+                            <p>Intenta ajustar los filtros de busqueda</p>
                         </div>
 
                     </div>

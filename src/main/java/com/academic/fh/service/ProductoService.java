@@ -22,6 +22,12 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
+    public List<Producto> findAllActivos() {
+        return productoRepository.findAll().stream()
+                .filter(p -> "Activo".equals(p.getProductoEstado()) || "Disponible".equals(p.getProductoEstado()))
+                .toList();
+    }
+
     public Optional<Producto> findById(Integer id) {
         return productoRepository.findById(id);
     }
@@ -51,11 +57,17 @@ public class ProductoService {
 
     public List<Producto> buscarConFiltros(String nombre, Integer categoriaId, Double precioMin, Double precioMax) {
         return productoRepository.findAll().stream()
+                // Solo mostrar productos activos en la página pública
+                .filter(p -> "Activo".equals(p.getProductoEstado()))
                 .filter(p -> nombre == null || p.getProductoNombre().toLowerCase().contains(nombre.toLowerCase()))
                 .filter(p -> categoriaId == null || (p.getCategoriaPrincipal() != null
                         && p.getCategoriaPrincipal().getCategoriaId().equals(categoriaId)))
                 .filter(p -> precioMin == null || p.getProductoPrecioVenta().doubleValue() >= precioMin)
                 .filter(p -> precioMax == null || p.getProductoPrecioVenta().doubleValue() <= precioMax)
                 .toList();
+    }
+
+    public List<String> findDistinctMarcas() {
+        return productoRepository.findDistinctMarcas();
     }
 }

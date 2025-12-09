@@ -67,6 +67,7 @@ public class CarritoService {
                         producto.getProductoPrecioVenta() != null ? producto.getProductoPrecioVenta().doubleValue()
                                 : 0.0);
                 item.put("cantidad", cantidad);
+                item.put("foto", producto.getFoto());
                 carrito.add(item);
             }
         }
@@ -81,5 +82,16 @@ public class CarritoService {
 
     public void vaciarCarrito(HttpSession session) {
         session.removeAttribute(CARRITO_KEY);
+    }
+
+    public void actualizarCantidad(int index, int nuevaCantidad, HttpSession session) {
+        List<Map<String, Object>> carrito = getCarrito(session);
+        if (index >= 0 && index < carrito.size()) {
+            if (nuevaCantidad <= 0) {
+                carrito.remove(index);
+            } else {
+                carrito.get(index).put("cantidad", nuevaCantidad);
+            }
+        }
     }
 }

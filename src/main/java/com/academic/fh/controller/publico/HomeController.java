@@ -19,9 +19,29 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        // Mostrar productos destacados y categorías
-        model.addAttribute("productos", productoService.findAll());
+        // Mostrar solo productos activos en la página principal
+        model.addAttribute("productos", productoService.findAllActivos());
         model.addAttribute("categorias", categoriaService.findAll());
         return "index";
+    }
+
+    @GetMapping("/mi-cuenta")
+    public String miCuenta(org.springframework.security.core.Authentication authentication) {
+        // Si no está autenticado, redirigir al login
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+
+        // Redirigir según el rol del usuario
+        if (authentication.getAuthorities()
+                .contains(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return "redirect:/admin/dashboard";
+        } else if (authentication.getAuthorities()
+                .contains(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER"))) {
+            return "redirect:/cliente/dashboard";
+        }
+
+        // Por defecto, redirigir al login
+        return "redirect:/login";
     }
 }

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layouts/admin-layout :: layout(~{::title}, ~{::content})">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/admin-layout :: layout(~{::title}, ~{::content})">
 
 <head>
     <title>Nuevo Movimiento</title>
@@ -8,52 +7,54 @@
 
 <body>
 
-<section th:fragment="content">
+    <section th:fragment="content">
 
-    <h2 class="mb-3">Nuevo Movimiento</h2>
+        <h2 class="mb-3">Nuevo Movimiento</h2>
 
-    <form method="post" th:action="@{/admin/movimientos}">
+        <form method="post" th:action="@{/admin/movimientos}">
 
-        <div class="card shadow-sm">
-            <div class="card-body">
+            <div class="card shadow-sm">
+                <div class="card-body">
 
-                <div class="mb-3">
-                    <label class="form-label">Producto</label>
-                    <select class="form-select" name="inventarioId">
-                        <option th:each="i : ${inventarios}"
-                                th:value="${i.id}"
+                    <div class="mb-3">
+                        <label class="form-label">Producto</label>
+                        <select class="form-select" name="inventarioId">
+                            <option th:each="i : ${inventarios}" th:value="${i.id}"
                                 th:text="${i.producto.nombre + ' (Stock: ' + i.stockActual + ')'}">
-                        </option>
-                    </select>
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tipo Movimiento</label>
+                        <select class="form-select" name="tipo">
+                            <option value="ENTRADA">Entrada</option>
+                            <option value="SALIDA">Salida</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Cantidad <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" name="cantidad" required
+                            data-validate="required|positiveNumber|integer">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" name="descripcion"></textarea>
+                    </div>
+
+                    <button class="btn btn-success">Registrar Movimiento</button>
+                    <a th:href="@{/admin/movimientos}" class="btn btn-secondary">Cancelar</a>
+
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Tipo Movimiento</label>
-                    <select class="form-select" name="tipo">
-                        <option value="ENTRADA">Entrada</option>
-                        <option value="SALIDA">Salida</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Cantidad</label>
-                    <input type="number" class="form-control" name="cantidad">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Descripción</label>
-                    <textarea class="form-control" name="descripcion"></textarea>
-                </div>
-
-                <button class="btn btn-success">Registrar Movimiento</button>
-                <a th:href="@{/admin/movimientos}" class="btn btn-secondary">Cancelar</a>
-
             </div>
-        </div>
 
-    </form>
+        </form>
 
-</section>
+    </section>
 
 </body>
+
 </html>

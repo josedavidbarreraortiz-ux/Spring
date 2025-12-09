@@ -2,6 +2,7 @@ package com.academic.fh.service;
 
 import com.academic.fh.model.User;
 import com.academic.fh.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +14,11 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> findAll() {
@@ -44,5 +47,19 @@ public class UserService {
         return userRepository.findAll().stream()
                 .filter(u -> u.getEmail().equals(email))
                 .findFirst();
+    }
+
+    /**
+     * Verifica si una contraseña en texto plano coincide con el hash almacenado
+     */
+    public boolean checkPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    /**
+     * Encripta una contraseña en texto plano usando BCrypt
+     */
+    public String encodePassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword);
     }
 }

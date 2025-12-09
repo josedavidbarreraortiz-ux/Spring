@@ -5,9 +5,13 @@ import com.academic.fh.service.MovimientoInventarioService;
 import com.academic.fh.service.InventarioService;
 import com.academic.fh.service.ProductoService;
 import com.academic.fh.service.UserService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/movimientos")
@@ -29,8 +33,43 @@ public class MovimientoInventarioController {
     }
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("movimientos", movimientoInventarioService.findAll());
+    public String listar(
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) Integer productoId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            Model model) {
+
+        List<MovimientoInventario> movimientos;
+
+        // Normalizar strings vacíos a null para evitar problemas con filtros vacíos del
+        // formulario
+        if (tipo != null && tipo.trim().isEmpty()) {
+            tipo = null;
+        }
+
+        // Si hay algún filtro aplicado, usar consulta con filtros
+        if (tipo != null || productoId != null || fechaInicio != null || fechaFin != null) {
+            movimientos = movimientoInventarioService.findByFiltros(tipo, productoId, fechaInicio, fechaFin);
+        } else {
+            movimientos = movimientoInventarioService.findAll();
+        }
+
+        model.addAttribute("movimientos", movimientos);
+        model.addAttribute("productos", productoService.findAll());
+
+        // Mantener filtros seleccionados
+        model.addAttribute("tipo", tipo);
+        model.addAttribute("productoId", productoId);
+        model.addAttribute("fechaInicio", fechaInicio);
+        model.addAttribute("fechaFin", fechaFin);
+
+        // Estadísticas
+        model.addAttribute("totalMovimientos", movimientoInventarioService.countTotal());
+        model.addAttribute("totalEntradas", movimientoInventarioService.countByTipo("ENTRADA"));
+        model.addAttribute("totalSalidas", movimientoInventarioService.countByTipo("SALIDA"));
+        model.addAttribute("totalAjustes", movimientoInventarioService.countByTipo("AJUSTE"));
+
         return "admin/movimientos/index";
     }
 
