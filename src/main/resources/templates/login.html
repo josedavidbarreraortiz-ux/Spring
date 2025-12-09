@@ -114,8 +114,6 @@
             </p>
         </div>
 
-        <!-- Test Credentials (only show on login) -->
-
     </div>
 
     <script>
@@ -176,11 +174,17 @@
 
         function validateName() {
             const name = registerName.value.trim();
+            // Solo permite letras (incluyendo acentos) y espacios - NO números
+            const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+
             if (name.length === 0) {
                 showValidationMessage(nameValidation, '', false);
                 return false;
             } else if (name.length < 3) {
                 showValidationMessage(nameValidation, 'El nombre debe tener al menos 3 caracteres', false);
+                return false;
+            } else if (!nameRegex.test(name)) {
+                showValidationMessage(nameValidation, 'El nombre solo puede contener letras y espacios', false);
                 return false;
             } else {
                 showValidationMessage(nameValidation, '✓ Nombre válido', true);
@@ -189,11 +193,19 @@
         }
 
         function validateEmail() {
+            // Limpiar espacios al inicio y al final
             const email = registerEmail.value.trim();
+            // Actualizar el valor del campo sin espacios
+            registerEmail.value = email;
+
+            // El email no debe contener espacios en ninguna parte
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             if (email.length === 0) {
                 showValidationMessage(emailValidation, '', false);
+                return false;
+            } else if (email.includes(' ')) {
+                showValidationMessage(emailValidation, 'El correo no puede contener espacios', false);
                 return false;
             } else if (!emailRegex.test(email)) {
                 showValidationMessage(emailValidation, 'Por favor ingresa un correo válido', false);
@@ -318,8 +330,17 @@
         registerPasswordConfirm.addEventListener('input', validatePasswordConfirm);
         registerPasswordConfirm.addEventListener('blur', validatePasswordConfirm);
 
+        // Trim email on login form too
+        document.getElementById('loginEmail').addEventListener('blur', function () {
+            this.value = this.value.trim();
+        });
+
         // Form submission validation
         registerForm.addEventListener('submit', function (e) {
+            // Trim name and email before submitting
+            registerName.value = registerName.value.trim();
+            registerEmail.value = registerEmail.value.trim();
+
             const isNameValid = validateName();
             const isEmailValid = validateEmail();
             const isPasswordValid = updatePasswordStrength();
@@ -334,6 +355,11 @@
                 else if (!isPasswordValid) registerPassword.focus();
                 else if (!isPasswordConfirmValid) registerPasswordConfirm.focus();
             }
+        });
+
+        // Trim email on login submit
+        loginForm.addEventListener('submit', function () {
+            document.getElementById('loginEmail').value = document.getElementById('loginEmail').value.trim();
         });
     </script>
 </body>

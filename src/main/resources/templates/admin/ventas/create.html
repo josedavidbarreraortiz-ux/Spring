@@ -37,8 +37,18 @@
                             <div class="mb-3">
                                 <label class="form-label">Nombre Completo <span class="text-danger">*</span></label>
                                 <input type="text" name="clienteNombre" id="clienteNombre" class="form-control" required
-                                    placeholder="Nombre del cliente" data-validate="required|minLength:2|maxLength:100">
+                                    placeholder="Nombre del cliente"
+                                    data-validate="required|name|minLength:2|maxLength:100">
                                 <div class="invalid-feedback"></div>
+                                <small class="text-muted">Solo letras y espacios</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Número de Documento <span class="text-danger">*</span></label>
+                                <input type="text" name="clienteDocumento" id="clienteDocumento" class="form-control"
+                                    required placeholder="Ej: 1234567890" data-validate="required|documentNumber">
+                                <div class="invalid-feedback"></div>
+                                <small class="text-muted">Cédula o NIT (solo números, 5-15 dígitos)</small>
                             </div>
 
                             <div class="mb-3">

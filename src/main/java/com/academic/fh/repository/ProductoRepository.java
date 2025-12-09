@@ -10,8 +10,10 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
     @Query("SELECT DISTINCT p.productoMarca FROM Producto p WHERE p.productoMarca IS NOT NULL AND p.productoMarca <> '' ORDER BY p.productoMarca")
     List<String> findDistinctMarcas();
 
-    @Query("SELECT p FROM Producto p LEFT JOIN VentaDetalle vd ON vd.producto = p " +
-            "WHERE p.productoEstado = 'Activo' OR p.productoEstado = 'Disponible' " +
-            "GROUP BY p ORDER BY COALESCE(SUM(vd.ventaDetalleCantidad), 0) DESC")
+    @Query(value = "SELECT p.* FROM productos p " +
+            "LEFT JOIN venta_detalle vd ON vd.producto_id = p.producto_id " +
+            "WHERE p.producto_estado = 'Activo' OR p.producto_estado = 'Disponible' " +
+            "GROUP BY p.producto_id " +
+            "ORDER BY COALESCE(SUM(vd.venta_detalle_cantidad), 0) DESC", nativeQuery = true)
     List<Producto> findTopSellingProducts();
 }

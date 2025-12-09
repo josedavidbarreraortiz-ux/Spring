@@ -32,7 +32,7 @@
                                         th:text="${producto.categoriaPrincipal != null ? producto.categoriaPrincipal.categoriaNombre : 'N/A'}"></span>
                                 </p>
                                 <p><strong>Precio de Venta:</strong> $<span
-                                        th:text="${#numbers.formatInteger(producto.productoPrecioVenta, 1, 2)}"></span>
+                                        th:text="${#numbers.formatInteger(producto.productoPrecioVenta, 0, 'POINT')}"></span>
                                 </p>
                                 <p><strong>Tipo de Unidad:</strong> <span
                                         th:text="${producto.tipoUnidad ?: 'N/A'}"></span></p>
@@ -93,40 +93,14 @@
                     <p th:text="${producto.especificacion}"></p>
                 </div>
 
-                <!-- Otros atributos (excluyendo color) -->
-                <div th:if="${producto.atributos != null && !producto.atributos.isEmpty()}" class="mb-3">
-                    <h5>Atributos Adicionales</h5>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Atributo</th>
-                                    <th>Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <th:block th:each="pa : ${producto.atributos}">
-                                    <tr th:if="${pa.atributo != null && pa.atributo.atributoId != 1}">
-                                        <td th:text="${pa.atributo.atributoNombre}"></td>
-                                        <td>
-                                            <span th:if="${pa.valorTexto != null}" th:text="${pa.valorTexto}"></span>
-                                            <span th:if="${pa.valorNumero != null}" th:text="${pa.valorNumero}"></span>
-                                            <span th:if="${pa.valor != null}" th:text="${pa.valor.valor}"></span>
-                                        </td>
-                                    </tr>
-                                </th:block>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="mt-4">
-                    <a th:href="@{'/admin/productos/editar/' + ${producto.productoId}}"
-                        class="btn btn-warning">Editar</a>
-                    <a th:href="@{/admin/productos}" class="btn btn-secondary">Volver</a>
-                </div>
-
             </div>
+
+            <div class="mt-4">
+                <a th:href="@{'/admin/productos/editar/' + ${producto.productoId}}" class="btn btn-warning">Editar</a>
+                <a th:href="@{/admin/productos}" class="btn btn-secondary">Volver</a>
+            </div>
+
+        </div>
         </div>
 
     </section>

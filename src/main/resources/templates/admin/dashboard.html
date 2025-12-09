@@ -101,7 +101,19 @@
         <div class="card shadow-sm mt-4">
             <div class="card-body">
                 <h5>Estadísticas mensuales</h5>
-                <canvas id="chartVentasMovimientos" height="110"></canvas>
+                <div style="height: 200px;">
+                    <canvas id="chartVentasMovimientos"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen mensual detallado -->
+        <div class="card shadow-sm mt-4">
+            <div class="card-body">
+                <h5 class="mb-3">Resumen por Mes</h5>
+                <div class="row" id="resumenMensual">
+                    <!-- Se llena con JavaScript -->
+                </div>
             </div>
         </div>
 
@@ -140,41 +152,106 @@
             </div>
         </div>
 
-    </section>
+        <!-- Scripts para el gráfico -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                const meses = /*[[${chart.meses}]]*/[];
+                const ventas = /*[[${chart.ventas}]]*/[];
+                const movimientos = /*[[${chart.movimientos}]]*/[];
+                const totales = /*[[${chart.totales}]]*/[];
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                // Función para formatear en pesos colombianos
+                function formatCOP(value) {
+                    return '$' + value.toLocaleString('es-CO');
+                }
 
-    <script th:inline="javascript">
-        const meses = /*[[${chart.meses}]]*/[];
-        const ventas = /*[[${chart.ventas}]]*/[];
-        const movimientos = /*[[${chart.movimientos}]]*/[];
+                const ctx = document.getElementById('chartVentasMovimientos');
 
-        const ctx = document.getElementById('chartVentasMovimientos');
+                if (ctx) {
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: meses,
+                            datasets: [
+                                {
+                                    label: 'Ventas',
+                                    data: ventas,
+                                    borderColor: '#4e73df',
+                                    backgroundColor: 'rgba(78,115,223,.1)',
+                                    tension: 0.3,
+                                    fill: true
+                                },
+                                {
+                                    label: 'Movimientos',
+                                    data: movimientos,
+                                    borderColor: '#1cc88a',
+                                    backgroundColor: 'rgba(28,200,138,.1)',
+                                    tension: 0.3,
+                                    fill: true
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        afterBody: function (context) {
+                                            const index = context[0].dataIndex;
+                                            return 'Total: ' + formatCOP(totales[index]);
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: meses,
-                datasets: [
-                    {
-                        label: 'Ventas',
-                        data: ventas,
-                        borderColor: '#4e73df',
-                        backgroundColor: 'rgba(78,115,223,.1)',
-                        tension: 0.3
-                    },
-                    {
-                        label: 'Movimientos',
-                        data: movimientos,
-                        borderColor: '#1cc88a',
-                        backgroundColor: 'rgba(28,200,138,.1)',
-                        tension: 0.3
+                // Generar resumen mensual
+                const resumenContainer = document.getElementById('resumenMensual');
+                if (resumenContainer && meses.length > 0) {
+                    let html = '';
+                    for (let i = 0; i < meses.length; i++) {
+                        html += `
+                            <div class="col-md-2 col-sm-4 col-6 mb-3">
+                                <div class="card border-0 bg-light h-100">
+                                    <div class="card-body text-center py-3">
+                                        <h6 class="text-uppercase text-muted mb-2" style="font-size: 0.75rem;">${meses[i]}</h6>
+                                        <div class="mb-2">
+                                            <span class="d-block fs-6 fw-bold text-dark">${formatCOP(totales[i])}</span>
+                                            <small class="text-muted">Total ventas</small>
+                                        </div>
+                                        <div class="d-flex justify-content-around border-top pt-2">
+                                            <div>
+                                                <span class="d-block fw-bold text-primary">${ventas[i]}</span>
+                                                <small class="text-muted" style="font-size: 0.7rem;">Ventas</small>
+                                            </div>
+                                            <div>
+                                                <span class="d-block fw-bold text-success">${movimientos[i]}</span>
+                                                <small class="text-muted" style="font-size: 0.7rem;">Mov.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
                     }
-                ]
-            }
-        });
-    </script>
+                    resumenContainer.innerHTML = html;
+                }
+            });
+        </script>
+
+    </section>
 
 </body>
 

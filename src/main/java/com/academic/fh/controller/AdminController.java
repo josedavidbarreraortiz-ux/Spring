@@ -109,6 +109,7 @@ public class AdminController {
         List<String> meses = new ArrayList<>();
         List<Integer> ventasPorMes = new ArrayList<>();
         List<Integer> movimientosPorMes = new ArrayList<>();
+        List<Long> totalVentasPorMes = new ArrayList<>();
 
         YearMonth mesActual = YearMonth.now();
 
@@ -120,21 +121,29 @@ public class AdminController {
             String nombreMes = mes.getMonth().getDisplayName(TextStyle.SHORT, new Locale("es", "ES"));
             meses.add(nombreMes.substring(0, 1).toUpperCase() + nombreMes.substring(1));
 
-            // Contar ventas de ese mes
-            long ventasDelMes = ventas.stream()
+            // Filtrar ventas de ese mes
+            List<Venta> ventasDelMes = ventas.stream()
                     .filter(v -> v.getVentaFecha() != null)
                     .filter(v -> YearMonth.from(v.getVentaFecha()).equals(mes))
-                    .count();
+                    .collect(Collectors.toList());
 
-            ventasPorMes.add((int) ventasDelMes);
+            ventasPorMes.add(ventasDelMes.size());
+
+            // Sumar total de ventas del mes
+            long totalMes = ventasDelMes.stream()
+                    .filter(v -> v.getVentaTotal() != null)
+                    .mapToLong(v -> v.getVentaTotal().longValue())
+                    .sum();
+            totalVentasPorMes.add(totalMes);
 
             // Movimientos = ventas * 2 (ejemplo: cada venta genera entrada y salida)
-            movimientosPorMes.add((int) ventasDelMes * 2);
+            movimientosPorMes.add(ventasDelMes.size() * 2);
         }
 
         chart.put("meses", meses);
         chart.put("ventas", ventasPorMes);
         chart.put("movimientos", movimientosPorMes);
+        chart.put("totales", totalVentasPorMes);
 
         return chart;
     }

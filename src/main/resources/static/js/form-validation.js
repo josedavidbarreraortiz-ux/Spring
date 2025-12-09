@@ -1,7 +1,3 @@
-/**
- * Sistema de Validación en Tiempo Real para Formularios Admin
- * FH E-Commerce - Validaciones Bootstrap 5
- */
 
 (function () {
     'use strict';
@@ -95,6 +91,20 @@
             const hasMinLength = value.trim().length > 5;
             const hasNumber = /\d/.test(value);
             return hasMinLength && hasNumber;
+        },
+
+        // Nombre: solo letras y espacios (no números)
+        name: (value) => {
+            if (!value.trim()) return true;
+            const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+            return nameRegex.test(value.trim());
+        },
+
+        // Número de documento: solo números, 5-15 dígitos
+        documentNumber: (value) => {
+            if (!value.trim()) return true;
+            const docRegex = /^[0-9]{5,15}$/;
+            return docRegex.test(value.trim());
         },
 
         select: (value) => value && value !== ''
@@ -311,6 +321,18 @@
                 case 'address':
                     if (!Validators.address(value)) {
                         setInvalid(input, getMessage('address'));
+                        return false;
+                    }
+                    break;
+                case 'name':
+                    if (!Validators.name(value)) {
+                        setInvalid(input, 'El nombre solo puede contener letras y espacios');
+                        return false;
+                    }
+                    break;
+                case 'documentNumber':
+                    if (!Validators.documentNumber(value)) {
+                        setInvalid(input, 'El documento debe tener entre 5 y 15 dígitos numéricos');
                         return false;
                     }
                     break;
